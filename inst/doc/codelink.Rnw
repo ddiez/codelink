@@ -1,0 +1,244 @@
+%\VignetteIndexEntry{codelink}
+%\VignetteKeywords{Preprocessing, Codelink}
+%\VignetteDepends{codelink}
+%\VignettePackage{codelink}
+
+\documentclass{article}
+\usepackage[latin1]{inputenc}
+
+\usepackage[english]{babel}
+\makeatother
+\begin{document}
+
+\title{Codelink}
+
+\author{Diego Díez Ruiz}
+
+\maketitle
+
+\section{Introduction}
+
+Codelink\textsuperscript{\textsc{tm}} is a platform for the analysis of gene
+expression on biological samples using short (30 base long) oligonucleotide
+probes.  There is a proprietary software for reading scanned images, spot
+intensity quantization and some diagnostics.  Quality flags (Table
+\ref{tab:Flag}) are assigned to the spot based on signal to noise ratio (SNR)
+computation (Eq: \ref{eq:SNR}) and other morphological characteristics as
+irregular shape of the spots, saturation of the signal or manufacturer spots
+removed. The results can be exported in many formats as XML, Excel, plain text,
+etc. This library allows to read Codelink plain text exported data into R
+\cite{r} for analysis of gene expression with any of the available tools in
+R+Bioconductor\cite{BIOC}. A new class is defined for convenient storing
+Codelink data as exprSet class is not convenient for this purpose.
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|c|l|}
+\hline \em Flag & \em Meaning \\
+\hline
+G & Good signal (SNR >= 1)\\
+L & Limit signal (SNR < 1)\\
+I & Irregular shape \\
+S & Saturated signal \\
+M & MSR spot \\
+C & Background contaminated\\
+X & User excluded spots\\
+\hline
+\end{tabular}
+\caption{Quality Flag description. SNR: Signal to Noise Ratio.}
+\label{tab:Flag}
+\end{center}
+\end{table}
+
+\begin{center}
+\begin{equation}
+SNR=\frac{Spot\_mean}{(Bkgd\_median + 1.5 * Bkgd\_stdev)}
+\label{eq:SNR}
+\end{equation}
+\end{center}
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|r|l|}
+\hline \em Probe type & \em Meaning \\
+\hline
+DISCOVERY & Gene expression testing probes \\
+POSITIVE & Positive control probes \\
+NEGATIVE & Negative control probes \\
+FIDUCIAL & Grid alignment probes \\
+OTHER & Other controls and housekeeping gene probes \\
+\hline
+\end{tabular}
+\caption{Probe types for Codelink arrays.}
+\label{tab:Type}
+\end{center}
+\end{table}
+
+\section{Reading data}
+
+Currently only data exported as plain text from Codelink software can be used.
+The Codelink text format can have arbitrary columns and header fields so
+depending of what you have exported you can read it or not. The suggestion is
+that you put on the files Spot\_mean and Bkgd\_median values so you can do
+background correction and normalization in R. If you put Raw\_intensity or
+Normalized\_intensity columns then you can also read it directly and avoid
+background correction and/or normalization but this is not recommended. To read
+some Codelink files you do:
+
+\begin{Sinput}
+
+> library(codelink)
+> files <- list.files(pattern="TXT")
+> data <- read.Codelink(files)
+
+\end{Sinput}
+
+This suppose that your files have the extension ``TXT'' (uppercase)
+and they are in your working directory. The function emph{read.Codelink()}
+returns and object of class ``Codelink'':
+
+<<data>>=
+
+library(codelink)
+
+data(codelink.example)
+
+codelink.example
+
+@
+
+\begin{itemize}
+\item Product\_name: Type of chip loaded.
+\item Sample\_name: Character vector of sample names.
+\item File\_name: Character vector of file names.
+\item Probe\_name: Character vector of probe names (Codelink identifiers).
+\item Probe\_type: Character vector with probe type information.
+\item Log\_transformed: Logical, TRUE if data is log2 transformed.
+\item Quality\_flag: Matrix of Codelink Flags.
+\item Spot\_mean: Matrix with mean of signal intensity values.
+\item Bkgd\_median: Matrix with median of background intensity values.
+\item Raw\_intensity: Matrix with intensity values after background correction.
+\item Normalized\_intensity: Matrix with intensity values after normalization.
+\item SNR: Matrix with SNR values.
+\item CV: Numeric vector with coefficient of variation after merging arrays.
+\end{itemize}
+
+By default, all spots flagged with M, I, and S flags are set to NA. This can be
+changed with the flag argument in read.Codelink(). The flag argument is a list
+that can contain a valid flag identifier and a value for that flag. For
+example, if you want to set all M flagged spots to 0.01 and let other spot
+untouched you do:
+
+\begin{Sinput}
+
+> data <- read.Codelink(files, flag=list(M=0.01) )
+
+\end{Sinput}
+
+\section{Background correction}
+
+Spot\_mean intensity values can be processed into Raw\_intensity through
+background correction:
+
+\begin{Sinput}
+
+> data <- bkgdCorrect.Codelink(data, method="half")
+
+\end{Sinput}
+
+The default method used is based on the \emph{half} method from \emph{limma} \cite{limma} package. Median background intensity (Bkgd\_median) is subtracted
+from mean spot intensity (Spot\_mean) and if the result is less than
+0.5 then it is set to 0.5 to ensure no negative numbers are obtained.
+
+
+\section{Normalization}
+
+Normalization of Raw\_intensity values are done with the wrapper function
+normalize.Codelink(). The default method is \emph{quantile} normalization
+that in fact call \emph{normalizeQuantiles()} from \emph{limma} package
+(that allows for NAs). There is also the possibility to use a modified
+version of cyclic loess from affy \cite{affy} package that also allows NA
+values.
+
+\begin{Sinput}
+
+> data <- normalize.Codelink(data, method="quantile")
+
+\end{Sinput}
+
+By default, normalize.Codelink() return log2 intensity values.  This could be
+changed setting the parameter log.it to FALSE.
+
+
+\section{Plotting}
+
+There are some plotting functions available that can use directly the
+Codelink objects. These are functions for producing MA plots
+(plotMA.Codelink()), scatterplots (plotCorrelation.Codelink()) and density
+plots (plotDensities.Codelink()).  All functions use the available intensity
+value (i.e.  Spot\_mean, Raw\_intensity or Normalized\_intensity) to make the
+plot.
+
+The function plotMA.Codelink() can highlight spots based on Probe\_type values
+(by default) or SNR values setting the argument label. It requires array1 and
+array2 arguments and compute M and A values based on equations \ref{eq:M} and
+\ref{eq:A}.
+
+\begin{center}
+
+<<plotMA, fig=TRUE>>=
+
+plotMA.Codelink(codelink.example, legend.x="topright")
+
+@
+\end{center}
+
+\begin{equation}
+M=Array2-Array1
+\label{eq:M}
+\end{equation}
+
+\begin{equation}
+A=\frac{Array2+Array1}{2}
+\label{eq:A}
+\end{equation}
+
+The function plotDensities.Codelink() plot the density of intensity values of
+all arrays. If the subset argument is supplied it can use only a subset of the arrays in the Codelink object.
+
+\begin{center}
+<<plotDensity, fig=TRUE>>=
+
+plotDensities.Codelink(codelink.example)
+
+@
+\end{center}
+
+\section{Miscellaneus}
+
+There are also some miscellaneous functions used in some analysis that could be
+useful for someone.
+
+The mergeArray.Codelink() function merge various normalized arrays of the same
+type (same sample type for example) computing the mean values over the merged
+arrays. This was useful for me because I have used arrays hybridazed to
+different pooled samples by duplicate and no statistical analysis was possible.
+The grouping is done by means of the group argument (numerical vector of
+classes). New sample names can be assigned to Sample\_name slot with the names
+argument. The function also returns also the coefficient of variation in the
+slot CV. The distribution of coefficients of variations can be checked with the
+function plotCV.Codelink(). The example above will return the mean of array1
+and array2 and call it A and the mean of array3 and array4 and call it "B".
+
+\begin{Sinput}
+
+> data <- mergeArray.Codelink(data, group=c(1,1,2,2),
++ names=c("A","B"))
+
+\end{Sinput}
+
+
+\bibliographystyle{plain} \bibliography{codelink}
+
+
+\end{document}

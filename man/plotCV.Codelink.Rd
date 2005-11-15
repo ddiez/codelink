@@ -1,0 +1,30 @@
+\name{plotCV.Codelink}
+\alias{plotCV.Codelink}
+\title{Plot of CV}
+\description{
+	Takes a Codelink object and plot de distribution of CV after applying 
+	mergeCodelink.
+}
+\usage{
+	plotCV.Codelink(object, subset=c(1:dim(object)[2]), cutoff=NULL, title=NULL, legend.cex=1)
+}
+\arguments{
+	\item{object}{an object of class "Codelink".}
+	\item{subset}{subset of arrays to plot}
+	\item{cutoff}{cutoff of CV to be shown.}
+	\item{title}{title of the plot.}
+	\item{legend.cex}{factor to apply to the fonts in the legend to fit.}
+}
+\value{
+}
+\details{
+}
+\note{
+}
+\author{Diego Díez Ruiz}
+\seealso{
+}
+\examples{
+}
+\keyword{documentation}
+\keyword{utilities}
