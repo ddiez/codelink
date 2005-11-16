@@ -11,3 +11,5 @@ Description:  Data analysis of Codelink Bioarrays.
 License: GPL
 URL: http://www.iib.uam.es/~ddiez
 Packaged: Fri Oct 28 13:49:56 2005; ddiez
+
+biocViews: Microarray, OneChannel, DataImport, Preprocessing
