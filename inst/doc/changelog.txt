@@ -229,3 +229,7 @@ that column.
     the same product type and chip size. New functions readHeader.Codelink(),
     dec.Codelink() and chipSize.Codelink().
   - FIXED some bugs in flag dependent assignment (missing flags).
+
+0.7.0
+  - Version pump to enter BioC devel repository.
+  - Added biocViews slot to DESCRIPTION file.
