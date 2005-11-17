@@ -7,7 +7,7 @@ by Codelink Software or not) flags and information about probes.
 }
 \usage{
 read.Codelink(files, sample.name=NULL, flag=list(M=NA,I=NA,C=NA,X=NA),
-	dec=NULL, type="Spot_mean")
+	dec=NULL, type="Spot_mean", preserve=FALSE, verbose=2)
 }
 \arguments{
   \item{files}{list of files to read.}
@@ -15,6 +15,8 @@ read.Codelink(files, sample.name=NULL, flag=list(M=NA,I=NA,C=NA,X=NA),
   \item{flag}{list with values to assign based on Flag quality values.}
   \item{dec}{character indicating the decimal character used in the files.}
   \item{type}{character indicating which base value to read from files.}
+  \item{preserve}{logical, if TRUE Bkgd_stdev slot is not removed (if present).}
+  \item{verbose}{numerical, set the level of information. Level 2 set as old behaviour. Level > 2 output some debug info.}
 }
 \value{An object of class "Codelink".}
 \details{
