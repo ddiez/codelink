@@ -233,3 +233,4 @@ that column.
 0.7.0
   - Version pump to enter BioC devel repository.
   - Added biocViews slot to DESCRIPTION file.
+  - Some output polish of read.Codelink().
