@@ -239,3 +239,4 @@ that column.
     slot.
   - Added 'verbose' argument to read.Codelink() to set the level of
     informative output.
+  - FIX use of argument 'dec' on read.Codelink().
