@@ -28,7 +28,7 @@ dec.Codelink <- function(file, nlines) {
         if(!is.null(foo$Raw_intensity) && is.null(val)) val <- foo$Raw_intensity
         if(!is.null(foo$Normalized_intensity) && is.null(val)) val <- foo$Raw_intensity
         if(is(val,"numeric")) dec <- "." else dec <- ","
-        cat(paste("  Detected '", dec, "' as decimal symbol.\n",sep=""))
+        cat(paste("  + Detected '", dec, "' as decimal symbol.\n",sep=""))
 	return(dec)
 }
 ## arraySize.Codelink()
@@ -50,8 +50,8 @@ read.Codelink <- function(files,sample.name=NULL,flag=list(M=NA,I=NA,C=NA,X=NA),
 	#print(head)
 	product <- head$product
 	ngenes <- head$size
-	cat("  Product:", product, "\n")
-	cat("  Chip size:", ngenes, "\n")
+	cat("* Product:", product, "\n")
+	cat("* Chip size:", ngenes, "\n")
 
 	# Define Codelink object.
         Y <- matrix(NA, nrow=ngenes, ncol=nslides, dimnames=list(1:ngenes,1:nslides))
@@ -76,14 +76,14 @@ read.Codelink <- function(files,sample.name=NULL,flag=list(M=NA,I=NA,C=NA,X=NA),
 
 	# Read arrays.
 	for(n in 1:nslides) {
-                cat(paste("  Reading file", n, "of", nslides, ":", files[n], "\n"))
+                cat(paste("* Reading file", n, "of", nslides, ":", files[n], "\n"))
 		head <- readHeader.Codelink(files[n], dec=TRUE)
 
-		if(head$product != product) stop("Different array type (", head$product, ")\n")
-		if(head$size != ngenes) stop("Mmm. Something is wrogn. Different number of probes (", head$size, ")\n")
+		if(head$product != product) stop("Different array type (", head$product, ")!\n")
+		if(head$size != ngenes) stop("Mmm. Something is wrong. Different number of probes (", head$size, ")\n")
 
 		if(is.null(sample.name)) codelink$Sample_name[n] <- head$sample
-		cat(paste("  Sample Name:", codelink$Sample_name[n],"\n"))
+		cat(paste("  + Sample Name:", codelink$Sample_name[n],"\n"))
 
 		# Read bulk data.
                 data <- read.table(files[n], skip=head$nlines, sep="\t", header=TRUE, row.names=1, nrows=head$size, quote="", dec=head$dec)
@@ -98,13 +98,14 @@ read.Codelink <- function(files,sample.name=NULL,flag=list(M=NA,I=NA,C=NA,X=NA),
 		flag.g <- codelink$Quality_flag[,n]=="G"	# Good spots.
 		flag.l <- codelink$Quality_flag[,n]=="L"	# Limit spots.
 		flag.x <- codelink$Quality_flag[,n]=="X"	# User excluded spots.
-		cat(paste("    G:",length(which(flag.g)),"\t"))
-		cat(paste("    L:",length(which(flag.l)),"\t"))
-		cat(paste("    M:",length(which(flag.m)),"\t"))
-		cat(paste("    I:",length(which(flag.i)),"\n"))
-		cat(paste("    C:",length(which(flag.c)),"\t"))
-		cat(paste("    S:",length(which(flag.s)),"\t"))
-		cat(paste("    X:",length(which(flag.x)),"\n"))
+		cat("  + Quality flags:\n")
+		cat(paste("      G:",length(which(flag.g)),"\t"))
+		cat(paste("      L:",length(which(flag.l)),"\t"))
+		cat(paste("      M:",length(which(flag.m)),"\t"))
+		cat(paste("      I:",length(which(flag.i)),"\n"))
+		cat(paste("      C:",length(which(flag.c)),"\t"))
+		cat(paste("      S:",length(which(flag.s)),"\t"))
+		cat(paste("      X:",length(which(flag.x)),"\n"))
 
 		# Assignn Intensity values.
 		switch(type,
