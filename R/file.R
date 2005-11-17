@@ -40,7 +40,7 @@ arraySize.Codelink <- function(file, nlines) {
 ## read.Codelink()
 # Dynamic detection of gene number.
 read.Codelink <- function(files, sample.name=NULL, flag=list(M=NA,I=NA,C=NA,X=NA), dec=NULL, type="Spot_mean", preserve=FALSE, verbose=2) {
-	type <- match.arg(type,c("Spot_mean","Raw_intensity","Normalized_intensity"))
+	type <- match.arg(type,c("Spot_mean", "Raw_intensity", "Normalized_intensity"))
 	nslides <- length(files)
 	if(!is.null(sample.name) && (length(sample.name) != nslides)) stop("sample.name must have equal length as chips loaded.")
 	
@@ -76,7 +76,7 @@ read.Codelink <- function(files, sample.name=NULL, flag=list(M=NA,I=NA,C=NA,X=NA
 	# Read arrays.
 	for(n in 1:nslides) {
                 if(verbose>0) cat(paste("* Reading file", n, "of", nslides, ":", files[n], "\n"))
-		if(is.null(dec)	head <- readHeader.Codelink(files[n], dec=TRUE) else head <- readHeader.Codelink(files[n])
+		if(is.null(dec)) head <- readHeader.Codelink(files[n], dec=TRUE) else head <- readHeader.Codelink(files[n])
 		if(verbose>2) print(head)
         	if(verbose>1) cat(paste("  + Detected '", head$dec, "' as decimal symbol.\n",sep=""))
 
