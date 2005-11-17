@@ -28,7 +28,6 @@ dec.Codelink <- function(file, nlines) {
         if(!is.null(foo$Raw_intensity) && is.null(val)) val <- foo$Raw_intensity
         if(!is.null(foo$Normalized_intensity) && is.null(val)) val <- foo$Raw_intensity
         if(is(val,"numeric")) dec <- "." else dec <- ","
-        cat(paste("  + Detected '", dec, "' as decimal symbol.\n",sep=""))
 	return(dec)
 }
 ## arraySize.Codelink()
@@ -77,8 +76,9 @@ read.Codelink <- function(files, sample.name=NULL, flag=list(M=NA,I=NA,C=NA,X=NA
 	# Read arrays.
 	for(n in 1:nslides) {
                 if(verbose>0) cat(paste("* Reading file", n, "of", nslides, ":", files[n], "\n"))
-		head <- readHeader.Codelink(files[n], dec=TRUE)
+		if(is.null(dec)	head <- readHeader.Codelink(files[n], dec=TRUE) else head <- readHeader.Codelink(files[n])
 		if(verbose>2) print(head)
+        	if(verbose>1) cat(paste("  + Detected '", head$dec, "' as decimal symbol.\n",sep=""))
 
 		if(head$product != product) stop("Different array type (", head$product, ")!\n")
 		if(head$size != ngenes) stop("Mmm. Something is wrong. Different number of probes (", head$size, ")\n")
