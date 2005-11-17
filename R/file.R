@@ -212,7 +212,7 @@ read.Codelink <- function(files,sample.name=NULL,flag=list(M=NA,I=NA,C=NA,X=NA),
 	}
 	# Compute SNR.
         codelink$SNR <- SNR(codelink$Spot_mean, codelink$Bkgd_median, codelink$Bkgd_stdev)
-        cat("  Computing SNR...\n")
+        cat("* Computing SNR...\n")
 	codelink$Bkgd_stdev <- NULL
 	
 	if(!is.null(sample.name)) codelink$Sample_name <- sample.name
