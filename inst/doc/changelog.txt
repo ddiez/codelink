@@ -234,3 +234,8 @@ that column.
   - Version pump to enter BioC devel repository.
   - Added biocViews slot to DESCRIPTION file.
   - Some output polish of read.Codelink().
+  - FIX bug in determining if Bkgd_stdev column exists.
+  - Added 'preserve' argument to read.Codelink() that preserve Bkgd_stdev
+    slot.
+  - Added 'verbose' argument to read.Codelink() to set the level of
+    informative output.
