@@ -40,7 +40,7 @@ arraySize.Codelink <- function(file, nlines) {
 }
 ## read.Codelink()
 # Dynamic detection of gene number.
-read.Codelink <- function(files, sample.name=NULL, flag=list(M=NA,I=NA,C=NA,X=NA), dec=NULL, type="Spot_mean", preserve=FALSE, verbose=1) {
+read.Codelink <- function(files, sample.name=NULL, flag=list(M=NA,I=NA,C=NA,X=NA), dec=NULL, type="Spot_mean", preserve=FALSE, verbose=2) {
 	type <- match.arg(type,c("Spot_mean","Raw_intensity","Normalized_intensity"))
 	nslides <- length(files)
 	if(!is.null(sample.name) && (length(sample.name) != nslides)) stop("sample.name must have equal length as chips loaded.")
