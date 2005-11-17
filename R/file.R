@@ -9,14 +9,14 @@ readHeader.Codelink <- function(file, dec=FALSE) {
                 if(substr(foo[1],1,2)=="--") break # detect end of header.
         }
 	# Return list:
-	head <- list(header=NULL, nlines=NULL, product=NULL, sample=NULL, size=NULL, dec=NULL, column=NULL)
+	head <- list(header=NULL, nlines=NULL, product=NULL, sample=NULL, size=NULL, dec=NULL, columns=NULL)
         head$header <- scan(file, nlines=nlines, sep="\t", what="", quiet=TRUE)
 	head$nlines <- nlines
 	head$product <- head$header[grep("PRODUCT", head$header)+1]
 	if(any(foo <- grep("Sample Name", head$header))) head$sample <- head$header[foo+1] else head$sample <- file
 	head$size <- arraySize.Codelink(file, nlines)
 	if(dec) head$dec <- dec.Codelink(file, nlines)
-	head$column <- scan(file, skip=nlines, nlines=1, sep="\t", what="", quiet=TRUE)
+	head$columns <- scan(file, skip=nlines, nlines=1, sep="\t", what="", quiet=TRUE)
 	return(head)
 }
 ## dec.Codelink()
@@ -40,7 +40,7 @@ arraySize.Codelink <- function(file, nlines) {
 }
 ## read.Codelink()
 # Dynamic detection of gene number.
-read.Codelink <- function(files,sample.name=NULL,flag=list(M=NA,I=NA,C=NA,X=NA),dec=NULL,type="Spot_mean") {
+read.Codelink <- function(files, sample.name=NULL, flag=list(M=NA,I=NA,C=NA,X=NA), dec=NULL, type="Spot_mean", preserve=FALSE, verbose=1) {
 	type <- match.arg(type,c("Spot_mean","Raw_intensity","Normalized_intensity"))
 	nslides <- length(files)
 	if(!is.null(sample.name) && (length(sample.name) != nslides)) stop("sample.name must have equal length as chips loaded.")
@@ -50,8 +50,8 @@ read.Codelink <- function(files,sample.name=NULL,flag=list(M=NA,I=NA,C=NA,X=NA),
 	#print(head)
 	product <- head$product
 	ngenes <- head$size
-	cat("* Product:", product, "\n")
-	cat("* Chip size:", ngenes, "\n")
+	if(verbose>0) cat("* Product:", product, "\n")
+	if(verbose>0) cat("* Chip size:", ngenes, "\n")
 
 	# Define Codelink object.
         Y <- matrix(NA, nrow=ngenes, ncol=nslides, dimnames=list(1:ngenes,1:nslides))
@@ -76,14 +76,15 @@ read.Codelink <- function(files,sample.name=NULL,flag=list(M=NA,I=NA,C=NA,X=NA),
 
 	# Read arrays.
 	for(n in 1:nslides) {
-                cat(paste("* Reading file", n, "of", nslides, ":", files[n], "\n"))
+                if(verbose>0) cat(paste("* Reading file", n, "of", nslides, ":", files[n], "\n"))
 		head <- readHeader.Codelink(files[n], dec=TRUE)
+		if(verbose>2) print(head)
 
 		if(head$product != product) stop("Different array type (", head$product, ")!\n")
 		if(head$size != ngenes) stop("Mmm. Something is wrong. Different number of probes (", head$size, ")\n")
 
 		if(is.null(sample.name)) codelink$Sample_name[n] <- head$sample
-		cat(paste("  + Sample Name:", codelink$Sample_name[n],"\n"))
+		if(verbose>1) cat(paste("  + Sample Name:", codelink$Sample_name[n],"\n"))
 
 		# Read bulk data.
                 data <- read.table(files[n], skip=head$nlines, sep="\t", header=TRUE, row.names=1, nrows=head$size, quote="", dec=head$dec)
@@ -98,14 +99,14 @@ read.Codelink <- function(files,sample.name=NULL,flag=list(M=NA,I=NA,C=NA,X=NA),
 		flag.g <- codelink$Quality_flag[,n]=="G"	# Good spots.
 		flag.l <- codelink$Quality_flag[,n]=="L"	# Limit spots.
 		flag.x <- codelink$Quality_flag[,n]=="X"	# User excluded spots.
-		cat("  + Quality flags:\n")
-		cat(paste("      G:",length(which(flag.g)),"\t"))
-		cat(paste("      L:",length(which(flag.l)),"\t"))
-		cat(paste("      M:",length(which(flag.m)),"\t"))
-		cat(paste("      I:",length(which(flag.i)),"\n"))
-		cat(paste("      C:",length(which(flag.c)),"\t"))
-		cat(paste("      S:",length(which(flag.s)),"\t"))
-		cat(paste("      X:",length(which(flag.x)),"\n"))
+		if(verbose>1) cat("  + Quality flags:\n")
+		if(verbose>1) cat(paste("      G:",length(which(flag.g)),"\t"))
+		if(verbose>1) cat(paste("      L:",length(which(flag.l)),"\t"))
+		if(verbose>1) cat(paste("      M:",length(which(flag.m)),"\t"))
+		if(verbose>1) cat(paste("      I:",length(which(flag.i)),"\n"))
+		if(verbose>1) cat(paste("      C:",length(which(flag.c)),"\t"))
+		if(verbose>1) cat(paste("      S:",length(which(flag.s)),"\t"))
+		if(verbose>1) cat(paste("      X:",length(which(flag.x)),"\n"))
 
 		# Assignn Intensity values.
 		switch(type,
@@ -212,8 +213,8 @@ read.Codelink <- function(files,sample.name=NULL,flag=list(M=NA,I=NA,C=NA,X=NA),
 	}
 	# Compute SNR.
         codelink$SNR <- SNR(codelink$Spot_mean, codelink$Bkgd_median, codelink$Bkgd_stdev)
-        cat("* Computing SNR...\n")
-	codelink$Bkgd_stdev <- NULL
+        if(verbose>0) cat("* Computing SNR...\n")
+	if(!preserve) codelink$Bkgd_stdev <- NULL
 	
 	if(!is.null(sample.name)) codelink$Sample_name <- sample.name
 	codelink$File_name <- files
