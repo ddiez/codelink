@@ -1,3 +1,4 @@
 export(readCodelink, writeCodelink, reportCodelink,
 plotMA, plotCorrelation, plotDensities, plotCV,
-bkgdCorrect, normalize, mergeArray)
+bkgdCorrect, normalize, mergeArray,
+selCV, cutCV, fc)
