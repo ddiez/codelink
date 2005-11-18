@@ -23,7 +23,7 @@ readHeader.Codelink <- function(file, dec=FALSE) {
 # detect decimal point.
 dec.Codelink <- function(file, nlines) {
 	foo <- read.table(file, skip=nlines, nrows=1, header=TRUE, sep="\t", na.strings="")
-        #        val <- NULL
+        val <- NULL
         if(!is.null(foo$Spot_mean)) val <- foo$Raw_intensity
         if(!is.null(foo$Raw_intensity) && is.null(val)) val <- foo$Raw_intensity
         if(!is.null(foo$Normalized_intensity) && is.null(val)) val <- foo$Raw_intensity

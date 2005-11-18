@@ -240,3 +240,6 @@ that column.
   - Added 'verbose' argument to read.Codelink() to set the level of
     informative output.
   - FIX use of argument 'dec' on read.Codelink().
+  - Some changes in class definitions: LargeDataObject-class removed as used only in
+    Codelink-class. Method 'show' is now a Codelink-class method. Added some
+    basic documentation of Codelink-class.

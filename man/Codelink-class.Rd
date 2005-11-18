@@ -2,7 +2,7 @@
 \docType{class}
 \alias{Codelink-class}
 \alias{[,Codelink-method}
-\alias{LargeDataObject,Codelink-method}
+\alias{show,Codelink-method}
 
 \title{Class Codelink}
 \description{This is the storage class for Codelink data}

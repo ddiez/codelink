@@ -1,8 +1,8 @@
 #### To create Codelink Classes.
 ## I base it on the definitions found in limma v1.8.20
 setClass("Codelink",representation("list"))
-setClass("LargeDataObject")
-setIs("Codelink","LargeDataObject")
+#setClass("LargeDataObject")
+#setIs("Codelink","LargeDataObject")
 printHead.Codelink <- function(x)
 #  Print leading 5 elements or rows of atomic object
 #  Gordon Smyth
@@ -55,7 +55,8 @@ printHead.Codelink <- function(x)
         )
 }
 
-setMethod("show","LargeDataObject",
+#setMethod("show","LargeDataObject",
+setMethod("show","Codelink",
 #  Print and show method large data objects
 #  Based on same from:
 #  Gordon Smyth
