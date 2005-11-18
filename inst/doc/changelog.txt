@@ -248,4 +248,5 @@ that column.
   - Added NAMESPACE to the package.
   - Mayor API change: Almost all functions have lost the '.Codelink' tail.
     Some functions have been totally renamed. See vignette for detailed
-    information about the new functions.
+    information about the new functions. Remain with '.Codelink' real S3
+    methods dim.Codelink() and as.matrix.Codelink().
