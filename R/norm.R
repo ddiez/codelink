@@ -23,7 +23,6 @@ normalize <- function(object, method="quantiles", log.it=TRUE, type="ALL") {
 			object$Normalization_method <- "Cyclic Loess"
 		},
 		quantiles = {
-			require(limma)
 			object$Normalized_intensity[sel,] <- normalizeQuantiles(object$Raw_intensity[sel,])
                         object$Normalization_method <- "Quantiles"
 		}

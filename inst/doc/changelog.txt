@@ -250,3 +250,4 @@ that column.
     Some functions have been totally renamed. See vignette for detailed
     information about the new functions. Remain with '.Codelink' real S3
     methods dim.Codelink() and as.matrix.Codelink().
+  - Changed Depends: R (>= 2.2), limma, annotate in DESCRIPTION file.

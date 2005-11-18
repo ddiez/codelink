@@ -241,8 +241,6 @@ reportCodelink <- function(object, chip, filename=NULL, title="Main title", prob
 	if(probe.type && !is(object,"Codelink")) stop("Codelink object needed putting Probe_type")
 	if(is.null(filename)) stop("Filename needed.")
 
-	require(annotate)
-	
 	if(is(object,"Codelink")) genes <- object$Probe_name else genes <- object
 	if(!is.null(other)) {
 		if(!is.null(other.ord)) {
