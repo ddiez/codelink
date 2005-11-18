@@ -1,6 +1,9 @@
 S3method(as.matrix, Codelink)
 S3method(dim, Codelink)
 
+exportClasses(Codelink)
+exportMethods("[", show)
+
 export(readCodelink, writeCodelink, reportCodelink,
 	plotMA, plotCorrelation, plotDensities, plotCV,
 	bkgdCorrect, normalize, mergeArray,
