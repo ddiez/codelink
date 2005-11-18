@@ -1,4 +1,7 @@
+S3method(as.matrix, Codelink)
+S3method(dim, Codelink)
+
 export(readCodelink, writeCodelink, reportCodelink,
-plotMA, plotCorrelation, plotDensities, plotCV,
-bkgdCorrect, normalize, mergeArray,
-selCV, cutCV, fc)
+	plotMA, plotCorrelation, plotDensities, plotCV,
+	bkgdCorrect, normalize, mergeArray,
+	selCV, cutCV, fc)
