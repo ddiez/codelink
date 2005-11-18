@@ -3,7 +3,7 @@
 setClass("Codelink",representation("list"))
 #setClass("LargeDataObject")
 #setIs("Codelink","LargeDataObject")
-printHead.Codelink <- function(x)
+printHead <- function(x)
 #  Print leading 5 elements or rows of atomic object
 #  Gordon Smyth
 #  May 2003.  Last modified 7 April 2004.
@@ -66,14 +66,14 @@ function(object) {
         for (what in names(object)) {
                 x <- object[[what]]
                 cat("$",what,"\n",sep="")
-                printHead.Codelink(x)
+                printHead(x)
                 cat("\n")
         }
         for (what in setdiff(slotNames(object),".Data")) {
                 x <- slot(object,what)
                 if(length(x) > 0) {
                         cat("@",what,"\n",sep="")
-                        printHead.Codelink(x)
+                        printHead(x)
                         cat("\n")
                 }
         }

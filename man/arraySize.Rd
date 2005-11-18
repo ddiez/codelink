@@ -1,11 +1,11 @@
-\name{arraySize.Codelink}
-\alias{arraySize.Codelink}
+\name{arraySize}
+\alias{arraySize}
 \title{Determine size of Codelink array}
 \description{
-	Determine size of Codelink array. Is used by readHeader.Codelink().
+	Determine size of Codelink array. Is used by readHeader().
 }
 \usage{
-    arraySize.Codelink(file, nlines)
+    arraySize(file, nlines)
 }
 \arguments{
     \item{file}{the file to be read.}

@@ -1,6 +1,6 @@
-## readHeader.Codelink()
+## readHeader()
 # Read header information from codelink file.
-readHeader.Codelink <- function(file, dec=FALSE) {
+readHeader <- function(file, dec=FALSE) {
 	# Size of header:
 	nlines <- 0
 	repeat {
@@ -14,14 +14,14 @@ readHeader.Codelink <- function(file, dec=FALSE) {
 	head$nlines <- nlines
 	head$product <- head$header[grep("PRODUCT", head$header)+1]
 	if(any(foo <- grep("Sample Name", head$header))) head$sample <- head$header[foo+1] else head$sample <- file
-	head$size <- arraySize.Codelink(file, nlines)
-	if(dec) head$dec <- dec.Codelink(file, nlines)
+	head$size <- arraySize(file, nlines)
+	if(dec) head$dec <- decDetect(file, nlines)
 	head$columns <- scan(file, skip=nlines, nlines=1, sep="\t", what="", quiet=TRUE)
 	return(head)
 }
-## dec.Codelink()
+## decDetect()
 # detect decimal point.
-dec.Codelink <- function(file, nlines) {
+decDetect <- function(file, nlines) {
 	foo <- read.table(file, skip=nlines, nrows=1, header=TRUE, sep="\t", na.strings="")
         val <- NULL
         if(!is.null(foo$Spot_mean)) val <- foo$Raw_intensity
@@ -30,22 +30,22 @@ dec.Codelink <- function(file, nlines) {
         if(is(val,"numeric")) dec <- "." else dec <- ","
 	return(dec)
 }
-## arraySize.Codelink()
+## arraySize()
 # calculate chip size.
-arraySize.Codelink <- function(file, nlines) {
+arraySize <- function(file, nlines) {
         data <- scan(file, skip=nlines+1, sep="\t", what="integer", flush=TRUE, na.strings="", quiet=TRUE)
         #ngenes <- length(data)  # number of genes.
         ngenes <- length(data[!is.na(data)]) # Codelink exporter is a little buggy. 
 }
-## read.Codelink()
+## readCodelink()
 # Dynamic detection of gene number.
-read.Codelink <- function(files, sample.name=NULL, flag=list(M=NA,I=NA,C=NA,X=NA), dec=NULL, type="Spot_mean", preserve=FALSE, verbose=2) {
+readCodelink <- function(files, sample.name=NULL, flag=list(M=NA,I=NA,C=NA,X=NA), dec=NULL, type="Spot_mean", preserve=FALSE, verbose=2) {
 	type <- match.arg(type,c("Spot_mean", "Raw_intensity", "Normalized_intensity"))
 	nslides <- length(files)
 	if(!is.null(sample.name) && (length(sample.name) != nslides)) stop("sample.name must have equal length as chips loaded.")
 	
 	# Read Header.
-	head <- readHeader.Codelink(files[1])
+	head <- readHeader(files[1])
 	#print(head)
 	product <- head$product
 	ngenes <- head$size
@@ -76,7 +76,7 @@ read.Codelink <- function(files, sample.name=NULL, flag=list(M=NA,I=NA,C=NA,X=NA
 	# Read arrays.
 	for(n in 1:nslides) {
                 if(verbose>0) cat(paste("* Reading file", n, "of", nslides, ":", files[n], "\n"))
-		if(is.null(dec)) head <- readHeader.Codelink(files[n], dec=TRUE) else head <- readHeader.Codelink(files[n])
+		if(is.null(dec)) head <- readHeader(files[n], dec=TRUE) else head <- readHeader(files[n])
 		if(verbose>2) print(head)
         	if(verbose>1) cat(paste("  + Detected '", head$dec, "' as decimal symbol.\n",sep=""))
 
@@ -114,42 +114,34 @@ read.Codelink <- function(files, sample.name=NULL, flag=list(M=NA,I=NA,C=NA,X=NA
                 		codelink$Spot_mean[,n] <- data[,"Spot_mean"]
                 		codelink$Bkgd_median[,n] <- data[,"Bkgd_median"]
 				if(any(grep("Bkgd_stdev", head$columns))) codelink$Bkgd_stdev[,n] <- data[,"Bkgd_stdev"] else codelink$Bkgd_stdev[,n] <- NA
-		#		if(!is.null(snr.list)) codelink$Bkgd_stdev[,n] <- data[,"Bkgd_stdev"]
 				# Set values based on Flags.
 				if(!is.null(flag$M)) {
 					codelink$Spot_mean[flag.m,n] <- flag$M		# Set M spots.
 					codelink$Bkgd_median[flag.m,n] <- flag$M
-					#if(!is.null(snr.list)) codelink$Bkgd_stdev[flag.m,n] <- flag$M
 				}
 				if(!is.null(flag$I)) {
 					codelink$Spot_mean[flag.i,n] <- flag$I		# Set I spots.
 					codelink$Bkgd_median[flag.i,n] <- flag$I
-					#if(!is.null(snr.list)) codelink$Bkgd_stdev[flag.i,n] <- flag$I
 				}
 				if(!is.null(flag$C)) {
 					codelink$Spot_mean[flag.c,n] <- flag$C		# Set C spots.
 					codelink$Bkgd_median[flag.c,n] <- flag$C
-					#if(!is.null(snr.list)) codelink$Bkgd_stdev[flag.c,n] <- flag$C
 				}
 				if(!is.null(flag$S)) {
                                         codelink$Spot_mean[flag.s, n] <- flag$S          # Set S spots.
                                         codelink$Bkgd_median[flag.s, n] <- flag$S
-                                        #if(!is.null(snr.list)) codelink$Bkgd_stdev[flag.s,n] <- flag$S
                                 }
 				if(!is.null(flag$G)) {
                                         codelink$Spot_mean[flag.g, n] <- flag$G          # Set G spots.
                                         codelink$Bkgd_median[flag.g,n] <- flag$G
-                                        #if(!is.null(snr.list)) codelink$Bkgd_stdev[flag.g, n] <- flag$G
                                 }
 				if(!is.null(flag$L)) {
                                         codelink$Spot_mean[flag.l, n] <- flag$L          # Set L spots.
                                         codelink$Bkgd_median[flag.l, n] <- flag$L
-                                        #if(!is.null(snr.list)) codelink$Bkgd_stdev[flag.l, n] <- flag$L
                                 }
 				if(!is.null(flag$X)) {
 					codelink$Spot_mean[flag.x,n] <- flag$X		# Set X spots.
 					codelink$Bkgd_median[flag.x,n] <- flag$X
-					#if(!is.null(snr.list)) codelink$Bkgd_stdev[flag.x,n] <- flag$X
 				}
 			},
 			Raw_intensity = {
@@ -222,9 +214,9 @@ read.Codelink <- function(files, sample.name=NULL, flag=list(M=NA,I=NA,C=NA,X=NA
         
 	new("Codelink", codelink)
 }
-## write.Codelink()
-# export Codelink object to file
-write.Codelink <- function(object, file=NULL, dec=".") {
+## writeCodelink()
+#  write Codelink object to file
+writeCodelink <- function(object, file=NULL, dec=".") {
 	if(!is(object, "Codelink")) stop("A Codelink object is needed.")
 	if(is.null(file)) stop("A file name is needed.")
 
@@ -242,9 +234,9 @@ write.Codelink <- function(object, file=NULL, dec=".") {
 	write.table(tmp2,file=file,append=TRUE,quote=FALSE,sep="\t",dec=dec,col.names=FALSE)
 }
 
-## report.Codelink()
+## reportCodelink()
 # report output to HTML.
-report.Codelink <- function(object, chip, filename=NULL, title="Main title", probe.type=FALSE, other=NULL, other.ord=NULL) {
+reportCodelink <- function(object, chip, filename=NULL, title="Main title", probe.type=FALSE, other=NULL, other.ord=NULL) {
 	if(!is(object,"Codelink") && !is(object,"character")) stop("Codelink object or character vector needed.")
 	if(probe.type && !is(object,"Codelink")) stop("Codelink object needed putting Probe_type")
 	if(is.null(filename)) stop("Filename needed.")

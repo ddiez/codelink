@@ -243,3 +243,9 @@ that column.
   - Some changes in class definitions: LargeDataObject-class removed as used only in
     Codelink-class. Method 'show' is now a Codelink-class method. Added some
     basic documentation of Codelink-class.
+
+0.7.1
+  - Added NAMESPACE to the package.
+  - Mayor API change: Almost all functions have lost the '.Codelink' tail.
+    Some functions have been totally renamed. See vignette for detailed
+    information about the new functions.

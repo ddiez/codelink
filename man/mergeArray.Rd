@@ -1,5 +1,5 @@
-\name{mergeArray.Codelink}
-\alias{mergeArray.Codelink}
+\name{mergeArray}
+\alias{mergeArray}
 \title{Merge Codelink Bioarrays Data}
 \description{
   Merge data in a Codelink Object corresponding to same samples. Need a vector
@@ -7,7 +7,7 @@ indicating the classes and an optional vector indicating the labels of the mer-
 ged samples.
 }
 \usage{
-	mergeArray.Codelink(object, group, names=NULL, method="mean", log.it=FALSE)
+	mergeArray(object, group, names=NULL, method="mean", log.it=FALSE)
 }
 \arguments{
   \item{object}{an object of class "Codelink".}
@@ -27,10 +27,10 @@ ged samples.
 }
 \examples{
 	data(codelink.example)
-	codelink.example <- bkgdCorrect.Codelink(codelink.example)
-	codelink.example <- normalize.Codelink(codelink.example, log.it=FALSE)
-	codelink.example <- mergeArray.Codelink(codelink.example,
-	group=c(1,1), names="SAMPLE", log.it=TRUE)
+	codelink.example <- bkgdCorrect(codelink.example)
+	codelink.example <- normalize(codelink.example, log.it=FALSE)
+	codelink.example <- mergeArray(codelink.example, group=c(1,1),
+					names="SAMPLE", log.it=TRUE)
 }
 \keyword{documentation}
 \keyword{utilities}

@@ -1,12 +1,12 @@
-\name{bkgdCorrect.Codelink}
-\alias{bkgdCorrect.Codelink}
+\name{bkgdCorrect}
+\alias{bkgdCorrect}
 \title{Background correction of intensity values.}
 \description{
 	Takes a Codelink object with Spot mean and Bkgd median values
 	and corrects applying one of the methods available.
 }
 \usage{
-	bkgdCorrect.Codelink(object,method="half")
+	bkgdCorrect(object,method="half")
 }
 \arguments{
   \item{object}{an object of class "Codelink".}
@@ -27,7 +27,7 @@
 }
 \examples{
     data(codelink.example)
-    codelink.example <- bkgdCorrect.Codelink(codelink.example, method="half")
+    codelink.example <- bkgdCorrect(codelink.example, method="half")
 }
 \keyword{documentation}
 \keyword{utilities}

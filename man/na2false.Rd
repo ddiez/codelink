@@ -19,10 +19,10 @@
 \seealso{
 }
 \examples{
-    a <- c(1, 2, 3, NA, 5)
-    b <- c(5, 4, NA, 2, 1)
-    sel <- a > b
-    sel <- na2false(sel)
+ #   a <- c(1, 2, 3, NA, 5)
+ #   b <- c(5, 4, NA, 2, 1)
+ #   sel <- a > b
+ #   sel <- na2false(sel)
 }
 \keyword{documentation}
 \keyword{utilities}

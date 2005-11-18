@@ -1,11 +1,11 @@
-\name{normalize.Codelink}
-\alias{normalize.Codelink}
+\name{normalize}
+\alias{normalize}
 \title{Normalization wrapper for Codelink objects.}
 \description{
 	Takes a Codelink object and applies normalization to intensity values.
 }
 \usage{
-normalize.Codelink(object, method="quantiles", log.it=TRUE, type="ALL")
+normalize(object, method="quantiles", log.it=TRUE, type="ALL")
 }
 \arguments{
 	\item{object}{an object of class "Codelink".}
@@ -24,10 +24,10 @@ normalize.Codelink(object, method="quantiles", log.it=TRUE, type="ALL")
 \examples{
 	data(codelink.example)
 	# Background correction.
-	codelink.example <- bkgdCorrect.Codelink(codelink.example,
+	codelink.example <- bkgdCorrect(codelink.example,
         method="half")
 	# Normalization.
-	codelink.example <- normalize.Codelink(codelink.example,
+	codelink.example <- normalize(codelink.example,
         method="quantile")
 }
 \keyword{documentation}

@@ -1,12 +1,12 @@
-\name{fc.Codelink}
-\alias{fc.Codelink}
+\name{fc}
+\alias{fc}
 \title{Fold change cutoff calculation}
 \description{
 	Takes a Codelink object and calculate fold changes between different
 	samples. Then look for genes that pass a cutoff.
 }
 \usage{
-	fc.Codelink(object, cond1=NULL, cond2=NULL, fc=1.0)
+	fc(object, cond1=NULL, cond2=NULL, fc=1.0)
 }
 \arguments{
 	\item{object}{an object of class "Codelink".}

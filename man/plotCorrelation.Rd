@@ -1,12 +1,12 @@
-\name{plotCorrelation.Codelink}
-\alias{plotCorrelation.Codelink}
+\name{plotCorrelation}
+\alias{plotCorrelation}
 \title{Plot correlation scatterplot between two arrays}
 \description{
 	Takes a Codelink object as argument and plot Correlation scatterplot
 	of two arrays.
 }
 \usage{
-	plotCorrelation.Codelink(object, x=1, y=2, cutoff=FALSE, label="Probe_type", title=NULL, xlim=NULL, ylim=NULL)
+	plotCorrelation(object, x=1, y=2, cutoff=FALSE, label="Probe_type", title=NULL, xlim=NULL, ylim=NULL)
 }
 \arguments{
 	\item{object}{an object of class "Codelink".}
@@ -28,7 +28,7 @@
 \seealso{\code{\link{plot}}}
 \examples{
     data(codelink.example)
-    plotCorrelation.Codelink(codelink.example)
+    plotCorrelation(codelink.example)
 }
 \keyword{documentation}
 \keyword{utilities}

@@ -1,11 +1,11 @@
-\name{readHeader.Codelink}
-\alias{readHeader.Codelink}
+\name{readHeader}
+\alias{readHeader}
 \title{Read Header from Codelink Bioarrays Files}
 \description{
     Read the header of Codelink files and obtein usefull information.
 }
 \usage{
-readHeader.Codelink(file, dec=FALSE)
+readHeader(file, dec=FALSE)
 }
 \arguments{
   \item{file}{File to read.}
@@ -21,7 +21,7 @@ readHeader.Codelink(file, dec=FALSE)
 \examples{
     ## NOT RUN ##
     #files <- list.files(pattern="TXT")
-    #head <- readHeader.Codelink(files[1])
+    #head <- readHeader(files[1])
     #############
 }
 \keyword{documentation}

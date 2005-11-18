@@ -1,6 +1,6 @@
-## plotMA.Codelink()
+## plotMA()
 # MA plot of gene intensities.
-plotMA.Codelink <- function(object, array1=1, array2=2, cutoff=NULL, label="Probe_type", high.list=NULL, high.col="blue", high.pch="*", legend.x="bottomright", title=NULL, xlim=NULL, ylim=NULL) {
+plotMA <- function(object, array1=1, array2=2, cutoff=NULL, label="Probe_type", high.list=NULL, high.col="blue", high.pch="*", legend.x="bottomright", title=NULL, xlim=NULL, ylim=NULL) {
 	if(!is(object,"Codelink")) stop("Codelink object needed.")
 #	if(!is.null(high.list) && (!is(high.list,"logical") || !is(high.list,"vector"))) stop("logical vector needed.")
 #	if(!is.null(high.list) && length(high.list) != dim(object)[1]) stop("high.list and number of genes differ.")
@@ -92,9 +92,9 @@ if(!is.null(object$Normalized_intensity)) {
 	legend(x=legend.x, legend=legend.text, fill=legend.fill, inset=0.05)
 }
 
-## plotDensities.Codelink()
+## plotDensities()
 # Densities plot of gene intensities.
-plotDensities.Codelink <- function(object, subset=c(1:dim(object)[2]), title=NULL, legend.cex=1) {
+plotDensities <- function(object, subset=c(1:dim(object)[2]), title=NULL, legend.cex=1) {
         if(!is(object,"Codelink")) stop("Codelink object needed.")
         if(!is.null(object$Spot_mean)) {
 		val <- object$Spot_mean
@@ -129,9 +129,9 @@ plotDensities.Codelink <- function(object, subset=c(1:dim(object)[2]), title=NUL
 }
 
 
-## plotCorrelation.Codelink()
+## plotCorrelation()
 # Scatter plot of intensities: One array in x compare to other in y axis.
-plotCorrelation.Codelink <- function(object, x=1, y=2, cutoff=FALSE, label="Probe_type", title=NULL, xlim=NULL, ylim=NULL) {
+plotCorrelation <- function(object, x=1, y=2, cutoff=FALSE, label="Probe_type", title=NULL, xlim=NULL, ylim=NULL) {
         if(!is(object,"Codelink")) stop("Codelink object needed.")       
         if(!is.null(object$Spot_mean)) {
                         xval <- object$Spot_mean[,x]
@@ -198,9 +198,9 @@ plotCorrelation.Codelink <- function(object, x=1, y=2, cutoff=FALSE, label="Prob
 	legend(x="topleft", legend=legend.text, fill=legend.fill, inset=0.05)
 }
 
-## plotCV.Codelink()
+## plotCV()
 # density plot of C.V. of merged objects.
-plotCV.Codelink <- function(object, subset=c(1:dim(object)[2]), cutoff=NULL, title=NULL, legend.cex=1) {
+plotCV <- function(object, subset=c(1:dim(object)[2]), cutoff=NULL, title=NULL, legend.cex=1) {
 	if(!is(object,"Codelink")) stop("Codelink object needed.")
 	if(object$Merge_method=="NONE") stop("Merged object needed.")
 	colors <- rainbow(length(subset))

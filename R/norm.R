@@ -1,5 +1,6 @@
-
-normalize.Codelink <- function(object, method="quantiles", log.it=TRUE, type="ALL") {
+## normalize()
+# Wrapper function to apply normalization methods to Codelink objects.
+normalize <- function(object, method="quantiles", log.it=TRUE, type="ALL") {
 	if(!is(object,"Codelink")) stop("A Codelink object is needed.")
 	method <- match.arg(method,c("loess","quantiles"))
 
@@ -18,7 +19,7 @@ normalize.Codelink <- function(object, method="quantiles", log.it=TRUE, type="AL
 	if(log.it) object$Raw_intensity <- log2(object$Raw_intensity)
 	switch(method,
 		loess = {
-			object$Normalized_intensity[sel,] <- normalize.loess.Codelink(object$Raw_intensity[sel,], log.it=FALSE)
+			object$Normalized_intensity[sel,] <- normalize.loess(object$Raw_intensity[sel,], log.it=FALSE)
 			object$Normalization_method <- "Cyclic Loess"
 		},
 		quantiles = {
@@ -32,10 +33,10 @@ normalize.Codelink <- function(object, method="quantiles", log.it=TRUE, type="AL
 	return(object)
 }
 
-## normalize.loess.Codelink
+## normalize.loess()
 # modified from normalize.loess from affy package.
 # Allow NA in input data.
-normalize.loess.Codelink <- function (mat, subset = sample(1:(dim(mat)[1]), min(c(5000, nrow(mat)))), 
+normalize.loess <- function (mat, subset = sample(1:(dim(mat)[1]), min(c(5000, nrow(mat)))), 
     epsilon = 10^-2, maxit = 1, log.it = TRUE, verbose = TRUE, 
     span = 2/3, family.loess = "symmetric") 
 {

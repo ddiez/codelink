@@ -1,12 +1,12 @@
-\name{report.Codelink}
-\alias{report.Codelink}
+\name{reportCodelink}
+\alias{reportCodelink}
 \title{Write a report of genes selected in HTML}
 \description{
   Takes a list of genes as argument and writes an HTML page containing informa-
 tion about these genes: Unigene, Genbank, Entrez Gene, etc.
 }
 \usage{
-	report.Codelink(object, chip, filename = NULL, title = "Main title",
+	reportCodelink(object, chip, filename = NULL, title = "Main title",
                  probe.type = FALSE, other = NULL, other.ord = NULL)
 }
 \arguments{

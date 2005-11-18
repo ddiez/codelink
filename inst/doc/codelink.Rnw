@@ -50,12 +50,10 @@ X & User excluded spots\\
 \end{center}
 \end{table}
 
-\begin{center}
 \begin{equation}
 SNR=\frac{Spot\_mean}{(Bkgd\_median + 1.5 * Bkgd\_stdev)}
 \label{eq:SNR}
 \end{equation}
-\end{center}
 
 \begin{table}[ht]
 \begin{center}
@@ -89,12 +87,12 @@ some Codelink files you do:
 
 > library(codelink)
 > files <- list.files(pattern="TXT")
-> data <- read.Codelink(files)
+> data <- readCodelink(files)
 
 \end{Sinput}
 
 This suppose that your files have the extension ``TXT'' (uppercase)
-and they are in your working directory. The function emph{read.Codelink()}
+and they are in your working directory. The function emph{readCodelink()}
 returns and object of class ``Codelink'':
 
 <<data>>=
@@ -124,14 +122,14 @@ codelink.example
 \end{itemize}
 
 By default, all spots flagged with M, I, and S flags are set to NA. This can be
-changed with the flag argument in read.Codelink(). The flag argument is a list
+changed with the flag argument in readCodelink(). The flag argument is a list
 that can contain a valid flag identifier and a value for that flag. For
 example, if you want to set all M flagged spots to 0.01 and let other spot
 untouched you do:
 
 \begin{Sinput}
 
-> data <- read.Codelink(files, flag=list(M=0.01) )
+> data <- readCodelink(files, flag=list(M=0.01) )
 
 \end{Sinput}
 
@@ -142,7 +140,7 @@ background correction:
 
 \begin{Sinput}
 
-> data <- bkgdCorrect.Codelink(data, method="half")
+> data <- bkgdCorrect(data, method="half")
 
 \end{Sinput}
 
@@ -154,7 +152,7 @@ from mean spot intensity (Spot\_mean) and if the result is less than
 \section{Normalization}
 
 Normalization of Raw\_intensity values are done with the wrapper function
-normalize.Codelink(). The default method is \emph{quantile} normalization
+normalize(). The default method is \emph{quantile} normalization
 that in fact call \emph{normalizeQuantiles()} from \emph{limma} package
 (that allows for NAs). There is also the possibility to use a modified
 version of cyclic loess from affy \cite{affy} package that also allows NA
@@ -162,11 +160,11 @@ values.
 
 \begin{Sinput}
 
-> data <- normalize.Codelink(data, method="quantile")
+> data <- normalize(data, method="quantile")
 
 \end{Sinput}
 
-By default, normalize.Codelink() return log2 intensity values.  This could be
+By default, normalize() return log2 intensity values.  This could be
 changed setting the parameter log.it to FALSE.
 
 
@@ -174,12 +172,12 @@ changed setting the parameter log.it to FALSE.
 
 There are some plotting functions available that can use directly the
 Codelink objects. These are functions for producing MA plots
-(plotMA.Codelink()), scatterplots (plotCorrelation.Codelink()) and density
-plots (plotDensities.Codelink()).  All functions use the available intensity
+(plotMA()), scatterplots (plotCorrelation()) and density
+plots (plotDensities()).  All functions use the available intensity
 value (i.e.  Spot\_mean, Raw\_intensity or Normalized\_intensity) to make the
 plot.
 
-The function plotMA.Codelink() can highlight spots based on Probe\_type values
+The function plotMA() can highlight spots based on Probe\_type values
 (by default) or SNR values setting the argument label. It requires array1 and
 array2 arguments and compute M and A values based on equations \ref{eq:M} and
 \ref{eq:A}.
@@ -188,7 +186,7 @@ array2 arguments and compute M and A values based on equations \ref{eq:M} and
 
 <<plotMA, fig=TRUE>>=
 
-plotMA.Codelink(codelink.example, legend.x="topright")
+plotMA(codelink.example, legend.x="topright")
 
 @
 \end{center}
@@ -203,13 +201,13 @@ A=\frac{Array2+Array1}{2}
 \label{eq:A}
 \end{equation}
 
-The function plotDensities.Codelink() plot the density of intensity values of
+The function plotDensities() plot the density of intensity values of
 all arrays. If the subset argument is supplied it can use only a subset of the arrays in the Codelink object.
 
 \begin{center}
 <<plotDensity, fig=TRUE>>=
 
-plotDensities.Codelink(codelink.example)
+plotDensities(codelink.example)
 
 @
 \end{center}
@@ -219,7 +217,7 @@ plotDensities.Codelink(codelink.example)
 There are also some miscellaneous functions used in some analysis that could be
 useful for someone.
 
-The mergeArray.Codelink() function merge various normalized arrays of the same
+The mergeArray() function merge various normalized arrays of the same
 type (same sample type for example) computing the mean values over the merged
 arrays. This was useful for me because I have used arrays hybridazed to
 different pooled samples by duplicate and no statistical analysis was possible.
@@ -227,12 +225,12 @@ The grouping is done by means of the group argument (numerical vector of
 classes). New sample names can be assigned to Sample\_name slot with the names
 argument. The function also returns also the coefficient of variation in the
 slot CV. The distribution of coefficients of variations can be checked with the
-function plotCV.Codelink(). The example above will return the mean of array1
+function plotCV(). The example above will return the mean of array1
 and array2 and call it A and the mean of array3 and array4 and call it "B".
 
 \begin{Sinput}
 
-> data <- mergeArray.Codelink(data, group=c(1,1,2,2),
+> data <- mergeArray(data, group=c(1,1,2,2),
 + names=c("A","B"))
 
 \end{Sinput}

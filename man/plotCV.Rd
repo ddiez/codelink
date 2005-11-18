@@ -1,12 +1,12 @@
-\name{plotCV.Codelink}
-\alias{plotCV.Codelink}
+\name{plotCV}
+\alias{plotCV}
 \title{Plot of CV}
 \description{
 	Takes a Codelink object and plot de distribution of CV after applying 
 	mergeCodelink.
 }
 \usage{
-	plotCV.Codelink(object, subset=c(1:dim(object)[2]), cutoff=NULL, title=NULL, legend.cex=1)
+	plotCV(object, subset=c(1:dim(object)[2]), cutoff=NULL, title=NULL, legend.cex=1)
 }
 \arguments{
 	\item{object}{an object of class "Codelink".}

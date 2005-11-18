@@ -1,11 +1,11 @@
-\name{dec.Codelink}
-\alias{dec.Codelink}
+\name{decDetect}
+\alias{decDetect}
 \title{Determine decimal type of Codelink files}
 \description{
 	Determine decimal type of Codelink files.
 }
 \usage{
-    dec.Codelink(file, nlines)
+    decDetect(file, nlines)
 }
 \arguments{
     \item{file}{the file to be read.}

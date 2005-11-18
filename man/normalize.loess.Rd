@@ -1,12 +1,12 @@
-\name{normalize.loess.Codelink}
-\alias{normalize.loess.Codelink}
+\name{normalize.loess}
+\alias{normalize.loess}
 \title{Normalized chips using cyclic loess.}
 \description{
 	Takes a matrix and apply cyclic loess normalization. It is based in
 	normalize.loess from package affy but supports NA.
 }
 \usage{
-	normalize.loess.Codelink(mat, subset = sample(1:(dim(mat)[1]),
+	normalize.loess(mat, subset = sample(1:(dim(mat)[1]),
             min(c(5000,	nrow(mat)))), epsilon = 10^-2, maxit = 1,
             log.it = TRUE, verbose = TRUE, span = 2/3,
             family.loess = "symmetric")
@@ -35,8 +35,8 @@
 \seealso{
 }
 \examples{
-	mat <- matrix(sample(500), 100, 5)
-	mat <- normalize.loess.Codelink(mat)
+#	mat <- matrix(sample(500), 100, 5)
+#	mat <- normalize.loess(mat)
 }
 \keyword{documentation}
 \keyword{utilities}

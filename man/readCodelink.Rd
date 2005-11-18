@@ -1,12 +1,12 @@
-\name{read.Codelink}
-\alias{read.Codelink}
+\name{readCodelink}
+\alias{readCodelink}
 \title{Read Codelink Bioarrays Data}
 \description{
   Read data exported as text by Codelink Software. It reads values (normalized
 by Codelink Software or not) flags and information about probes.
 }
 \usage{
-read.Codelink(files, sample.name=NULL, flag=list(M=NA,I=NA,C=NA,X=NA),
+readCodelink(files, sample.name=NULL, flag=list(M=NA,I=NA,C=NA,X=NA),
 	dec=NULL, type="Spot_mean", preserve=FALSE, verbose=2)
 }
 \arguments{
@@ -28,7 +28,7 @@ read.Codelink(files, sample.name=NULL, flag=list(M=NA,I=NA,C=NA,X=NA),
 \examples{
     ## NOT RUN ##
     #files <- list.files(pattern="TXT")
-    #data <- read.Codelink(files)
+    #data <- readCodelink(files)
     #############
 
     data(codelink.example)

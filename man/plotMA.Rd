@@ -1,11 +1,11 @@
-\name{plotMA.Codelink}
-\alias{plotMA.Codelink}
+\name{plotMA}
+\alias{plotMA}
 \title{MA plot}
 \description{
 	Takes a Codelink object and plot M vs A.
 }
 \usage{
-	plotMA.Codelink(object, array1=1, array2=2, cutoff=NULL, label="Probe_type",
+	plotMA(object, array1=1, array2=2, cutoff=NULL, label="Probe_type",
 			high.list=NULL, high.col="blue", high.pch="*",
 			legend.x="bottomright", title=NULL, xlim=NULL, ylim=NULL)
 }
@@ -35,7 +35,7 @@
 }
 \examples{
     data(codelink.example)
-    plotMA.Codelink(codelink.example)
+    plotMA(codelink.example)
 }
 \keyword{documentation}
 \keyword{utilities}
