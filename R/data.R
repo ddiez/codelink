@@ -1,15 +1,15 @@
 # mergeArray()
 # returns a codelink data.frame mergin chips attending a function
 # like median, mean, etc... default mean.
-mergeArray <- function(object, group, names=NULL, method="mean", log.it=FALSE) {
+mergeArray <- function(object, class, names=NULL, method="mean", log.it=FALSE) {
 	if(!is(object,"Codelink")) stop("A Codelink object needed.")
 	if(is.null(object$Normalized_intensity) && is.null(object$Raw_intensity)) stop("Normalized_intensity or Raw_intensity slots needed.")
 	if(is.null(names)) stop("Group names needed.")
 	if(log.it && object$Log_transformed) stop("Data already log transformed.")
 	if(is.null(object$SNR)) SNR <- FALSE else SNR <- TRUE
 
-	l <- levels(as.factor(group))
-	if(length(names)!=length(l)) stop("Number of groups and group names disagree.")
+	l <- levels(as.factor(class))
+	if(length(names)!=length(l)) stop("Number of classes and class names disagree.")
 
 	method = match.arg(method,c("mean"))
 	dimx <- dim(object)[1]
@@ -24,7 +24,7 @@ mergeArray <- function(object, group, names=NULL, method="mean", log.it=FALSE) {
 			d <- 0
 			for(n in l) {
 				d <- d+1
-				sel <- group==n
+				sel <- class==n
 				cat("  Merging: ",object$Sample_name[sel],"as", names[d],"\n")
 				val[,as.numeric(n)] <- apply(data, 1, function(x) mean(x[sel], na.rm=TRUE))
 				val.cv[,as.numeric(n)] <- apply(data, 1, function(x) sd(x[sel], na.rm=TRUE)/mean(x[sel],na.rm=TRUE))
@@ -126,4 +126,20 @@ selCV <- function(object,cutoff) {
 na2false <- function(x) {
     x[which(is.na(x))] <- FALSE
     x	
+}
+## createWeights()
+# Create weights based on Probe_type
+createWeights <- function(object, type=NULL) {
+	w <- array(1, dim(object))
+	discovery <- object$Probe_type=="DISCOVERY"
+	fiducial <- object$Probe_type=="FIDUCIAL"
+	positive <- object$Probe_type=="POSITIVE"
+	negative <- object$Probe_type=="NEGATIVE"
+	other <- object$Probe_type=="OTHER"
+	if(!is.null(type$DISCOVERY)) w[discovery,] <- type$DISCOVERY
+	if(!is.null(type$FIDUCIAL)) w[fiducial,] <- type$FIDUCIAL
+	if(!is.null(type$POSITIVE)) w[positive,] <- type$POSITIVE
+	if(!is.null(type$NEGATIVE)) w[negative,] <- type$NEGATIVE
+	if(!is.null(type$OTHER)) w[other,] <- type$OTHER
+	return(w)
 }

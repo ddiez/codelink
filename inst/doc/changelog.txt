@@ -251,3 +251,9 @@ that column.
     information about the new functions. Remain with '.Codelink' real S3
     methods dim.Codelink() and as.matrix.Codelink().
   - Changed Depends: R (>= 2.2), limma, annotate in DESCRIPTION file.
+
+0.7.2
+  - Added createWeights() function to create weights based on Probe_type.
+  - Remove unused argument 'type' from normalize() function.
+  - Updated vignette.
+  - Renamed group argument in mergeArrays to class.

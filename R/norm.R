@@ -1,29 +1,18 @@
 ## normalize()
 # Wrapper function to apply normalization methods to Codelink objects.
-normalize <- function(object, method="quantiles", log.it=TRUE, type="ALL") {
+normalize <- function(object, method="quantiles", log.it=TRUE) {
 	if(!is(object,"Codelink")) stop("A Codelink object is needed.")
 	method <- match.arg(method,c("loess","quantiles"))
-
-	type <- match.arg(type,c("ALL","DISCOVERY"))
-
-	switch(type,
-		DISCOVERY = {
-			sel <- object$info[,"TYPE"] == "DISCOVERY"
-		},
-		ALL = {
-			sel <- rep(TRUE,dim(object)[1])
-		}
-	)
 
 	object$Normalized_intensity <- object$Raw_intensity
 	if(log.it) object$Raw_intensity <- log2(object$Raw_intensity)
 	switch(method,
 		loess = {
-			object$Normalized_intensity[sel,] <- normalize.loess(object$Raw_intensity[sel,], log.it=FALSE)
+			object$Normalized_intensity <- normalize.loess(object$Raw_intensity, log.it=FALSE)
 			object$Normalization_method <- "Cyclic Loess"
 		},
 		quantiles = {
-			object$Normalized_intensity[sel,] <- normalizeQuantiles(object$Raw_intensity[sel,])
+			object$Normalized_intensity <- normalizeQuantiles(object$Raw_intensity)
                         object$Normalization_method <- "Quantiles"
 		}
 	)

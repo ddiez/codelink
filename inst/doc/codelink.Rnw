@@ -217,21 +217,36 @@ plotDensities(codelink.example)
 There are also some miscellaneous functions used in some analysis that could be
 useful for someone.
 
-The mergeArray() function merge various normalized arrays of the same
-type (same sample type for example) computing the mean values over the merged
-arrays. This was useful for me because I have used arrays hybridazed to
-different pooled samples by duplicate and no statistical analysis was possible.
-The grouping is done by means of the group argument (numerical vector of
-classes). New sample names can be assigned to Sample\_name slot with the names
-argument. The function also returns also the coefficient of variation in the
-slot CV. The distribution of coefficients of variations can be checked with the
-function plotCV(). The example above will return the mean of array1
-and array2 and call it A and the mean of array3 and array4 and call it "B".
+\subsection{Using weights}
+
+The createWeights() function creates a matrix of weights based on Probe\_type 
+labels to be used, for example, in fitting a linear model with limma 
+\cite{limma}.
+
+<<createWeights>>=
+
+w <- createWeights(codelink.example, type=list(FIDUCIAL=0.01, NEGATIVE=0.1))
+
+w[1:10,]
+
+@
+
+\subsection{Merging arrays}
+
+In case you want to merge array intensities the mergeArray() function help on 
+this task. It computes the mean of Normalized\_intensity values on arrays of 
+the same class. The grouping is done by means of the 'class' argument 
+(numerical vector of classes). New sample names should be assigned to 
+Sample\_name slot with the 'names' argument. The function also returns the 
+coefficient of variation in the 'CV' slot. The distribution of coefficients of 
+variations can be checked with the function plotCV().
 
 \begin{Sinput}
 
 > data <- mergeArray(data, group=c(1,1,2,2),
 + names=c("A","B"))
+
+> plotCV(data)
 
 \end{Sinput}
 

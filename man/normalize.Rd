@@ -5,13 +5,12 @@
 	Takes a Codelink object and applies normalization to intensity values.
 }
 \usage{
-normalize(object, method="quantiles", log.it=TRUE, type="ALL")
+    normalize(object, method="quantiles", log.it=TRUE)
 }
 \arguments{
 	\item{object}{an object of class "Codelink".}
 	\item{method}{method to use in normalization.}
 	\item{log.it}{logical; if data should be log2.}
-	\item{type}{which spots should be used.}
 }
 \value{A Codelink object with normalized intensity values.}
 \details{
