@@ -6,5 +6,5 @@ exportMethods("[", show)
 
 export(readCodelink, writeCodelink, reportCodelink,
 	plotMA, plotCorrelation, plotDensities, plotCV,
-	bkgdCorrect, normalize, mergeArray,
-	selCV, cutCV, fc, na2false, createWeights)
+	bkgdCorrect, normalize, mergeArray, createWeights,
+	selCV, cutCV, fc, na2false, logCodelink)

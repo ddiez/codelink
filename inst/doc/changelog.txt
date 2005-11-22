@@ -257,3 +257,5 @@ that column.
   - Remove unused argument 'type' from normalize() function.
   - Updated vignette.
   - Renamed group argument in mergeArrays to class.
+  - Added some more functions to NAMESPACE (logCodelink, na2false,
+    createWeights).
