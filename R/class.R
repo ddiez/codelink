@@ -123,3 +123,6 @@ function(x,i,j,drop=FALSE) {
         return(x)
 })
 
+##
+# onLoad stuff for S4 classes in NAMESPACE.
+.onLoad <- function(lib, pkg) require(methods)
