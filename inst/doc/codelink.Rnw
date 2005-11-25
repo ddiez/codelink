@@ -51,7 +51,7 @@ X & User excluded spots\\
 \end{table}
 
 \begin{equation}
-SNR=\frac{Spot\_mean}{(Bkgd\_median + 1.5 * Bkgd\_stdev)}
+SNR=\frac{Smean}{(Bmedian + 1.5 * Bstdev)}
 \label{eq:SNR}
 \end{equation}
 
@@ -105,21 +105,36 @@ codelink.example
 
 @
 
-\begin{itemize}
-\item Product\_name: Type of chip loaded.
-\item Sample\_name: Character vector of sample names.
-\item File\_name: Character vector of file names.
-\item Probe\_name: Character vector of probe names (Codelink identifiers).
-\item Probe\_type: Character vector with probe type information.
-\item Log\_transformed: Logical, TRUE if data is log2 transformed.
-\item Quality\_flag: Matrix of Codelink Flags.
-\item Spot\_mean: Matrix with mean of signal intensity values.
-\item Bkgd\_median: Matrix with median of background intensity values.
-\item Raw\_intensity: Matrix with intensity values after background correction.
-\item Normalized\_intensity: Matrix with intensity values after normalization.
-\item SNR: Matrix with SNR values.
-\item CV: Numeric vector with coefficient of variation after merging arrays.
-\end{itemize}
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|r|l|}
+\hline \em Slot & \em Description \\
+\hline
+product & Chip name description \\
+sample & Sample names vector \\
+file & File names vector \\
+name & Probe names vector \\
+type & Probe types vector \\
+method & Methods applied to data \\
+method\$background & Background correction method used \\
+method\$normalization & Normalization method used \\
+method\$merge & Merge method used \\
+method\$log & Logical: If data is in log scale \\
+flag & Quality flag matrix \\
+Smean & Mean signal intensity matrix \\
+Bmedian & Median background intensity matrix \\
+Ri & Raw intensity matrix \\
+Ni & Normalized intensity matrix \\
+snr & Signal to Noise Ratio matrix \\
+cv & Coefficient of Variation matrix \\
+\hline
+\end{tabular}
+\caption{Description of Codelink object slots.}
+\label{tab:Slots}
+\end{center}
+\end{table}
+
+
 
 By default, all spots flagged with M, I, and S flags are set to NA. This can be
 changed with the flag argument in readCodelink(). The flag argument is a list
@@ -135,7 +150,7 @@ untouched you do:
 
 \section{Background correction}
 
-Spot\_mean intensity values can be processed into Raw\_intensity through
+Smean intensity values can be processed into Ri through
 background correction:
 
 \begin{Sinput}
@@ -144,14 +159,14 @@ background correction:
 
 \end{Sinput}
 
-The default method used is based on the \emph{half} method from \emph{limma} \cite{limma} package. Median background intensity (Bkgd\_median) is subtracted
-from mean spot intensity (Spot\_mean) and if the result is less than
+The default method used is based on the \emph{half} method from \emph{limma} \cite{limma} package. Median background intensity (Bmedian) is subtracted
+from mean spot intensity (Smean) and if the result is less than
 0.5 then it is set to 0.5 to ensure no negative numbers are obtained.
 
 
 \section{Normalization}
 
-Normalization of Raw\_intensity values are done with the wrapper function
+Normalization of Ri values are done with the wrapper function
 normalize(). The default method is \emph{quantile} normalization
 that in fact call \emph{normalizeQuantiles()} from \emph{limma} package
 (that allows for NAs). There is also the possibility to use a modified
@@ -174,10 +189,10 @@ There are some plotting functions available that can use directly the
 Codelink objects. These are functions for producing MA plots
 (plotMA()), scatterplots (plotCorrelation()) and density
 plots (plotDensities()).  All functions use the available intensity
-value (i.e.  Spot\_mean, Raw\_intensity or Normalized\_intensity) to make the
+value (i.e.  Smean, Ri or Ni) to make the
 plot.
 
-The function plotMA() can highlight spots based on Probe\_type values
+The function plotMA() can highlight spots based on type values
 (by default) or SNR values setting the argument label. It requires array1 and
 array2 arguments and compute M and A values based on equations \ref{eq:M} and
 \ref{eq:A}.
@@ -219,7 +234,7 @@ useful for someone.
 
 \subsection{Using weights}
 
-The createWeights() function creates a matrix of weights based on Probe\_type 
+The createWeights() function creates a matrix of weights based on probe type 
 labels to be used, for example, in fitting a linear model with limma 
 \cite{limma}.
 
@@ -234,10 +249,10 @@ w[1:10,]
 \subsection{Merging arrays}
 
 In case you want to merge array intensities the mergeArray() function help on 
-this task. It computes the mean of Normalized\_intensity values on arrays of 
+this task. It computes the mean of Ni values on arrays of 
 the same class. The grouping is done by means of the 'class' argument 
 (numerical vector of classes). New sample names should be assigned to 
-Sample\_name slot with the 'names' argument. The function also returns the 
+sample slot with the 'names' argument. The function also returns the 
 coefficient of variation in the 'CV' slot. The distribution of coefficients of 
 variations can be checked with the function plotCV().
 

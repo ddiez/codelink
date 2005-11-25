@@ -19,9 +19,9 @@ as.matrix.Codelink(x)
 \author{Diego Diez Ruiz}
 \seealso{\code{\link{as.matrix}}}
 \examples{
-	data(codelink.example)
-	mat <- as.matrix(codelink.example)
-	is(mat)
+#	data(codelink.example)
+#	mat <- as.matrix(codelink.example)
+#	is(mat)
 }
 \keyword{documentation}
 \keyword{utilities}

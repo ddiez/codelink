@@ -32,6 +32,6 @@
 \seealso{}
 
 \examples{
-data(codelink.example)
+#data(codelink.example)
 }
 \keyword{classes}

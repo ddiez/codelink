@@ -21,8 +21,8 @@
 \seealso{
 }
 \examples{
-    data(codelink.example)
-    writeCodelink(codelink.example, file="codelink.example.txt")
+#    data(codelink.example)
+#    writeCodelink(codelink.example, file="codelink.example.txt")
 }
 \keyword{documentation}
 \keyword{utilities}

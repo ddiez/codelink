@@ -259,3 +259,11 @@ that column.
   - Renamed group argument in mergeArrays to class.
   - Added some more functions to NAMESPACE (logCodelink, na2false,
     createWeights).
+
+0.7.3
+  - Mayor API change: Simplified slot names for Codelink object. See vignette
+    for a detailed description of new names and correspondence with old names.
+  - Added preserve argumenr to bkgdCorrect() and normalize() to allow
+    preservation of Smean, Bmedian and Ri slots.
+  - readCodelink() don't set spots flaged 'X' as NA by default.
+  - Updated vignette.

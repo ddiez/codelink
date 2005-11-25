@@ -6,8 +6,8 @@
 by Codelink Software or not) flags and information about probes.
 }
 \usage{
-readCodelink(files, sample.name=NULL, flag=list(M=NA,I=NA,C=NA,X=NA),
-	dec=NULL, type="Spot_mean", preserve=FALSE, verbose=2)
+readCodelink(files, sample.name=NULL, flag=list(M=NA, I=NA, C=NA),
+	dec=NULL, type="Spot", preserve=FALSE, verbose=2)
 }
 \arguments{
   \item{files}{list of files to read.}
@@ -31,7 +31,7 @@ readCodelink(files, sample.name=NULL, flag=list(M=NA,I=NA,C=NA,X=NA),
     #data <- readCodelink(files)
     #############
 
-    data(codelink.example)
+#    data(codelink.example)
     # codelink.example
 }
 \keyword{documentation}

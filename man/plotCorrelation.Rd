@@ -6,7 +6,7 @@
 	of two arrays.
 }
 \usage{
-	plotCorrelation(object, x=1, y=2, cutoff=FALSE, label="Probe_type", title=NULL, xlim=NULL, ylim=NULL)
+	plotCorrelation(object, x=1, y=2, cutoff=FALSE, label="type", title=NULL, xlim=NULL, ylim=NULL)
 }
 \arguments{
 	\item{object}{an object of class "Codelink".}
@@ -27,8 +27,8 @@
 \author{Diego Diez Ruiz}
 \seealso{\code{\link{plot}}}
 \examples{
-    data(codelink.example)
-    plotCorrelation(codelink.example)
+#    data(codelink.example)
+#    plotCorrelation(codelink.example)
 }
 \keyword{documentation}
 \keyword{utilities}

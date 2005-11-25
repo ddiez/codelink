@@ -25,11 +25,11 @@ ged samples.
 \seealso{
 }
 \examples{
-	data(codelink.example)
-	codelink.example <- bkgdCorrect(codelink.example)
-	codelink.example <- normalize(codelink.example, log.it=FALSE)
-	codelink.example <- mergeArray(codelink.example, class=c(1,1),
-					names="SAMPLE", log.it=TRUE)
+#	data(codelink.example)
+#	codelink.example <- bkgdCorrect(codelink.example)
+#	codelink.example <- normalize(codelink.example, log.it=FALSE)
+#	codelink.example <- mergeArray(codelink.example, class=c(1,1),
+#					names="SAMPLE", log.it=TRUE)
 }
 \keyword{documentation}
 \keyword{utilities}

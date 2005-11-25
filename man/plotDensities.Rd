@@ -23,8 +23,8 @@
 \seealso{
 }
 \examples{
-    data(codelink.example)
-    plotDensities(codelink.example)
+#    data(codelink.example)
+#    plotDensities(codelink.example)
 }
 \keyword{documentation}
 \keyword{utilities}

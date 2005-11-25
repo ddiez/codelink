@@ -5,7 +5,7 @@
 	Takes a Codelink object and plot M vs A.
 }
 \usage{
-	plotMA(object, array1=1, array2=2, cutoff=NULL, label="Probe_type",
+	plotMA(object, array1=1, array2=2, cutoff=NULL, label="type",
 			high.list=NULL, high.col="blue", high.pch="*",
 			legend.x="bottomright", title=NULL, xlim=NULL, ylim=NULL)
 }
@@ -34,8 +34,8 @@
 \seealso{
 }
 \examples{
-    data(codelink.example)
-    plotMA(codelink.example)
+#    data(codelink.example)
+#    plotMA(codelink.example)
 }
 \keyword{documentation}
 \keyword{utilities}

@@ -80,45 +80,45 @@ function(object) {
 })
 
 dim.Codelink <- function(x) {
-	if(is.null(x$Normalized_intensity) && is.null(x$Raw_intensity) && is.null(x$Spot_mean)) return(c(0,0))
-	if(!is.null(x$Spot_mean)) return(dim(x$Spot_mean))
-	if(!is.null(x$Raw_intensity)) return(dim(x$Raw_intensity))
-	if(!is.null(x$Normalized_intensity)) return(dim(x$Normalized_intensity))
+	if(is.null(x$Ni) && is.null(x$Ri) && is.null(x$Smean)) return(c(0,0))
+	if(!is.null(x$Smean)) return(dim(x$Smean))
+	if(!is.null(x$Ri)) return(dim(x$Ri))
+	if(!is.null(x$Ni)) return(dim(x$Ni))
 }
 
 as.matrix.Codelink <- function(x) {
-	if(is.null(x$Normalized_intensity) && is.null(x$Raw_intensity) && is.null(x$Spot_mean)) return(NULL)
-	if(!is.null(x$Spot_mean)) return(x$Spot_mean)
-	if(!is.null(x$Raw_intensity)) return(x$Raw_intensity)
-	if(!is.null(x$Normalized_intensity)) return(x$Normalized_intensity)
+	if(is.null(x$Ni) && is.null(x$Ri) && is.null(x$Smean)) return(NULL)
+	if(!is.null(x$Smean)) return(x$Smean)
+	if(!is.null(x$Ri)) return(x$Ri)
+	if(!is.null(x$Ni)) return(x$Ni)
 }
 
 setMethod("[","Codelink",
 # Subsetting method.
 function(x,i,j,drop=FALSE) {
         if(!missing(i)) {
-                x$Spot_mean <- x$Spot_mean[i,]
-                x$Bkgd_median <- x$Bkgd_median[i,]
-                x$Bkgd_stdev <- x$Bkgd_stdev[i,]
-                x$SNR <- x$SNR[i,]
-                x$Raw_intensity <- x$Raw_intensity[i,]
-                x$Normalized_intensity <- x$Normalized_intensity[i,]
-                x$CV <- x$CV[i,]
-                x$Quality_flag <- x$Quality_flag[i,]
-                x$Probe_name <- x$Probe_name[i]
-                x$Probe_type <- x$Probe_type[i]
+                x$Smean <- x$Smean[i,]
+                x$Bmedian <- x$Bmedian[i,]
+                x$Bstdev <- x$Bstdev[i,]
+                x$snr <- x$snr[i,]
+                x$Ri <- x$Ri[i,]
+                x$Ni <- x$Ni[i,]
+                x$cv <- x$cv[i,]
+                x$flag <- x$flag[i,]
+                x$name <- x$name[i]
+                x$type <- x$type[i]
         }
         if(!missing(j)) {
-                x$Spot_mean <- x$Spot_mean[,j]
-                x$Bkgd_median <- x$Bkgd_median[,j]
-                x$Bkgd_stdev <- x$Bkgd_stdev[,j]
-                x$SNR <- x$SNR[,j]
-                x$Raw_intensity <- x$Raw_intensity[,j]
-                x$Normalized_intensity <- x$Normalized_intensity[,j]
-                x$CV <- x$CV[,j]
-                x$Quality_flag <- x$Quality_flag[,j]
-		x$File_name <- x$File_name[j]
-		x$Sample_name <- x$Sample_name[j]
+                x$Smean <- x$Smean[,j]
+                x$Bmedian <- x$Bmedian[,j]
+                x$Bstdev <- x$Bstdev[,j]
+                x$snr <- x$snr[,j]
+                x$Ri <- x$Ri[,j]
+                x$Ni <- x$Ni[,j]
+                x$cv <- x$cv[,j]
+                x$flag <- x$flag[,j]
+		x$file <- x$file[j]
+		x$sample <- x$sample[j]
         }
         return(x)
 })

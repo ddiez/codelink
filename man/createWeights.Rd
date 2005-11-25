@@ -20,8 +20,8 @@
 \seealso{
 }
 \examples{
-    data(codelink.example)
-    w <- createWeights(codelink.example, type=list(FIDUCUAL=0.1))
+#    data(codelink.example)
+#    w <- createWeights(codelink.example, type=list(FIDUCUAL=0.1))
 }
 \keyword{documentation}
 \keyword{utilities}

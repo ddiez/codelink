@@ -19,8 +19,8 @@
 \seealso{
 }
 \examples{
-	data(codelink.example)
-	dim(codelink.example)
+#	data(codelink.example)
+#	dim(codelink.example)
 }
 \keyword{documentation}
 \keyword{utilities}

@@ -2,15 +2,15 @@
 \alias{SNR}
 \title{Calculate SNR}
 \description{
-	Calculate SNR inside read.Codelink.
+	Compute SNR inside read.Codelink.
 }
 \usage{
-	SNR(Spot_mean, Bkgd_median, Bkgd_stdev)
+	SNR(Smean, Bmedian, Bstdev)
 }
 \arguments{
-  \item{Spot_mean}{matrix of Spot mean intensities.}
-  \item{Bkgd_median}{matrix of Bkgd median intensities.}
-  \item{Bkgd_stdev}{matrix of Bkgd stdev intensities.}
+  \item{Smean}{matrix of Smean intensities.}
+  \item{Bmedian}{matrix of background median intensities.}
+  \item{Bstdev}{matrix of background standard deviation.}
 }
 \value{
 }

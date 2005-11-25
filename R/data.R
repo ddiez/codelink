@@ -3,10 +3,10 @@
 # like median, mean, etc... default mean.
 mergeArray <- function(object, class, names=NULL, method="mean", log.it=FALSE) {
 	if(!is(object,"Codelink")) stop("A Codelink object needed.")
-	if(is.null(object$Normalized_intensity) && is.null(object$Raw_intensity)) stop("Normalized_intensity or Raw_intensity slots needed.")
+	if(is.null(object$Ni) && is.null(object$Ri)) stop("Ni or Ri slots needed.")
 	if(is.null(names)) stop("Group names needed.")
-	if(log.it && object$Log_transformed) stop("Data already log transformed.")
-	if(is.null(object$SNR)) SNR <- FALSE else SNR <- TRUE
+	if(log.it && object$method$log) stop("Data already log transformed.")
+	if(is.null(object$snr)) doSNR <- FALSE else doSNR <- TRUE
 
 	l <- levels(as.factor(class))
 	if(length(names)!=length(l)) stop("Number of classes and class names disagree.")
@@ -14,10 +14,10 @@ mergeArray <- function(object, class, names=NULL, method="mean", log.it=FALSE) {
 	method = match.arg(method,c("mean"))
 	dimx <- dim(object)[1]
 	dimy <- dim(object)[2]
-	if(!is.null(object$Raw_intensity)) data <- object$Raw_intensity else data <- object$Normalized_intensity
+	if(!is.null(object$Ri)) data <- object$Ri else data <- object$Ni
 	val <- matrix(nrow=dimx, ncol=length(l), dimnames=list(rownames(data),l))
 	val.cv <- matrix(nrow=dimx, ncol=length(l), dimnames=list(rownames(data),l))
-	if(SNR) snr <- matrix(nrow=dimx, ncol=length(l), dimnames=list(rownames(data),l))
+	if(doSNR) snr <- matrix(nrow=dimx, ncol=length(l), dimnames=list(rownames(data),l))
 	cat("\n\n")
 	switch(method,
 		mean = {
@@ -25,49 +25,49 @@ mergeArray <- function(object, class, names=NULL, method="mean", log.it=FALSE) {
 			for(n in l) {
 				d <- d+1
 				sel <- class==n
-				cat("  Merging: ",object$Sample_name[sel],"as", names[d],"\n")
+				cat("  Merging: ",object$sample[sel],"as", names[d],"\n")
 				val[,as.numeric(n)] <- apply(data, 1, function(x) mean(x[sel], na.rm=TRUE))
 				val.cv[,as.numeric(n)] <- apply(data, 1, function(x) sd(x[sel], na.rm=TRUE)/mean(x[sel],na.rm=TRUE))
-				if(SNR) snr[,as.numeric(n)] <- apply(object$SNR, 1, function(x) mean(x[sel], na.rm=TRUE))
+				if(doSNR) snr[,as.numeric(n)] <- apply(object$snr, 1, function(x) mean(x[sel], na.rm=TRUE))
 			}
-			object$Merge_method <- "Mean"
+			object$method$merge <- "Mean"
 		}
 	)
 	cat("\n")
 	if(log.it) {
-		if(!is.null(object$Raw_intensity)) object$Raw_intensity <- log2(val) else object$Normalized_intensity <- log2(val)
-		object$Log_transformed <- TRUE
+		if(!is.null(object$Ri)) object$Ri <- log2(val) else object$Ni <- log2(val)
+		object$method$log <- TRUE
 	} else {
-		if(!is.null(object$Raw_intensity)) object$Raw_intensity <- val else object$Normalized_intensity <- val
+		if(!is.null(object$Ri)) object$Ri <- val else object$Ni <- val
 	}
-	object$CV <- val.cv
-	if(SNR) object$SNR <- snr
-	object$Sample_name <- names
+	object$cv <- val.cv
+	if(doSNR) object$snr <- snr
+	object$sample <- names
 	return(object)
 }
 ## bkgdCorrect()
 # Correct Spot intensity by background.
-bkgdCorrect <- function(object,method="half") {
+bkgdCorrect <- function(object, method="half", preserve=FALSE) {
 	if(!is(object,"Codelink")) {
 		stop("Codelink object needed.")
 	}
-	method <- match.arg(method, c("none","subtract","half","edwards","normexp"))
+	method <- match.arg(method, c("none", "subtract", "half"))
 	switch(method,
 		none = {
-			object$Raw_intensity <- object$Spot_mean
-			object$BkgdCorrect_method <- "None"
+			object$Ri <- object$Smean
+			object$method$background <- "None"
 		},
 		subtract = {
-			object$Raw_intensity <- object$Spot_mean - object$Bkgd_median
-			object$BkgdCorrection_method <- "Subtract"
+			object$Ri <- object$Smean - object$Bmedian
+			object$method$background <- "Subtract"
 		},
 		half = {
-			object$Raw_intensity <- pmax(object$Spot_mean - object$Bkgd_median, 0.5)
-			object$BkgdCorrection_method <- "Half"
+			object$Ri <- pmax(object$Smean - object$Bmedian, 0.5)
+			object$method$background <- "Half"
 		}
 	)
-	object$Spot_mean <- NULL
-	object$Bkgd_median <- NULL
+	if(!preserve) object$Smean <- NULL
+	if(!preserve) object$Bmedian <- NULL
 	return(object)
 }
 
@@ -75,20 +75,20 @@ bkgdCorrect <- function(object,method="half") {
 # apply log2 to Codelink object.
 logCodelink <- function(object) {
 	if(!is(object,"Codelink")) stop("Codelink object needed.")
-	if(object$Log_transformed) stop("Already log2 transformed.")
+	if(object$method$log) stop("Already log2 transformed.")
 
-	if(!is.null(object$Spot_mean)) object$Spot_mean <- log2(object$Spot_mean)
-	if(!is.null(object$Raw_intensity)) object$Raw_intensity <- log2(object$Raw_intensity)
-	if(!is.null(object$Normalized_intensity)) object$Normalized_intensity <- log2(object$Normalized_intensity)
+	if(!is.null(object$Smean)) object$Smean <- log2(object$Smean)
+	if(!is.null(object$Ri)) object$Ri <- log2(object$Ri)
+	if(!is.null(object$Ni)) object$Ni <- log2(object$Ni)
 
-	object$Log_transformed <- TRUE
+	object$method$log <- TRUE
 	return(object)
 }
 
 ## SNR()
 # Compute Signal to Noise Ratio.
-SNR <- function(Spot_mean, Bkgd_median, Bkgd_stdev) {
-	Spot_mean / (Bkgd_median + 1.5 * Bkgd_stdev)
+SNR <- function(Smean, Bmedian, Bstdev) {
+	Smean / (Bmedian + 1.5 * Bstdev)
 }
 ## fc()
 # Select denes based in fold change between two conditions.
@@ -96,9 +96,9 @@ fc <- function(object, cond1=NULL, cond2=NULL, fc=1.0) {
 	if(!is(object, "Codelink")) stop("Codelink object needed.")
 	if(cond1 > dim(object)[2] || cond2 > dim(object)[2]) stop("Invalid conditions.")
 	if(cond1 == cond2) stop("Fold changes along same conditions are equal to 0.")
-	if(is.null(object$Normalized_intensity)) stop("Normalize data first.")
-	if(object$Log_transformed) {
-		fc.0 <- abs(object$Normalized_intensity[,cond1] - object$Normalized_intensity[,cond2])
+	if(is.null(object$Ni)) stop("Normalize data first.")
+	if(object$method$log) {
+		fc.0 <- abs(object$Ni[,cond1] - object$Ni[,cond2])
 	} else {
 		stop("Only logged data at this moment supported.")
 	}
@@ -109,16 +109,16 @@ fc <- function(object, cond1=NULL, cond2=NULL, fc=1.0) {
 # Calculate cutoff based on C.V.
 cutCV <- function(object, subset=c(1:dim(object)[2])) {
 	if(!is(object, "Codelink")) stop("Codelink object needed.")
-	if(object$Merge_method=="NONE") stop("Merged object needed.")
-	cut.mean <- mean(apply(data$CV[,subset],2,function(x) median(x,na.rm=TRUE)), na.rm=TRUE)
-	cut.sd <- sd(apply(data$CV[,subset],2,function(x) median(x,na.rm=TRUE)), na.rm=TRUE)
+	if(object$method$merge == "NONE") stop("Merged object needed.")
+	cut.mean <- mean(apply(data$cv[,subset],2,function(x) median(x,na.rm=TRUE)), na.rm=TRUE)
+	cut.sd <- sd(apply(data$cv[,subset],2,function(x) median(x,na.rm=TRUE)), na.rm=TRUE)
 	cut <- cut.mean + 3*cut.sd
 	return(cut)
 }
 ## selCV()
 # Select based on CV cutoff.
 selCV <- function(object,cutoff) {
-        cv.mean <- apply(object$CV,1,function(x) mean(x, na.rm=TRUE))
+        cv.mean <- apply(object$cv,1,function(x) mean(x, na.rm=TRUE))
         return(na2false(cv.mean <= cutoff))
 }
 ## na2false()
@@ -131,11 +131,11 @@ na2false <- function(x) {
 # Create weights based on Probe_type
 createWeights <- function(object, type=NULL) {
 	w <- array(1, dim(object))
-	discovery <- object$Probe_type=="DISCOVERY"
-	fiducial <- object$Probe_type=="FIDUCIAL"
-	positive <- object$Probe_type=="POSITIVE"
-	negative <- object$Probe_type=="NEGATIVE"
-	other <- object$Probe_type=="OTHER"
+	discovery <- object$type=="DISCOVERY"
+	fiducial <- object$type=="FIDUCIAL"
+	positive <- object$type=="POSITIVE"
+	negative <- object$type=="NEGATIVE"
+	other <- object$type=="OTHER"
 	if(!is.null(type$DISCOVERY)) w[discovery,] <- type$DISCOVERY
 	if(!is.null(type$FIDUCIAL)) w[fiducial,] <- type$FIDUCIAL
 	if(!is.null(type$POSITIVE)) w[positive,] <- type$POSITIVE
