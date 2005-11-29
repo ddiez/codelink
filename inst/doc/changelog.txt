@@ -267,3 +267,11 @@ that column.
     preservation of Smean, Bmedian and Ri slots.
   - readCodelink() don't set spots flaged 'X' as NA by default.
   - Updated vignette.
+
+0.7.4
+  - Changed 'file' argument in readCodelink() to
+    'file=list.files(pattern="TXT")' which is the most common used as Codelink
+    files have extension TXT.
+  - Bettern handling of 'Product' detection. If missing, product slot is set
+    to unknown and a warning is shown. If two product description disagree and
+    error is shown and the reading of files stopped.

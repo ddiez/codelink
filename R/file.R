@@ -12,7 +12,7 @@ readHeader <- function(file, dec=FALSE) {
 	head <- list(header=NULL, nlines=NULL, product=NULL, sample=NULL, size=NULL, dec=NULL, columns=NULL)
         head$header <- scan(file, nlines=nlines, sep="\t", what="", quiet=TRUE)
 	head$nlines <- nlines
-	head$product <- head$header[grep("PRODUCT", head$header)+1]
+	if(any(foo <- grep("PRODUCT", head$header))) head$product <- head$header[foo+1] else head$product <- "Unknown"
 	if(any(foo <- grep("Sample Name", head$header))) head$sample <- head$header[foo+1] else head$sample <- file
 	head$size <- arraySize(file, nlines)
 	if(dec) head$dec <- decDetect(file, nlines)
@@ -39,47 +39,44 @@ arraySize <- function(file, nlines) {
 }
 ## readCodelink()
 # Dynamic detection of gene number.
-readCodelink <- function(files, sample.name=NULL, flag=list(M=NA,I=NA,C=NA), dec=NULL, type="Spot", preserve=FALSE, verbose=2) {
+readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag=list(M=NA,I=NA,C=NA), dec=NULL, type="Spot", preserve=FALSE, verbose=2) {
 	type <- match.arg(type,c("Spot", "Raw", "Norm"))
 	nslides <- length(files)
 	if(!is.null(sample.name) && (length(sample.name) != nslides)) stop("sample.name must have equal length as chips loaded.")
 	
 	# Read Header.
-	head <- readHeader(files[1])
-	#print(head)
-	product <- head$product
-	ngenes <- head$size
-	if(verbose>0) cat("* Product:", product, "\n")
-	if(verbose>0) cat("* Chip size:", ngenes, "\n")
-
-	# Define Codelink object.
-        Y <- matrix(NA, nrow=ngenes, ncol=nslides, dimnames=list(1:ngenes,1:nslides))
-        Z <- rep(NA, ngenes)
-	X <- c(1:nslides)
-	method.list <- list(background="NONE", normalization="NONE", merge="NONE", log=FALSE)
-	head.list <- list(product="NONE", sample=X,  file=X,
-			name=Z, type=Z, flag=Y, method=method.list, Bstdev=Y, snr=Y)
-	switch(type,
-		Spot = {
-			data.list <- list(Smean=Y, Bmedian=Y)
-		},
-		Raw = {
-			data.list <- list(Ri=Y)
-		},
-		Norm = {
-			data.list <- list(Ni=Y)
-		}
-	)
-	codelink <- c(head.list,  data.list)
-
+	#head <- readHeader(files[1])
 	# Read arrays.
 	for(n in 1:nslides) {
-                if(verbose>0) cat(paste("* Reading file", n, "of", nslides, ":", files[n], "\n"))
+                if(verbose>0 && n>1) cat(paste("* Reading file", n, "of", nslides, ":", files[n], "\n"))
 		if(is.null(dec)) head <- readHeader(files[n], dec=TRUE) else head <- readHeader(files[n])
+		if(n==1) {
+			product <- head$product
+			ngenes <- head$size
+			if(verbose>0) cat("* Product:", product, "\n")
+			if(verbose>0) cat("* Chip size:", ngenes, "\n")
+                	if(verbose>0) cat(paste("* Reading file", n, "of", nslides, ":", files[n], "\n"))
+
+			# Define Codelink object.
+			Y <- matrix(NA, nrow=ngenes, ncol=nslides, dimnames=list(1:ngenes,1:nslides))
+			Z <- rep(NA, ngenes)
+			X <- c(1:nslides)
+			method.list <- list(background="NONE", normalization="NONE", merge="NONE", log=FALSE)
+			head.list <- list(product="NONE", sample=X,  file=X,
+					name=Z, type=Z, flag=Y, method=method.list, Bstdev=Y, snr=Y)
+			switch(type,
+				Spot = data.list <- list(Smean=Y, Bmedian=Y),
+				Raw = data.list <- list(Ri=Y),
+				Norm = data.list <- list(Ni=Y)
+			)
+			codelink <- c(head.list,  data.list)
+		}
+
 		if(verbose>2) print(head)
         	if(verbose>1) cat(paste("  + Detected '", head$dec, "' as decimal symbol.\n",sep=""))
 
-		if(head$product != product) stop("Different array type (", head$product, ")!\n")
+		if(head$product != product) stop("Different array type (", head$product, ")!")
+		if(head$product == "Unknown") warning("Product type for ", files[n], " is unknown (missing PRODUCT field in header).")
 		if(head$size != ngenes) stop("Mmm. Something is wrong. Different number of probes (", head$size, ")\n")
 
 		if(is.null(sample.name)) codelink$sample[n] <- head$sample
@@ -146,59 +143,28 @@ readCodelink <- function(files, sample.name=NULL, flag=list(M=NA,I=NA,C=NA), dec
 			},
 			Raw = {
                 		codelink$Ri[,n] <- data[,"Raw_intensity"]
-				#codelink$BkgdCorrection_method <- "Codelink Subtract"
 				codelink$method$backgrund <- "Codelink Subtract"
 				# Set values based on Flags.
-                                if(!is.null(flag$M)) {
-					codelink$Ri[flag.m, n] <- flag$M	# Set M spots.
-                                }
-                                if(!is.null(flag$I)) {
-					codelink$Ri[flag.i, n] <- flag$I	# Set I spots.
-                                }
-                                if(!is.null(flag$C)) {
-					codelink$Ri[flag.c, n] <- flag$C	# Set C spots.
-                                }
-                                if(!is.null(flag$S)) {
-                                        codelink$Ri[flag.s, n] <- flag$S      # Set S spots.
-                                }
-                                if(!is.null(flag$G)) {
-                                        codelink$Ri[flag.g, n] <- flag$G      # Set G spots.
-                                }
-                                if(!is.null(flag$L)) {
-                                        codelink$Ri[flag.l, n] <- flag$L      # Set L spots.
-                                }
-                                if(!is.null(flag$X)) {
-					codelink$Ri[flag.x, n] <- flag$X	# Set X spots.
-                                }
+                                if(!is.null(flag$M)) codelink$Ri[flag.m, n] <- flag$M	# Set M spots.
+                                if(!is.null(flag$I)) codelink$Ri[flag.i, n] <- flag$I	# Set I spots.
+                                if(!is.null(flag$C)) codelink$Ri[flag.c, n] <- flag$C	# Set C spots.
+                                if(!is.null(flag$S)) codelink$Ri[flag.s, n] <- flag$S   # Set S spots.
+                                if(!is.null(flag$G)) codelink$Ri[flag.g, n] <- flag$G   # Set G spots.
+                                if(!is.null(flag$L)) codelink$Ri[flag.l, n] <- flag$L   # Set L spots.
+                                if(!is.null(flag$X)) codelink$Ri[flag.x, n] <- flag$X	# Set X spots.
 			},
 			Norm = {
                 		codelink$Ni[,n] <- data[,"Normalized_intensity"]
-				#codelink$BkgdCorrection_method <- "Codelink Subtract"
 				codelink$method$background <- "Codelink Subtract"
-				#codelink$Normalization_method <- "Codelink Median"
 				codelink$method$normalization <- "Codelink Median"
 				# Set values based on Flags.
-                                if(!is.null(flag$M)) {
-					codelink$Ni[flag.m,n] <- flag$M	# Set M spots.
-                                }
-                                if(!is.null(flag$I)) {
-					codelink$Ni[flag.i,n] <- flag$I	# Set I spots.
-                                }
-                                if(!is.null(flag$C)) {
-					codelink$Ni[flag.c,n] <- flag$C	# Set C spots.
-                                }
-                                if(!is.null(flag$S)) {
-                                        codelink$Ni[flag.s, n] <- flag$S       # Set S spots.
-                                }
-                                if(!is.null(flag$G)) {
-                                        codelink$Ni[flag.g, n] <- flag$G       # Set G spots.
-                                }
-                                if(!is.null(flag$L)) {
-                                        codelink$Ni[flag.l, n] <- flag$L       # Set L spots.
-                                }
-                                if(!is.null(flag$X)) {
-					codelink$Ni[flag.x,n] <- flag$X	# Set X spots.
-                                }
+                                if(!is.null(flag$M)) codelink$Ni[flag.m, n] <- flag$M	# Set M spots.
+                                if(!is.null(flag$I)) codelink$Ni[flag.i, n] <- flag$I	# Set I spots.
+                                if(!is.null(flag$C)) codelink$Ni[flag.c, n] <- flag$C	# Set C spots.
+                                if(!is.null(flag$S)) codelink$Ni[flag.s, n] <- flag$S   # Set S spots.
+                                if(!is.null(flag$G)) codelink$Ni[flag.g, n] <- flag$G   # Set G spots.
+                                if(!is.null(flag$L)) codelink$Ni[flag.l, n] <- flag$L   # Set L spots.
+                                if(!is.null(flag$X)) codelink$Ni[flag.x, n] <- flag$X	# Set X spots.
 			}
 		)
 		if(n==1) {
