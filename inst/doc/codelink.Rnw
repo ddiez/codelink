@@ -91,8 +91,9 @@ some Codelink files you do:
 \end{Sinput}
 
 This suppose that your files have the extension ``TXT'' (uppercase)
-and they are in your working directory. If this is not the case you can specify files to be read with the 'file' argument. The function emph{readCodelink()}
-returns and object of class ``Codelink'':
+and they are in your working directory. If this is not the case you can specify 
+files to be read with the 'file' argument. The function readCodelink() returns 
+and object of class ``Codelink'':
 
 <<data>>=
 
@@ -133,7 +134,10 @@ cv & Coefficient of Variation matrix \\
 \end{center}
 \end{table}
 
-The Chip type is read from the PRODUCT field in the header of Codelink files. If not found then a warning is shown. If on product type disagree with the others an error message is shown and reading of files terminated.
+The chip type (product slot) is read from the PRODUCT field in the header of 
+Codelink files. If it is not found then a warning message is shown and product 
+slot is set to "Unknown". If one product type disagree with the others an error 
+message is shown and reading of files is terminated.
 
 By default, all spots flagged with M, I, and S flags are set to NA. This can be
 changed with the flag argument in readCodelink(). The flag argument is a list
