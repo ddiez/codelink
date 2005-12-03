@@ -275,3 +275,7 @@ that column.
   - Bettern handling of 'Product' detection. If missing, product slot is set
     to unknown and a warning is shown. If two product description disagree and
     error is shown and the reading of files stopped.
+
+0.7.5
+  - Support for multiple flags in the same probe. The minor value or NA if
+    found is used.

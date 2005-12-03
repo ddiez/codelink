@@ -88,21 +88,37 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
 		# Assign Flag values.
                 codelink$flag[,n] <- as.character(data[,"Quality_flag"])
 		# Flag information.
-		flag.m <- codelink$flag[,n]=="M"	# MSR masked spots.
-		flag.i <- codelink$flag[,n]=="I"	# Irregular spots.
-		flag.c <- codelink$flag[,n]=="C"	# Background contaminated
-		flag.s <- codelink$flag[,n]=="S"	# Saturated spots.
-		flag.g <- codelink$flag[,n]=="G"	# Good spots.
-		flag.l <- codelink$flag[,n]=="L"	# Limit spots.
-		flag.x <- codelink$flag[,n]=="X"	# User excluded spots.
+		#flag.m <- codelink$flag[,n]=="M"	# MSR masked spots.
+		#flag.i <- codelink$flag[,n]=="I"	# Irregular spots.
+		#flag.c <- codelink$flag[,n]=="C"	# Background contaminated
+		#flag.s <- codelink$flag[,n]=="S"	# Saturated spots.
+		#flag.g <- codelink$flag[,n]=="G"	# Good spots.
+		#flag.l <- codelink$flag[,n]=="L"	# Limit spots.
+		#flag.x <- codelink$flag[,n]=="X"	# User excluded spots.
+		# Allow combination of different flags.
+		flag.m <- grep("M", codelink$flag[,n])	# MSR masked spots.
+		flag.i <- grep("I", codelink$flag[,n])	# Irregular spots.
+		flag.c <- grep("C", codelink$flag[,n])	# Background contaminated
+		flag.s <- grep("S", codelink$flag[,n])	# Saturated spots.
+		flag.g <- grep("G", codelink$flag[,n])	# Good spots.
+		flag.l <- grep("L", codelink$flag[,n])	# Limit spots.
+		flag.x <- grep("X", codelink$flag[,n])	# User excluded spots.
+
 		if(verbose>1) cat("  + Quality flags:\n")
-		if(verbose>1) cat(paste("      G:",length(which(flag.g)),"\t"))
-		if(verbose>1) cat(paste("      L:",length(which(flag.l)),"\t"))
-		if(verbose>1) cat(paste("      M:",length(which(flag.m)),"\t"))
-		if(verbose>1) cat(paste("      I:",length(which(flag.i)),"\n"))
-		if(verbose>1) cat(paste("      C:",length(which(flag.c)),"\t"))
-		if(verbose>1) cat(paste("      S:",length(which(flag.s)),"\t"))
-		if(verbose>1) cat(paste("      X:",length(which(flag.x)),"\n"))
+		#if(verbose>1) cat(paste("      G:",length(which(flag.g)),"\t"))
+		#if(verbose>1) cat(paste("      L:",length(which(flag.l)),"\t"))
+		#if(verbose>1) cat(paste("      M:",length(which(flag.m)),"\t"))
+		#if(verbose>1) cat(paste("      I:",length(which(flag.i)),"\n"))
+		#if(verbose>1) cat(paste("      C:",length(which(flag.c)),"\t"))
+		#if(verbose>1) cat(paste("      S:",length(which(flag.s)),"\t"))
+		#if(verbose>1) cat(paste("      X:",length(which(flag.x)),"\n"))
+		if(verbose>1) cat(paste("      G:",length(flag.g),"\t"))
+		if(verbose>1) cat(paste("      L:",length(flag.l),"\t"))
+		if(verbose>1) cat(paste("      M:",length(flag.m),"\t"))
+		if(verbose>1) cat(paste("      I:",length(flag.i),"\n"))
+		if(verbose>1) cat(paste("      C:",length(flag.c),"\t"))
+		if(verbose>1) cat(paste("      S:",length(flag.s),"\t"))
+		if(verbose>1) cat(paste("      X:",length(flag.x),"\n"))
 
 		# Assignn Intensity values.
 		switch(type,
@@ -113,59 +129,136 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
 				if(any(grep("Bkgd_stdev", head$columns))) codelink$Bstdev[,n] <- data[,"Bkgd_stdev"] else codelink$Bstdev[,n] <- NA
 				# Set values based on Flags.
 				if(!is.null(flag$M)) {
-					codelink$Smean[flag.m,n] <- flag$M		# Set M spots.
-					codelink$Bmedian[flag.m,n] <- flag$M
+					sel.flag <- codelink$Smean[flag.m, n] > flag$M
+					codelink$Smean[sel.flag, n] <- flag$M
+					codelink$Bmedian[sel.flag, n] <- flag$M
+					#codelink$Smean[flag.m, n] <- flag$M
+					#codelink$Bmedian[flag.m, n] <- flag$M
 				}
 				if(!is.null(flag$I)) {
-					codelink$Smean[flag.i,n] <- flag$I		# Set I spots.
-					codelink$Bmedian[flag.i,n] <- flag$I
+					sel.flag <- codelink$Smean[flag.i, n] > flag$I
+					codelink$Smean[sel.flag, n] <- flag$I
+					codelink$Bmedian[sel.flag, n] <- flag$I
+					#codelink$Smean[flag.i, n] <- flag$I
+					#codelink$Bmedian[flag.i, n] <- flag$I
 				}
 				if(!is.null(flag$C)) {
-					codelink$Smean[flag.c,n] <- flag$C		# Set C spots.
-					codelink$Bmedian[flag.c,n] <- flag$C
+					sel.flag <- codelink$Smean[flag.c, n] > flag$C
+					codelink$Smean[sel.flag, n] <- flag$C
+					codelink$Bmedian[sel.flag, n] <- flag$C
+					#codelink$Smean[flag.c, n] <- flag$C
+					#codelink$Bmedian[flag.c, n] <- flag$C
 				}
 				if(!is.null(flag$S)) {
-                                        codelink$Smean[flag.s, n] <- flag$S          # Set S spots.
-                                        codelink$Bmedian[flag.s, n] <- flag$S
+      					sel.flag <- codelink$Smean[flag.s, n] > flag$S
+					codelink$Smean[sel.flag, n] <- flag$S
+					codelink$Bmedian[sel.flag, n] <- flag$S
+					#codelink$Smean[flag.s, n] <- flag$S
+                                        #codelink$Bmedian[flag.s, n] <- flag$S
                                 }
 				if(!is.null(flag$G)) {
-                                        codelink$Smean[flag.g, n] <- flag$G          # Set G spots.
-                                        codelink$Bmedian[flag.g,n] <- flag$G
+					sel.flag <- codelink$Smean[flag.g, n] > flag$G
+                                        codelink$Smean[sel.flag, n] <- flag$G
+                                        codelink$Bmedian[sel.flag, n] <- flag$G
+                                        #codelink$Smean[flag.g, n] <- flag$G
+                                        #codelink$Bmedian[flag.g, n] <- flag$G
                                 }
 				if(!is.null(flag$L)) {
-                                        codelink$Smean[flag.l, n] <- flag$L          # Set L spots.
-                                        codelink$Bmedian[flag.l, n] <- flag$L
+					sel.flag <- codelink$Smean[flag.l, n] > flag$L
+                                        codelink$Smean[sel.flag, n] <- flag$L
+                                        codelink$Bmedian[sel.flag, n] <- flag$L
+                                        #codelink$Smean[flag.l, n] <- flag$L
+                                        #codelink$Bmedian[flag.l, n] <- flag$L
                                 }
 				if(!is.null(flag$X)) {
-					codelink$Smean[flag.x,n] <- flag$X		# Set X spots.
-					codelink$Bmedian[flag.x,n] <- flag$X
+					sel.flag <- codelink$Smean[flag.x, n] > flag$X
+                                        codelink$Smean[sel.flag, n] <- flag$X
+                                        codelink$Bmedian[sel.flag, n] <- flag$X
+					#codelink$Smean[flag.x, n] <- flag$X
+					#codelink$Bmedian[flag.x, n] <- flag$X
 				}
 			},
 			Raw = {
                 		codelink$Ri[,n] <- data[,"Raw_intensity"]
 				codelink$method$backgrund <- "Codelink Subtract"
 				# Set values based on Flags.
-                                if(!is.null(flag$M)) codelink$Ri[flag.m, n] <- flag$M	# Set M spots.
-                                if(!is.null(flag$I)) codelink$Ri[flag.i, n] <- flag$I	# Set I spots.
-                                if(!is.null(flag$C)) codelink$Ri[flag.c, n] <- flag$C	# Set C spots.
-                                if(!is.null(flag$S)) codelink$Ri[flag.s, n] <- flag$S   # Set S spots.
-                                if(!is.null(flag$G)) codelink$Ri[flag.g, n] <- flag$G   # Set G spots.
-                                if(!is.null(flag$L)) codelink$Ri[flag.l, n] <- flag$L   # Set L spots.
-                                if(!is.null(flag$X)) codelink$Ri[flag.x, n] <- flag$X	# Set X spots.
+                                if(!is.null(flag$M)) {
+					sel.flag <- codelink$Ri[flag.m, n] > flag$M
+					codelink$Ri[sel.flag, n] <- flag$M
+					#codelink$Ri[flag.m, n] <- flag$M
+				}
+                                if(!is.null(flag$I)) {
+					sel.flag <- codelink$Ri[flag.i, n] > flag$I
+                                        codelink$Ri[sel.flag, n] <- flag$I
+					#codelink$Ri[flag.i, n] <- flag$I
+				}
+                                if(!is.null(flag$C)) {
+					sel.flag <- codelink$Ri[flag.c, n] > flag$C
+                                        codelink$Ri[sel.flag, n] <- flag$C
+					#codelink$Ri[flag.c, n] <- flag$C
+				}
+                                if(!is.null(flag$S)) {
+                                        sel.flag <- codelink$Ri[flag.s, n] > flag$S
+                                        codelink$Ri[sel.flag, n] <- flag$S
+					#codelink$Ri[flag.s, n] <- flag$S
+				}
+                                if(!is.null(flag$G)) {
+                                        sel.flag <- codelink$Ri[flag.g, n] > flag$G
+                                        codelink$Ri[sel.flag, n] <- flag$G
+					#codelink$Ri[flag.g, n] <- flag$G
+				}
+                                if(!is.null(flag$L)) {
+                                        sel.flag <- codelink$Ri[flag.l, n] > flag$L
+                                        codelink$Ri[sel.flag, n] <- flag$L
+					#codelink$Ri[flag.l, n] <- flag$L
+				}
+                                if(!is.null(flag$X)) {
+                                        sel.flag <- codelink$Ri[flag.x, n] > flag$X
+                                        codelink$Ri[sel.flag, n] <- flag$X
+					#codelink$Ri[flag.x, n] <- flag$X
+				}
 			},
 			Norm = {
                 		codelink$Ni[,n] <- data[,"Normalized_intensity"]
 				codelink$method$background <- "Codelink Subtract"
 				codelink$method$normalization <- "Codelink Median"
 				# Set values based on Flags.
-                                if(!is.null(flag$M)) codelink$Ni[flag.m, n] <- flag$M	# Set M spots.
-                                if(!is.null(flag$I)) codelink$Ni[flag.i, n] <- flag$I	# Set I spots.
-                                if(!is.null(flag$C)) codelink$Ni[flag.c, n] <- flag$C	# Set C spots.
-                                if(!is.null(flag$S)) codelink$Ni[flag.s, n] <- flag$S   # Set S spots.
-                                if(!is.null(flag$G)) codelink$Ni[flag.g, n] <- flag$G   # Set G spots.
-                                if(!is.null(flag$L)) codelink$Ni[flag.l, n] <- flag$L   # Set L spots.
-                                if(!is.null(flag$X)) codelink$Ni[flag.x, n] <- flag$X	# Set X spots.
-			}
+                                 if(!is.null(flag$M)) {
+					sel.flag <- codelink$Ni[flag.m, n] > flag$M
+					codelink$Ni[sel.flag, n] <- flag$M
+					#codelink$Ni[flag.m, n] <- flag$M
+				}
+                                if(!is.null(flag$I)) {
+					sel.flag <- codelink$Ni[flag.i, n] > flag$I
+                                        codelink$Ni[sel.flag, n] <- flag$I
+					#codelink$Ni[flag.i, n] <- flag$I
+				}
+                                if(!is.null(flag$C)) {
+					sel.flag <- codelink$Ni[flag.c, n] > flag$C
+                                        codelink$Ni[sel.flag, n] <- flag$C
+					#codelink$Ni[flag.c, n] <- flag$C
+				}
+                                if(!is.null(flag$S)) {
+                                        sel.flag <- codelink$Ni[flag.s, n] > flag$S
+                                        codelink$Ni[sel.flag, n] <- flag$S
+					#codelink$Ni[flag.s, n] <- flag$S
+				}
+                                if(!is.null(flag$G)) {
+                                        sel.flag <- codelink$Ni[flag.g, n] > flag$G
+                                        codelink$Ni[sel.flag, n] <- flag$G
+					#codelink$Ni[flag.g, n] <- flag$G
+				}
+                                if(!is.null(flag$L)) {
+                                        sel.flag <- codelink$Ni[flag.l, n] > flag$L
+                                        codelink$Ni[sel.flag, n] <- flag$L
+					#codelink$Ni[flag.l, n] <- flag$L
+				}
+                                if(!is.null(flag$X)) {
+                                        sel.flag <- codelink$Ni[flag.x, n] > flag$X
+                                        codelink$Ni[sel.flag, n] <- flag$X
+					#codelink$Ni[flag.x, n] <- flag$X
+				}
+ 			}
 		)
 		if(n==1) {
                         codelink$name <- as.character(data[,"Probe_name"])

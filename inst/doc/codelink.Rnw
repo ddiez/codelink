@@ -5,9 +5,12 @@
 
 \documentclass{article}
 \usepackage[latin1]{inputenc}
-
 \usepackage[english]{babel}
-\makeatother
+
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+
 \begin{document}
 
 \title{Codelink}
@@ -29,7 +32,7 @@ removed. The results can be exported in many formats as XML, Excel, plain text,
 etc. This library allows to read Codelink plain text exported data into R
 \cite{r} for analysis of gene expression with any of the available tools in
 R+Bioconductor\cite{BIOC}. A new class is defined for convenient storing
-Codelink data as exprSet class is not convenient for this purpose.
+Codelink data as \Robject{exprSet} class is not convenient for this purpose.
 
 \begin{table}[ht]
 \begin{center}
@@ -92,8 +95,8 @@ some Codelink files you do:
 
 This suppose that your files have the extension ``TXT'' (uppercase)
 and they are in your working directory. If this is not the case you can specify 
-files to be read with the 'file' argument. The function readCodelink() returns 
-and object of class ``Codelink'':
+files to be read with the 'file' argument. The function 
+\Rfunction{readCodelink} returns and object of class ``Codelink'':
 
 <<data>>=
 
@@ -151,6 +154,12 @@ untouched you do:
 
 \end{Sinput}
 
+It is possible to find probes wit more that one flag assigned, i.e. CL for a 
+probe labeled as C and L, CLI for a probe labeled as C, L and I, and so on. As 
+a regular expression is used to find flag types it is possible to manage all 
+this situations. When two user modified flags fall in the same probe the 
+smallest (or NA if applicable) is assigned.
+
 \section{Background correction}
 
 Smean intensity values can be processed into Ri through
@@ -162,7 +171,8 @@ background correction:
 
 \end{Sinput}
 
-The default method used is based on the \emph{half} method from \emph{limma} \cite{limma} package. Median background intensity (Bmedian) is subtracted
+The default method used is based on the \emph{half} method from \emph{limma} 
+\cite{limma} package. Median background intensity (Bmedian) is subtracted
 from mean spot intensity (Smean) and if the result is less than
 0.5 then it is set to 0.5 to ensure no negative numbers are obtained.
 
@@ -220,7 +230,8 @@ A=\frac{Array2+Array1}{2}
 \end{equation}
 
 The function plotDensities() plot the density of intensity values of
-all arrays. If the subset argument is supplied it can use only a subset of the arrays in the Codelink object.
+all arrays. If the subset argument is supplied it can use only a subset of the 
+arrays in the Codelink object.
 
 \begin{center}
 <<plotDensity, fig=TRUE>>=
