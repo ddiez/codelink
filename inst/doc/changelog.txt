@@ -279,3 +279,11 @@ that column.
 0.7.5
   - Support for multiple flags in the same probe. The minor value or NA if
     found is used.
+
+0.7.6
+  - FIX normalize() to warn about not background corrected data (it didn't
+    normalize but also it didn't say nothing about it).
+  - Improved snr label in plotMA(); now three levels are shown.
+  - merge.snr option to allow not to mean SNR in mergeArray(). Default: TRUE.
+  - Removed fc() in favour of fc2Cond() a more intuitive interface for fold
+    change computation.

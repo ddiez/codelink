@@ -1,12 +1,13 @@
 # mergeArray()
 # returns a codelink data.frame mergin chips attending a function
 # like median, mean, etc... default mean.
-mergeArray <- function(object, class, names=NULL, method="mean", log.it=FALSE) {
+mergeArray <- function(object, class, names=NULL, method="mean",
+			log.it=FALSE, merge.snr=TRUE) {
 	if(!is(object,"Codelink")) stop("A Codelink object needed.")
 	if(is.null(object$Ni) && is.null(object$Ri)) stop("Ni or Ri slots needed.")
 	if(is.null(names)) stop("Group names needed.")
 	if(log.it && object$method$log) stop("Data already log transformed.")
-	if(is.null(object$snr)) doSNR <- FALSE else doSNR <- TRUE
+	if(is.null(object$snr) | !merge.snr) doSNR <- FALSE else doSNR <- TRUE
 
 	l <- levels(as.factor(class))
 	if(length(names)!=length(l)) stop("Number of classes and class names disagree.")
@@ -48,9 +49,7 @@ mergeArray <- function(object, class, names=NULL, method="mean", log.it=FALSE) {
 ## bkgdCorrect()
 # Correct Spot intensity by background.
 bkgdCorrect <- function(object, method="half", preserve=FALSE) {
-	if(!is(object,"Codelink")) {
-		stop("Codelink object needed.")
-	}
+	if(!is(object,"Codelink")) stop("Codelink object needed.")
 	method <- match.arg(method, c("none", "subtract", "half"))
 	switch(method,
 		none = {
@@ -90,20 +89,47 @@ logCodelink <- function(object) {
 SNR <- function(Smean, Bmedian, Bstdev) {
 	Smean / (Bmedian + 1.5 * Bstdev)
 }
-## fc()
-# Select denes based in fold change between two conditions.
-fc <- function(object, cond1=NULL, cond2=NULL, fc=1.0) {
+## fc2Cond()
+# rewrite of fc to be more intuitive:
+fc2Cond <- function(object, cond1=NULL, cond2=NULL, fc=1.0, verbose=FALSE) {
 	if(!is(object, "Codelink")) stop("Codelink object needed.")
-	if(cond1 > dim(object)[2] || cond2 > dim(object)[2]) stop("Invalid conditions.")
-	if(cond1 == cond2) stop("Fold changes along same conditions are equal to 0.")
-	if(is.null(object$Ni)) stop("Normalize data first.")
-	if(object$method$log) {
-		fc.0 <- abs(object$Ni[,cond1] - object$Ni[,cond2])
+	if(!is(cond1, "numeric") & !is(cond2, "numeric")) {
+		#cat("Cond1:", cond1,"\n")
+		#cat("Cond2:", cond2,"\n")
+		cond1.inx <- which(object$sample==cond1)
+		cond2.inx <- which(object$sample==cond2)
+		#cat("Index1:", cond1.inx, "\n")
+		#cat("Index2:", cond2.inx, "\n")
+		if(!any(cond1.inx)) stop("Unknown sample ",cond1)
+		if(!any(cond2.inx)) stop("Unknown sample ",cond2)
+		if(length(cond1.inx)>1) stop(cond1," matches more than one condition in sample slot.")
+		if(length(cond2.inx)>1) stop(cond2," matches more than one condition in sample slot.")
 	} else {
-		stop("Only logged data at this moment supported.")
+		cond1.inx <- cond1
+		cond2.inx <- cond2
 	}
+	if(!object$method$log) {
+		if(verbose) cat("Commputing log2...\n")
+		object <- logCodelink(object)
+	}
+	if(verbose) cat("Computing FC for", cond1,"-",cond2,"...\n")
+	fc.0 <- abs(object$Ni[,cond1.inx] - object$Ni[, cond2.inx])
 	return(na2false(fc.0 >= fc))
 }
+## fc()
+# Select denes based in fold change between two conditions.
+#fc <- function(object, cond1=NULL, cond2=NULL, fc=1.0) {
+#	if(!is(object, "Codelink")) stop("Codelink object needed.")
+#	if(cond1 > dim(object)[2] || cond2 > dim(object)[2]) stop("Invalid conditions.")
+#	if(cond1 == cond2) stop("Fold changes along same conditions are equal to 0.")
+#	if(is.null(object$Ni)) stop("Normalize data first.")
+#	if(object$method$log) {
+#		fc.0 <- abs(object$Ni[,cond1] - object$Ni[,cond2])
+#	} else {
+#		stop("Only logged data at this moment supported.")
+#	}
+#	return(na2false(fc.0 >= fc))
+#}
 
 ## cutCV()
 # Calculate cutoff based on C.V.

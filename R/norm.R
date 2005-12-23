@@ -2,6 +2,7 @@
 # Wrapper function to apply normalization methods to Codelink objects.
 normalize <- function(object, method="quantiles", log.it=TRUE, preserve=FALSE) {
 	if(!is(object,"Codelink")) stop("A Codelink object is needed.")
+	if(is.null(object$Ri)) stop("Background corrected intensities needed.")
 	if(object$method$log) stop("Intensities already log2.")
 	method <- match.arg(method,c("loess","quantiles"))
 

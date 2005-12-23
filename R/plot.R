@@ -48,12 +48,19 @@ plotMA <- function(object, array1=1, array2=2, cutoff=NULL, label="type", high.l
 			legend.fill <- c("black","red","blue","yellow","green")
 		},
 		snr = {
-                        foo.mean <- apply(object$snr[,c(array1, array2)],1,mean)
-                        foo.sel <- foo.mean >= 1
-                        plot(A[foo.sel], M[foo.sel], xlim=xlim, ylim=ylim, col="black", xlab="A", ylab="M", pch=".")
-                        points(A[!foo.sel], M[!foo.sel], col="orange", pch=".")
-			legend.text <- c("SNR >= 1","SNR < 1")
-			legend.fill <- c("black","orange")
+                        #foo.mean <- apply(object$snr[,c(array1, array2)],1,mean)
+                        #foo.sel <- foo.mean >= 1
+			#f1 <- kOverA(2, 1)
+			#f2 <- kOverA(1, 1)
+			#sel.1 <- genefilter(object$snr[,c(array1, array2)], filterfun(f1, anyNA))
+			#sel.2 <- genefilter(object$snr[,c(array1, array2)], filterfun(f2, anyNA))
+			sel.1 <- object$snr[, array1] >= 1
+			sel.2 <- object$snr[, array2] >= 1
+			plot(A[sel.1 & sel.2], M[sel.1 & sel.2], xlim=xlim, ylim=ylim, col="black", xlab="A", ylab="M", pch=".")
+                        points(A[xor(sel.1, sel.2)], M[xor(sel.1, sel.2)], col="orange", pch=".")
+                        points(A[!sel.1 & !sel.2], M[!sel.1 & !sel.2], col="red", pch=".")
+			legend.text <- c("SNR >= 1 in all","SNR >= 1 in any","SNR < 1 in all")
+			legend.fill <- c("black", "orange", "red")
 		},
 		none = {
 			plot(A, M, xlab="A", ylab="M", pch=".");

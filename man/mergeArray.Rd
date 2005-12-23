@@ -7,7 +7,8 @@ indicating the classes and an optional vector indicating the labels of the mer-
 ged samples.
 }
 \usage{
-    mergeArray(object, class, names=NULL, method="mean", log.it=FALSE)
+  mergeArray(object, class, names=NULL, method="mean",
+             log.it=FALSE, merge.snr=TRUE)
 }
 \arguments{
   \item{object}{an object of class "Codelink".}
@@ -15,6 +16,7 @@ ged samples.
   \item{names}{an optional character vector indicating labels for each class.}
   \item{method}{the method used to summarize. Currently only "mean" supported.}
   \item{log.it}{logical; a logical indicating if log2 values should be returned.}
+  \item{merge.snr}{logical; a logical indicating if SNR values should be merged.}
 }
 \value{An object of class "Codelink".}
 \details{
