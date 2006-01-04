@@ -1,6 +1,7 @@
 ## plotMA()
 # MA plot of gene intensities.
-plotMA <- function(object, array1=1, array2=2, cutoff=NULL, label="type", high.list=NULL, high.col="blue", high.pch="*", legend.x="bottomright", title=NULL, xlim=NULL, ylim=NULL) {
+plotMA <- function(object, array1=1, array2=2, cutoff=NULL, label="type", high.list=NULL, high.col="blue", high.pch="*", 
+			snr.cutoff=1, legend.x="bottomright", title=NULL, xlim=NULL, ylim=NULL) {
 	if(!is(object,"Codelink")) stop("Codelink object needed.")
 #	if(!is.null(high.list) && (!is(high.list,"logical") || !is(high.list,"vector"))) stop("logical vector needed.")
 #	if(!is.null(high.list) && length(high.list) != dim(object)[1]) stop("high.list and number of genes differ.")
@@ -54,8 +55,8 @@ plotMA <- function(object, array1=1, array2=2, cutoff=NULL, label="type", high.l
 			#f2 <- kOverA(1, 1)
 			#sel.1 <- genefilter(object$snr[,c(array1, array2)], filterfun(f1, anyNA))
 			#sel.2 <- genefilter(object$snr[,c(array1, array2)], filterfun(f2, anyNA))
-			sel.1 <- object$snr[, array1] >= 1
-			sel.2 <- object$snr[, array2] >= 1
+			sel.1 <- object$snr[, array1] >= snr.cutoff
+			sel.2 <- object$snr[, array2] >= snr.cutoff
 			plot(A[sel.1 & sel.2], M[sel.1 & sel.2], xlim=xlim, ylim=ylim, col="black", xlab="A", ylab="M", pch=".")
                         points(A[xor(sel.1, sel.2)], M[xor(sel.1, sel.2)], col="orange", pch=".")
                         points(A[!sel.1 & !sel.2], M[!sel.1 & !sel.2], col="red", pch=".")

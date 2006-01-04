@@ -287,3 +287,7 @@ that column.
   - merge.snr option to allow not to mean SNR in mergeArray(). Default: TRUE.
   - Removed fc() in favour of fc2Cond() a more intuitive interface for fold
     change computation.
+
+0.7.7
+  - Added snr.cutoff option for cutoff definition (default=1) used in
+    plotMA() to label spots by SNR.
