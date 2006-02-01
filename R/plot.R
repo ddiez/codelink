@@ -49,12 +49,6 @@ plotMA <- function(object, array1=1, array2=2, cutoff=NULL, label="type", high.l
 			legend.fill <- c("black","red","blue","yellow","green")
 		},
 		snr = {
-                        #foo.mean <- apply(object$snr[,c(array1, array2)],1,mean)
-                        #foo.sel <- foo.mean >= 1
-			#f1 <- kOverA(2, 1)
-			#f2 <- kOverA(1, 1)
-			#sel.1 <- genefilter(object$snr[,c(array1, array2)], filterfun(f1, anyNA))
-			#sel.2 <- genefilter(object$snr[,c(array1, array2)], filterfun(f2, anyNA))
 			sel.1 <- object$snr[, array1] >= snr.cutoff
 			sel.2 <- object$snr[, array2] >= snr.cutoff
 			plot(A[sel.1 & sel.2], M[sel.1 & sel.2], xlim=xlim, ylim=ylim, col="black", xlab="A", ylab="M", pch=".")
@@ -65,8 +59,6 @@ plotMA <- function(object, array1=1, array2=2, cutoff=NULL, label="type", high.l
 		},
 		none = {
 			plot(A, M, xlab="A", ylab="M", pch=".");
-			#legend.text <- "ALL PROBES"
-			#legend.fill <- "black"
 		}
 	)
 
@@ -77,15 +69,20 @@ plotMA <- function(object, array1=1, array2=2, cutoff=NULL, label="type", high.l
 		points(A[high.list],M[high.list],col=high.col,pch=high.pch)
         }
 
-	# Lowess plot.
+	## Lowess line.
+	# Remove NA.
 	sel <- which(!is.na(M))
 	M <- M[sel]
 	A <- A[sel]
+	# Take a sample.
 	subset=sample(1:length(M),min(c(10000, length(M))))
+	A <- A[subset]
+	M <- M[subset]
+	# Order it and remove duplicates.
 	o <- order(A[subset])
-	A <- A[subset][o]
 	o <- which(!duplicated(A))
-	lines(approx(lowess(A[o], M[o])), col = "red")
+	# draw the line.
+	lines(approx(lowess(A[o], M[o])), col = "green", lwd=4)
 	
 	# Misc.
         abline(h=0, col="blue")
