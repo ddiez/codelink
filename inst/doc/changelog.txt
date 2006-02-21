@@ -295,3 +295,9 @@ that column.
 0.7.8
   - Changed lowess line parameters in plotMA() for better visualization.
   - FIX lowess line computation.
+
+0.7.9
+  - Added argument 'subset' to plotMA() allowing plotting only a subset of 
+  spots,  based in 'type' slot.
+  - Added argument 'pch' to plotMA() to control pch used to general points.  
+  May be useful whe plotting subsets of spots.

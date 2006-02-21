@@ -1,11 +1,19 @@
 ## plotMA()
 # MA plot of gene intensities.
-plotMA <- function(object, array1=1, array2=2, cutoff=NULL, label="type", high.list=NULL, high.col="blue", high.pch="*", 
-			snr.cutoff=1, legend.x="bottomright", title=NULL, xlim=NULL, ylim=NULL) {
+plotMA <- function(object, array1=1, array2=2, cutoff=NULL, label="type",
+                   high.list=NULL, high.col="blue", high.pch="*",
+                   snr.cutoff=1, legend.x="bottomright", pch=".", subset=NULL,
+                   title=NULL, xlim=NULL, ylim=NULL) {
 	if(!is(object,"Codelink")) stop("Codelink object needed.")
 #	if(!is.null(high.list) && (!is(high.list,"logical") || !is(high.list,"vector"))) stop("logical vector needed.")
 #	if(!is.null(high.list) && length(high.list) != dim(object)[1]) stop("high.list and number of genes differ.")
 	label <- match.arg(label,c("type", "snr", "none"))
+
+	if(!is.null(subset)) {
+		subset <- match.arg(subset, levels(as.factor(object$type)), several.ok=TRUE)
+		subset.sel <- object$type %in% as.character(subset)
+		object <- object[subset.sel,]
+	}
 
 	if(!is.null(object$Smean)) {
                         val1 <- object$Smean[,array1]
@@ -40,7 +48,7 @@ plotMA <- function(object, array1=1, array2=2, cutoff=NULL, label="type", high.l
                         discovery <- object$type=="DISCOVERY"
                         fiducial <- object$type=="FIDUCIAL"
                         other <- object$type=="OTHER"
-                        plot(A[discovery], M[discovery], xlim=xlim, ylim=ylim, xlab="A", ylab="M", pch=".")
+                        plot(A[discovery], M[discovery], xlim=xlim, ylim=ylim, xlab="A", ylab="M", pch=pch)
                         points(A[negative], M[negative], col="red", pch=20)
                         points(A[positive], M[positive], col="blue", pch=20)
                         points(A[fiducial], M[fiducial], col="yellow", pch=20)
@@ -51,14 +59,14 @@ plotMA <- function(object, array1=1, array2=2, cutoff=NULL, label="type", high.l
 		snr = {
 			sel.1 <- object$snr[, array1] >= snr.cutoff
 			sel.2 <- object$snr[, array2] >= snr.cutoff
-			plot(A[sel.1 & sel.2], M[sel.1 & sel.2], xlim=xlim, ylim=ylim, col="black", xlab="A", ylab="M", pch=".")
+			plot(A[sel.1 & sel.2], M[sel.1 & sel.2], xlim=xlim, ylim=ylim, col="black", xlab="A", ylab="M", pch=pch)
                         points(A[xor(sel.1, sel.2)], M[xor(sel.1, sel.2)], col="orange", pch=".")
                         points(A[!sel.1 & !sel.2], M[!sel.1 & !sel.2], col="red", pch=".")
 			legend.text <- c("SNR >= 1 in all","SNR >= 1 in any","SNR < 1 in all")
 			legend.fill <- c("black", "orange", "red")
 		},
 		none = {
-			plot(A, M, xlab="A", ylab="M", pch=".");
+			plot(A, M, xlab="A", ylab="M", pch=pch);
 		}
 	)
 

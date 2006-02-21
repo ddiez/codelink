@@ -7,7 +7,7 @@
 \usage{
   plotMA(object, array1=1, array2=2, cutoff=NULL, label="type",
 	high.list=NULL, high.col="blue", high.pch="*",
-	snr.cutoff=1, legend.x="bottomright", 
+	snr.cutoff=1, legend.x="bottomright", pch=".", subset=NULL, 
 	title=NULL, xlim=NULL, ylim=NULL)
 }
 \arguments{
@@ -21,6 +21,8 @@
   \item{high.pch}{pch used for high genes.}
   \item{snr.cutoff}{SNR cutoff used for label spots.}
   \item{legend.x}{relative position of the legend.}
+  \item{pch}{pch style used to main spots.}
+  \item{subset}{subset of spots used to plot based on 'type' slot.}
   \item{title}{title of the plot.}
   \item{xlim}{range for the X axis.}
   \item{ylim}{range for the Y axis.}
