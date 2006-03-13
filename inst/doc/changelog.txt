@@ -301,3 +301,8 @@ that column.
   spots,  based in 'type' slot.
   - Added argument 'pch' to plotMA() to control pch used to general points.  
   May be useful whe plotting subsets of spots.
+
+0.7.10
+  - Check for files detected in readCodelink().
+  - Check for correct header file in readHeader().
+  - Speed up of readHeader().

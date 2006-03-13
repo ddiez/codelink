@@ -2,12 +2,20 @@
 # Read header information from codelink file.
 readHeader <- function(file, dec=FALSE) {
 	# Size of header:
-	nlines <- 0
-	repeat {
-                foo <- scan(file, skip=nlines, nlines=1, sep="\t", what="", quiet=TRUE)
-                nlines<-nlines+1
-                if(substr(foo[1],1,2)=="--") break # detect end of header.
-        }
+	#nlines <- 0
+	#repeat {
+        #        foo <- scan(file, skip=nlines, nlines=1, sep="\t", what="", quiet=TRUE)
+        #        nlines<-nlines+1
+        #        #if(substr(foo[1],1,2)=="--") break # detect end of header.
+##		if(any(grep("-{30}", foo))) {
+#			break
+#		} else {
+#			if(nlines > 30) stop("30 lines without finding dashed header delimiter. Is this a Codelink exported file?")
+#		}
+#        }
+	foo <- grep("-{80}", scan(file, nlines=30, flush=T, quiet=T, what=""))
+	if(!any(foo)) stop("Not a Codelink exported file.")
+	nlines <- foo
 	# Return list:
 	head <- list(header=NULL, nlines=NULL, product=NULL, sample=NULL, size=NULL, dec=NULL, columns=NULL)
         head$header <- scan(file, nlines=nlines, sep="\t", what="", quiet=TRUE)
@@ -19,6 +27,15 @@ readHeader <- function(file, dec=FALSE) {
 	head$columns <- scan(file, skip=nlines, nlines=1, sep="\t", what="", quiet=TRUE)
 	return(head)
 }
+# Read header information from codelink file.
+# Read for text files exported from Excel.
+#readHeaderExcel <- function(file, dec=FALSE) {
+#	nlines <- 0
+#	repeat {
+#                foo <- scan(file, skip=nlines, nlines=1, sep="\t", what="", quiet=TRUE)
+#                nlines<-nlines+1
+#	}
+#}
 ## decDetect()
 # detect decimal point.
 decDetect <- function(file, nlines) {
@@ -40,6 +57,7 @@ arraySize <- function(file, nlines) {
 ## readCodelink()
 # Dynamic detection of gene number.
 readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag=list(M=NA,I=NA,C=NA), dec=NULL, type="Spot", preserve=FALSE, verbose=2) {
+	if(length(files)==0) stop("Codelink files not found.")
 	type <- match.arg(type,c("Spot", "Raw", "Norm"))
 	nslides <- length(files)
 	if(!is.null(sample.name) && (length(sample.name) != nslides)) stop("sample.name must have equal length as chips loaded.")
