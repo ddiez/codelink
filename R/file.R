@@ -79,9 +79,10 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
 			Y <- matrix(NA, nrow=ngenes, ncol=nslides, dimnames=list(1:ngenes,1:nslides))
 			Z <- rep(NA, ngenes)
 			X <- c(1:nslides)
+			J <- matrix(NA, nrow=ngenes, ncol=2, dimnames=list(1:ngenes, c("row","col")))
 			method.list <- list(background="NONE", normalization="NONE", merge="NONE", log=FALSE)
 			head.list <- list(product="NONE", sample=X,  file=X,
-					name=Z, type=Z, flag=Y, method=method.list, Bstdev=Y, snr=Y)
+					name=Z, type=Z, flag=Y, method=method.list, Bstdev=Y, snr=Y, logical=J)
 			switch(type,
 				Spot = data.list <- list(Smean=Y, Bmedian=Y),
 				Raw = data.list <- list(Ri=Y),
@@ -147,53 +148,53 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
 				if(any(grep("Bkgd_stdev", head$columns))) codelink$Bstdev[,n] <- data[,"Bkgd_stdev"] else codelink$Bstdev[,n] <- NA
 				# Set values based on Flags.
 				if(!is.null(flag$M)) {
-					sel.flag <- codelink$Smean[flag.m, n] > flag$M
-					codelink$Smean[sel.flag, n] <- flag$M
-					codelink$Bmedian[sel.flag, n] <- flag$M
-					#codelink$Smean[flag.m, n] <- flag$M
-					#codelink$Bmedian[flag.m, n] <- flag$M
+					#sel.flag <- codelink$Smean[flag.m, n] > flag$M
+					#codelink$Smean[sel.flag, n] <- flag$M
+					#codelink$Bmedian[sel.flag, n] <- flag$M
+					codelink$Smean[flag.m, n] <- flag$M
+					codelink$Bmedian[flag.m, n] <- flag$M
 				}
 				if(!is.null(flag$I)) {
-					sel.flag <- codelink$Smean[flag.i, n] > flag$I
-					codelink$Smean[sel.flag, n] <- flag$I
-					codelink$Bmedian[sel.flag, n] <- flag$I
-					#codelink$Smean[flag.i, n] <- flag$I
-					#codelink$Bmedian[flag.i, n] <- flag$I
+					#sel.flag <- codelink$Smean[flag.i, n] > flag$I
+					#codelink$Smean[sel.flag, n] <- flag$I
+					#codelink$Bmedian[sel.flag, n] <- flag$I
+					codelink$Smean[flag.i, n] <- flag$I
+					codelink$Bmedian[flag.i, n] <- flag$I
 				}
 				if(!is.null(flag$C)) {
-					sel.flag <- codelink$Smean[flag.c, n] > flag$C
-					codelink$Smean[sel.flag, n] <- flag$C
-					codelink$Bmedian[sel.flag, n] <- flag$C
-					#codelink$Smean[flag.c, n] <- flag$C
-					#codelink$Bmedian[flag.c, n] <- flag$C
+					#sel.flag <- codelink$Smean[flag.c, n] > flag$C
+					#codelink$Smean[sel.flag, n] <- flag$C
+					#codelink$Bmedian[sel.flag, n] <- flag$C
+					codelink$Smean[flag.c, n] <- flag$C
+					codelink$Bmedian[flag.c, n] <- flag$C
 				}
 				if(!is.null(flag$S)) {
-      					sel.flag <- codelink$Smean[flag.s, n] > flag$S
-					codelink$Smean[sel.flag, n] <- flag$S
-					codelink$Bmedian[sel.flag, n] <- flag$S
-					#codelink$Smean[flag.s, n] <- flag$S
-                                        #codelink$Bmedian[flag.s, n] <- flag$S
+      					#sel.flag <- codelink$Smean[flag.s, n] > flag$S
+					#codelink$Smean[sel.flag, n] <- flag$S
+					#codelink$Bmedian[sel.flag, n] <- flag$S
+					codelink$Smean[flag.s, n] <- flag$S
+                                        codelink$Bmedian[flag.s, n] <- flag$S
                                 }
 				if(!is.null(flag$G)) {
-					sel.flag <- codelink$Smean[flag.g, n] > flag$G
-                                        codelink$Smean[sel.flag, n] <- flag$G
-                                        codelink$Bmedian[sel.flag, n] <- flag$G
-                                        #codelink$Smean[flag.g, n] <- flag$G
-                                        #codelink$Bmedian[flag.g, n] <- flag$G
+					#sel.flag <- codelink$Smean[flag.g, n] > flag$G
+                                        #codelink$Smean[sel.flag, n] <- flag$G
+                                        #codelink$Bmedian[sel.flag, n] <- flag$G
+                                        codelink$Smean[flag.g, n] <- flag$G
+                                        codelink$Bmedian[flag.g, n] <- flag$G
                                 }
 				if(!is.null(flag$L)) {
-					sel.flag <- codelink$Smean[flag.l, n] > flag$L
-                                        codelink$Smean[sel.flag, n] <- flag$L
-                                        codelink$Bmedian[sel.flag, n] <- flag$L
-                                        #codelink$Smean[flag.l, n] <- flag$L
-                                        #codelink$Bmedian[flag.l, n] <- flag$L
+					#sel.flag <- codelink$Smean[flag.l, n] > flag$L
+                                        #codelink$Smean[sel.flag, n] <- flag$L
+                                        #codelink$Bmedian[sel.flag, n] <- flag$L
+                                        codelink$Smean[flag.l, n] <- flag$L
+                                        codelink$Bmedian[flag.l, n] <- flag$L
                                 }
 				if(!is.null(flag$X)) {
-					sel.flag <- codelink$Smean[flag.x, n] > flag$X
-                                        codelink$Smean[sel.flag, n] <- flag$X
-                                        codelink$Bmedian[sel.flag, n] <- flag$X
-					#codelink$Smean[flag.x, n] <- flag$X
-					#codelink$Bmedian[flag.x, n] <- flag$X
+					#sel.flag <- codelink$Smean[flag.x, n] > flag$X
+                                        #codelink$Smean[sel.flag, n] <- flag$X
+                                        #codelink$Bmedian[sel.flag, n] <- flag$X
+					codelink$Smean[flag.x, n] <- flag$X
+					codelink$Bmedian[flag.x, n] <- flag$X
 				}
 			},
 			Raw = {
@@ -201,39 +202,39 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
 				codelink$method$backgrund <- "Codelink Subtract"
 				# Set values based on Flags.
                                 if(!is.null(flag$M)) {
-					sel.flag <- codelink$Ri[flag.m, n] > flag$M
-					codelink$Ri[sel.flag, n] <- flag$M
-					#codelink$Ri[flag.m, n] <- flag$M
+					#sel.flag <- codelink$Ri[flag.m, n] > flag$M
+					#codelink$Ri[sel.flag, n] <- flag$M
+					codelink$Ri[flag.m, n] <- flag$M
 				}
                                 if(!is.null(flag$I)) {
-					sel.flag <- codelink$Ri[flag.i, n] > flag$I
-                                        codelink$Ri[sel.flag, n] <- flag$I
-					#codelink$Ri[flag.i, n] <- flag$I
+					#sel.flag <- codelink$Ri[flag.i, n] > flag$I
+                                        #codelink$Ri[sel.flag, n] <- flag$I
+					codelink$Ri[flag.i, n] <- flag$I
 				}
                                 if(!is.null(flag$C)) {
-					sel.flag <- codelink$Ri[flag.c, n] > flag$C
-                                        codelink$Ri[sel.flag, n] <- flag$C
-					#codelink$Ri[flag.c, n] <- flag$C
+					#sel.flag <- codelink$Ri[flag.c, n] > flag$C
+                                        #codelink$Ri[sel.flag, n] <- flag$C
+					codelink$Ri[flag.c, n] <- flag$C
 				}
                                 if(!is.null(flag$S)) {
-                                        sel.flag <- codelink$Ri[flag.s, n] > flag$S
-                                        codelink$Ri[sel.flag, n] <- flag$S
-					#codelink$Ri[flag.s, n] <- flag$S
+                                        #sel.flag <- codelink$Ri[flag.s, n] > flag$S
+                                        #codelink$Ri[sel.flag, n] <- flag$S
+					codelink$Ri[flag.s, n] <- flag$S
 				}
                                 if(!is.null(flag$G)) {
-                                        sel.flag <- codelink$Ri[flag.g, n] > flag$G
-                                        codelink$Ri[sel.flag, n] <- flag$G
-					#codelink$Ri[flag.g, n] <- flag$G
+                                        #sel.flag <- codelink$Ri[flag.g, n] > flag$G
+                                        #codelink$Ri[sel.flag, n] <- flag$G
+					codelink$Ri[flag.g, n] <- flag$G
 				}
                                 if(!is.null(flag$L)) {
-                                        sel.flag <- codelink$Ri[flag.l, n] > flag$L
-                                        codelink$Ri[sel.flag, n] <- flag$L
-					#codelink$Ri[flag.l, n] <- flag$L
+                                        #sel.flag <- codelink$Ri[flag.l, n] > flag$L
+                                        #codelink$Ri[sel.flag, n] <- flag$L
+					codelink$Ri[flag.l, n] <- flag$L
 				}
                                 if(!is.null(flag$X)) {
-                                        sel.flag <- codelink$Ri[flag.x, n] > flag$X
-                                        codelink$Ri[sel.flag, n] <- flag$X
-					#codelink$Ri[flag.x, n] <- flag$X
+                                        #sel.flag <- codelink$Ri[flag.x, n] > flag$X
+                                        #codelink$Ri[sel.flag, n] <- flag$X
+					codelink$Ri[flag.x, n] <- flag$X
 				}
 			},
 			Norm = {
@@ -242,45 +243,47 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
 				codelink$method$normalization <- "Codelink Median"
 				# Set values based on Flags.
                                  if(!is.null(flag$M)) {
-					sel.flag <- codelink$Ni[flag.m, n] > flag$M
-					codelink$Ni[sel.flag, n] <- flag$M
-					#codelink$Ni[flag.m, n] <- flag$M
+					#sel.flag <- codelink$Ni[flag.m, n] > flag$M
+					#codelink$Ni[sel.flag, n] <- flag$M
+					codelink$Ni[flag.m, n] <- flag$M
 				}
                                 if(!is.null(flag$I)) {
-					sel.flag <- codelink$Ni[flag.i, n] > flag$I
-                                        codelink$Ni[sel.flag, n] <- flag$I
-					#codelink$Ni[flag.i, n] <- flag$I
+					#sel.flag <- codelink$Ni[flag.i, n] > flag$I
+                                        #codelink$Ni[sel.flag, n] <- flag$I
+					codelink$Ni[flag.i, n] <- flag$I
 				}
                                 if(!is.null(flag$C)) {
-					sel.flag <- codelink$Ni[flag.c, n] > flag$C
-                                        codelink$Ni[sel.flag, n] <- flag$C
-					#codelink$Ni[flag.c, n] <- flag$C
+					#sel.flag <- codelink$Ni[flag.c, n] > flag$C
+                                        #codelink$Ni[sel.flag, n] <- flag$C
+					codelink$Ni[flag.c, n] <- flag$C
 				}
                                 if(!is.null(flag$S)) {
-                                        sel.flag <- codelink$Ni[flag.s, n] > flag$S
-                                        codelink$Ni[sel.flag, n] <- flag$S
-					#codelink$Ni[flag.s, n] <- flag$S
+                                        #sel.flag <- codelink$Ni[flag.s, n] > flag$S
+                                        #codelink$Ni[sel.flag, n] <- flag$S
+					codelink$Ni[flag.s, n] <- flag$S
 				}
                                 if(!is.null(flag$G)) {
-                                        sel.flag <- codelink$Ni[flag.g, n] > flag$G
-                                        codelink$Ni[sel.flag, n] <- flag$G
-					#codelink$Ni[flag.g, n] <- flag$G
+                                        #sel.flag <- codelink$Ni[flag.g, n] > flag$G
+                                        #codelink$Ni[sel.flag, n] <- flag$G
+					codelink$Ni[flag.g, n] <- flag$G
 				}
                                 if(!is.null(flag$L)) {
-                                        sel.flag <- codelink$Ni[flag.l, n] > flag$L
-                                        codelink$Ni[sel.flag, n] <- flag$L
-					#codelink$Ni[flag.l, n] <- flag$L
+                                        #sel.flag <- codelink$Ni[flag.l, n] > flag$L
+                                        #codelink$Ni[sel.flag, n] <- flag$L
+					codelink$Ni[flag.l, n] <- flag$L
 				}
                                 if(!is.null(flag$X)) {
-                                        sel.flag <- codelink$Ni[flag.x, n] > flag$X
-                                        codelink$Ni[sel.flag, n] <- flag$X
-					#codelink$Ni[flag.x, n] <- flag$X
+                                        #sel.flag <- codelink$Ni[flag.x, n] > flag$X
+                                        #codelink$Ni[sel.flag, n] <- flag$X
+					codelink$Ni[flag.x, n] <- flag$X
 				}
  			}
 		)
 		if(n==1) {
                         codelink$name <- as.character(data[,"Probe_name"])
                         codelink$type <- as.character(data[,"Probe_type"])
+			codelink$logical[,"row"] <- data[,"Logical_row"]
+			codelink$logical[,"col"] <- data[,"Logical_col"]
                 }
 	}
 	# Compute SNR.

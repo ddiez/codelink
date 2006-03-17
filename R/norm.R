@@ -3,18 +3,18 @@
 normalize <- function(object, method="quantiles", log.it=TRUE, preserve=FALSE) {
 	if(!is(object,"Codelink")) stop("A Codelink object is needed.")
 	if(is.null(object$Ri)) stop("Background corrected intensities needed.")
-	if(object$method$log) stop("Intensities already log2.")
+	if(log.it & object$method$log) stop("Intensities already log2.")
 	method <- match.arg(method,c("loess","quantiles"))
 
 	object$Ni <- object$Ri
-	if(log.it) object$Ri <- log2(object$Ri)
+	if(log.it) object$Ni <- log2(object$Ni)
 	switch(method,
 		loess = {
-			object$Ni <- normalize.loess(object$Ri, log.it=FALSE)
+			object$Ni <- normalize.loess(object$Ni, log.it=FALSE)
 			object$method$normalization <- "Cyclic Loess"
 		},
 		quantiles = {
-			object$Ni <- normalizeQuantiles(object$Ri)
+			object$Ni <- normalizeQuantiles(object$Ni)
                         object$method$normalization <- "Quantiles"
 		}
 	)

@@ -13,6 +13,7 @@ plotMA <- function(object, array1=1, array2=2, cutoff=NULL, label="type",
 		subset <- match.arg(subset, levels(as.factor(object$type)), several.ok=TRUE)
 		subset.sel <- object$type %in% as.character(subset)
 		object <- object[subset.sel,]
+		# FIXME: high.list must be subsetted then...
 	}
 
 	if(!is.null(object$Smean)) {
@@ -107,22 +108,48 @@ plotMA <- function(object, array1=1, array2=2, cutoff=NULL, label="type",
 
 ## plotDensities()
 # Densities plot of gene intensities.
-plotDensities <- function(object, subset=c(1:dim(object)[2]), title=NULL, legend.cex=1) {
+plotDensities <- function(object, subset=c(1:dim(object)[2]), title=NULL, legend.cex=1, what=NULL) {
         if(!is(object,"Codelink")) stop("Codelink object needed.")
-        if(!is.null(object$Smean)) {
-		val <- object$Smean
-		what <- "Smean"
+	if(is.null(what)) {
+		if(!is.null(object$Smean)) {
+			val <- object$Smean
+			what <- "Smean"
+		}
+		if(!is.null(object$Ri)) {
+			val <- object$Ri
+			what <- "Ri"
+		}
+		if(!is.null(object$Ni)) {
+			val <- object$Ni
+			what <- "Ni"
+		}
+	} else {
+		what <- match.arg(what, c("bg","snr","smean","ri","ni"))
+		switch(what,
+			snr={
+				val <- object$snr
+				what <- "SNR"
+			},
+			bg={
+				val <- object$Bmedian
+				what <- "Bmedian"
+			},
+			smean={
+				val <- object$Smean
+				what <- "Smean"
+			},
+			ri={
+				val <- object$Ri
+				what <- "Ri"
+			},
+			ni={
+				val <- object$Ni
+				what <- "Ni"
+			}
+		)
 	}
-        if(!is.null(object$Ri)) {
-		val <- object$Ri
-		what <- "Ri"
-	}
-        if(!is.null(object$Ni)) {
-		val <- object$Ni
-		what <- "Ni"
-	}
-	if(!object$method$log) val <- log2(val)
-        
+	if(what!="Ni") val <- log2(val)
+	if(what=="Ni" & !object$method$log) val <- log2(val)
 	colors <- rainbow(length(subset))
 	y.max <- c()
         x.max <- c()
@@ -241,3 +268,43 @@ plotCV <- function(object, subset=c(1:dim(object)[2]), cutoff=NULL, title=NULL, 
 #greenred <- colorRampPalette(c('green','black','red'))
 # Generate blue white red colorscale
 #bluered <- colorRampPalette(c('blue','white','red'))
+
+## imageCodelink()
+# Function to plot images of arrays.
+imageCodelink <- function(object, array=1, what="smean",
+                          rows=NULL, cols=NULL, col=NULL, ...)
+{
+        what <- match.arg(what, c("bg", "snr", "smean", "ri", "ni"))
+        switch(what,
+                bg=val <- object$Bmedian[,array],
+		snr=val <- object$snr[,array],
+                smean=val <- object$Smean[,array],
+                ri=val <- object$Ri[,array],
+                ni=val <- object$Ni[,array]
+        )
+	if(what!="ni") val <- log2(val)
+	if(what=="ni" & !object$method$log) val <- log2(val)
+        o.row <- range(object$logical[,"row"])
+        o.col <- range(object$logical[,"col"])
+        foo <- matrix(NA, nrow=o.row[2], ncol=o.col[2])
+        for(n in 1:dim(object)[1]) {
+                foo[object$logical[n,"row"], object$logical[n,"col"]] <- val[n]
+        }
+        if(is.null(col)) {
+                whitered <- colorRampPalette(c("white", "red"))
+                col <- whitered(50)
+        }
+        if(is.null(rows) && is.null(cols)) {
+                mat <- foo
+        } else {
+                if(is.null(rows)) {
+                        mat <- foo[rows,]
+                } else if(is.null(cols)) {
+                        mat <- foo[, cols]
+                } else {
+                        mat <- foo[rows, cols]
+                }
+        }
+        image(mat, col=col, axes=FALSE, ...)
+	box()
+}

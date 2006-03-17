@@ -5,6 +5,6 @@ exportClasses(Codelink)
 exportMethods("[", show)
 
 export(readCodelink, writeCodelink, reportCodelink,
-	plotMA, plotCorrelation, plotDensities, plotCV,
+	plotMA, plotCorrelation, plotDensities, plotCV, imageCodelink,
 	bkgdCorrect, normalize, mergeArray, createWeights,
 	selCV, cutCV, fc2Cond, na2false, logCodelink)

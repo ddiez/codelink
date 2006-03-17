@@ -306,3 +306,9 @@ that column.
   - Check for files detected in readCodelink().
   - Check for correct header file in readHeader().
   - Speed up of readHeader().
+
+0.7.11
+  - Added imageCodelink() function to plot arrays yet experimental.
+  - FIX flag based assigment in readCodelink().
+  - FIX check for log intensities in normalize().
+  - FIX log Ri in normalize().
