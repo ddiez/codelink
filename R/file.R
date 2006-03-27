@@ -299,26 +299,30 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
 }
 ## writeCodelink()
 #  write Codelink object to file
-writeCodelink <- function(object, file=NULL, dec=".") {
+writeCodelink <- function(object, file=NULL, dec=".", flag=FALSE) {
 	if(!is(object, "Codelink")) stop("A Codelink object is needed.")
 	if(is.null(file)) stop("A file name is needed.")
 
-	write(paste("BkgdCorrection_method", object$method$background, sep="\t"), file=file)
-	write(paste("Normalization_method", object$method$normalization, sep="\t"), file=file, append=TRUE)
-	write(paste("Log_transformed", object$method$log, sep="\t"), file=file, append=TRUE)
+	write(paste("# BkgdCorrection method", object$method$background, sep="\t"), file=file)
+	write(paste("# Normalization method", object$method$normalization, sep="\t"), file=file, append=TRUE)
+	write(paste("# Log transformed", object$method$log, sep="\t"), file=file, append=TRUE)
 
 	val <- NULL
 	if(!is.null(object$Smean)) val <- object$Smean
 	if(!is.null(object$Ri)) val <- object$Ri
 	if(!is.null(object$Ni)) val <- object$Ni
-	tmp <- cbind(object$name, object$flag, val)
-	head <- c("Probe_name", paste("Quality_flag", object$sample, sep="-"), paste("Intensity", object$sample, sep="-"))
+	if(flag) {
+		tmp <- cbind(object$name, val, object$flag)
+	} else {
+		tmp <- cbind(object$name, val)
+		head <- c("Probe_name", object$sample, object$sample)
+	}
 	tmp2 <- rbind(Index=head, tmp)
-	write.table(tmp2,file=file,append=TRUE,quote=FALSE,sep="\t",dec=dec,col.names=FALSE)
+	write.table(tmp2, file=file, quote=FALSE,sep="\t", dec=dec, col.names=FALSE)
 }
 
 ## reportCodelink()
-# report output to HTML.
+#  report output to HTML.
 reportCodelink <- function(object, chip, filename=NULL, title="Main title", probe.type=FALSE, other=NULL, other.ord=NULL) {
 	if(!is(object,"Codelink") && !is(object,"character")) stop("Codelink object or character vector needed.")
 	if(probe.type && !is(object,"Codelink")) stop("Codelink object needed putting type")

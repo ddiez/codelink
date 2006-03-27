@@ -4,12 +4,13 @@
 \description{
 }
 \usage{
-	writeCodelink(object, file=NULL, dec=".")
+  writeCodelink(object, file=NULL, dec=".", flag=FALSE)
 }
 \arguments{
-	\item{object}{an object of class "Codelink".}
-	\item{file}{filename to write object to.}
-	\item{dec}{decimal character to use.}
+  \item{object}{an object of class "Codelink".}
+  \item{file}{filename to write object to.}
+  \item{dec}{decimal character to use.}
+  \item{flag}{should the Codelink flags be written.}
 }
 \value{
 }

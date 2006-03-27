@@ -312,3 +312,7 @@ that column.
   - FIX flag based assigment in readCodelink().
   - FIX check for log intensities in normalize().
   - FIX log Ri in normalize().
+
+0.7.12
+  - Rewrite of writeCodelink().
+  - FIX htmlpage link in man pages.

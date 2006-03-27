@@ -24,7 +24,7 @@ tion about these genes: Unigene, Genbank, Entrez Gene, etc.
 \note{
 }
 \author{Diego Díez Ruiz}
-\seealso{\code{\link{htmlpage}}}
+\seealso{\code{\link[annotate]{htmlpage}}}
 \examples{
 }
 \keyword{documentation}
