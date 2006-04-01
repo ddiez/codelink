@@ -1,54 +1,80 @@
 ## plotMA()
 # MA plot of gene intensities.
 plotMA <- function(object, array1=1, array2=2, cutoff=NULL, label="type",
+                   type=NULL,
                    high.list=NULL, high.col="blue", high.pch="*",
                    snr.cutoff=1, legend.x="bottomright", pch=".", subset=NULL,
                    title=NULL, xlim=NULL, ylim=NULL) {
-	if(!is(object,"Codelink")) stop("Codelink object needed.")
+	#if(!is(object,"Codelink")) stop("Codelink object needed.")
 #	if(!is.null(high.list) && (!is(high.list,"logical") || !is(high.list,"vector"))) stop("logical vector needed.")
 #	if(!is.null(high.list) && length(high.list) != dim(object)[1]) stop("high.list and number of genes differ.")
+
+	switch(class(object),
+		Codelink={
+			if(!is.null(object$Smean)) {
+					val1 <- object$Smean[,array1]
+					val2 <- object$Smean[,array2]
+					what <- "Smean"
+			}
+			if(!is.null(object$Ri)) {
+					val1 <- object$Ri[,array1]
+					val2 <- object$Ri[,array2]
+					what <- "Ri"
+			}
+			if(!is.null(object$Ni)) {    
+					val1 <- object$Ni[,array1]
+					val2 <- object$Ni[,array2]
+					what <- "Ni"
+			}
+			if(!object$method$log) {
+				val1 <- log2(val1)
+				val2 <- log2(val2)
+			}
+			# M, A computation.
+			M <- val2 - val1
+			A <- (val2 + val1)/2
+			type <- object$type
+			snr <- object$snr
+		},
+		MArrayLM={
+			M <- as.matrix(object$coefficients)[, array1]
+			A <- object$Amean
+			what <- "MArrayLM"
+		},
+		stop("invalid parameter object")
+	)
+	
 	label <- match.arg(label,c("type", "snr", "none"))
+	if(is.null(type) & label!="none") {
+		cat("no type information, reverting to label 'none'\n")
+		label <- "none"
+	}
 
 	if(!is.null(subset)) {
-		subset <- match.arg(subset, levels(as.factor(object$type)), several.ok=TRUE)
-		subset.sel <- object$type %in% as.character(subset)
-		object <- object[subset.sel,]
-		# FIXME: high.list must be subsetted then...
+		if(is.null(type)) stop("need type information for subset.\n")
+		else {
+			subset <- match.arg(subset, levels(as.factor(type)), several.ok=TRUE)
+			subset.sel <- type %in% as.character(subset)
+			M <- M[subset.sel]
+			A <- A[subset.sel]
+			type <- type[subset.sel]
+			if(class(object)=="Codelink") snr <- snr[subset.sel,]
+			if(!is.null(high.list)) high.list <- high.list[subset.sel]
+		}
 	}
 
-	if(!is.null(object$Smean)) {
-                        val1 <- object$Smean[,array1]
-                        val2 <- object$Smean[,array2]
-			what <- "Smean"
-	}
-        if(!is.null(object$Ri)) {
-                        val1 <- object$Ri[,array1]
-                        val2 <- object$Ri[,array2]
-			what <- "Ri"
-	}
-	if(!is.null(object$Ni)) {    
-                        val1 <- object$Ni[,array1]
-                        val2 <- object$Ni[,array2]
-			what <- "Ni"
-	}
-	if(!object$method$log) {
-		val1 <- log2(val1)
-		val2 <- log2(val2)
-	}
-	# M, A computation.
-	M <- val2 - val1
-	A <- (val2 + val1)/2
+
         # Range computation.
 	if(is.null(xlim)) xlim <- range(A, na.rm=TRUE)
 	if(is.null(ylim)) ylim <- range(M, na.rm=TRUE)
 	# Plotting.
 	switch(label,
                 type = {
-                        negative <- object$type=="NEGATIVE"
-                        positive <- object$type=="POSITIVE"
-                        discovery <- object$type=="DISCOVERY"
-                        fiducial <- object$type=="FIDUCIAL"
-                        other <- object$type=="OTHER"
+                        negative <- type=="NEGATIVE"
+                        positive <- type=="POSITIVE"
+                        discovery <- type=="DISCOVERY"
+                        fiducial <- type=="FIDUCIAL"
+                        other <- type=="OTHER"
                         plot(A[discovery], M[discovery], xlim=xlim, ylim=ylim, xlab="A", ylab="M", pch=pch)
                         points(A[negative], M[negative], col="red", pch=20)
                         points(A[positive], M[positive], col="blue", pch=20)
@@ -58,8 +84,8 @@ plotMA <- function(object, array1=1, array2=2, cutoff=NULL, label="type",
 			legend.fill <- c("black","red","blue","yellow","green")
 		},
 		snr = {
-			sel.1 <- object$snr[, array1] >= snr.cutoff
-			sel.2 <- object$snr[, array2] >= snr.cutoff
+			sel.1 <- snr[, array1] >= snr.cutoff
+			sel.2 <- snr[, array2] >= snr.cutoff
 			plot(A[sel.1 & sel.2], M[sel.1 & sel.2], xlim=xlim, ylim=ylim, col="black", xlab="A", ylab="M", pch=pch)
                         points(A[xor(sel.1, sel.2)], M[xor(sel.1, sel.2)], col="orange", pch=".")
                         points(A[!sel.1 & !sel.2], M[!sel.1 & !sel.2], col="red", pch=".")
@@ -75,7 +101,7 @@ plotMA <- function(object, array1=1, array2=2, cutoff=NULL, label="type",
         if(!is.null(high.list)) {
 		#names <- object$name[high.list]
                 #text(A[high.list], M[high.list], names, col="blue", cex=0.75)
-		points(A[high.list],M[high.list],col=high.col,pch=high.pch)
+		points(A[high.list], M[high.list], col=high.col,pch=high.pch)
         }
 
 	## Lowess line.
@@ -99,9 +125,15 @@ plotMA <- function(object, array1=1, array2=2, cutoff=NULL, label="type",
 	        abline(h=-cutoff, lty="dotted")
         	abline(h=cutoff, lty="dotted")
 	}
-        names <- object$sample[c(array1, array2)]
-	#if(is.null(title)) title(paste(object$Experiment_name,"\n(",names[2],"-", names[1], ") MA Plot of ", what, sep=""))
-	if(is.null(title)) title(paste("(",names[2],"-", names[1], ") MA Plot of ", what, sep=""))
+	switch(class(object),
+		Codelink={
+			names <- paste(object$sample[array2],"-",object$sample[array1], sep="")
+		},
+		MArrayLM={
+			names <- colnames(object$contrasts)[array1]
+		}
+	)
+	if(is.null(title)) title(paste(names, " MA Plot of ", what, sep=""))
 	else title(title)
 	if(label != "none") legend(x=legend.x, legend=legend.text, fill=legend.fill, inset=0.05)
 }

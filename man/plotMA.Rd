@@ -5,17 +5,18 @@
 	Takes a Codelink object and plot M vs A.
 }
 \usage{
-  plotMA(object, array1=1, array2=2, cutoff=NULL, label="type",
+  plotMA(object, array1=1, array2=2, cutoff=NULL, label="type", type=NULL,
 	high.list=NULL, high.col="blue", high.pch="*",
 	snr.cutoff=1, legend.x="bottomright", pch=".", subset=NULL, 
 	title=NULL, xlim=NULL, ylim=NULL)
 }
 \arguments{
-  \item{object}{an object of class "Codelink".}
+  \item{object}{an object of class "Codelink" or "MAarrayLM".}
   \item{array1}{first array to be used.}
   \item{array2}{second array to be used.}
   \item{cutoff}{cutoff to be used as fold change markeer.}
   \item{label}{type of labeling used in legend.}
+  \item{type}{spot type information.}
   \item{high.list}{list of genes highlighted.}
   \item{high.col}{color used for high genes.}
   \item{high.pch}{pch used for high genes.}

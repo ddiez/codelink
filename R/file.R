@@ -313,9 +313,10 @@ writeCodelink <- function(object, file=NULL, dec=".", flag=FALSE) {
 	if(!is.null(object$Ni)) val <- object$Ni
 	if(flag) {
 		tmp <- cbind(object$name, val, object$flag)
+		head <- c("Probe_name", object$sample, object$sample)
 	} else {
 		tmp <- cbind(object$name, val)
-		head <- c("Probe_name", object$sample, object$sample)
+		head <- c("Probe_name", object$sample)
 	}
 	tmp2 <- rbind(Index=head, tmp)
 	write.table(tmp2, file=file, quote=FALSE,sep="\t", dec=dec, col.names=FALSE)

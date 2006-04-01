@@ -96,7 +96,7 @@ some Codelink files you do:
 This suppose that your files have the extension ``TXT'' (uppercase)
 and they are in your working directory. If this is not the case you can specify 
 files to be read with the 'file' argument. The function 
-\Rfunction{readCodelink} returns and object of class ``Codelink'':
+\Rfunction{readCodelink} returns and object of \Robject{Codelink}:
 
 <<data>>=
 
@@ -143,9 +143,9 @@ slot is set to "Unknown". If one product type disagree with the others an error
 message is shown and reading of files is terminated.
 
 By default, all spots flagged with M, I, and S flags are set to NA. This can be
-changed with the flag argument in readCodelink(). The flag argument is a list
-that can contain a valid flag identifier and a value for that flag. For
-example, if you want to set all M flagged spots to 0.01 and let other spot
+changed with the flag argument in \Rfunction{readCodelink}. The flag argument 
+is a list that can contain a valid flag identifier and a value for that flag.  
+For example, if you want to set all M flagged spots to 0.01 and let other spot
 untouched you do:
 
 \begin{Sinput}
@@ -171,9 +171,9 @@ background correction:
 
 \end{Sinput}
 
-The default method used is based on the \emph{half} method from \emph{limma} 
-\cite{limma} package. Median background intensity (Bmedian) is subtracted
-from mean spot intensity (Smean) and if the result is less than
+The default method used is based on the \emph{half} method from 
+\Rpackage{limma} \cite{limma} package. Median background intensity (Bmedian) is 
+subtracted from mean spot intensity (Smean) and if the result is less than
 0.5 then it is set to 0.5 to ensure no negative numbers are obtained.
 
 
@@ -181,10 +181,10 @@ from mean spot intensity (Smean) and if the result is less than
 
 Normalization of Ri values are done with the wrapper function
 normalize(). The default method is \emph{quantile} normalization
-that in fact call \emph{normalizeQuantiles()} from \emph{limma} package
-(that allows for NAs). There is also the possibility to use a modified
-version of cyclic loess from affy \cite{affy} package that also allows NA
-values.
+that in fact call \Rfunction{normalizeQuantiles()} from \Rpackage{limma} 
+package (that allows for NAs). There is also the possibility to use a modified
+version of cyclic loess from \Rpackage{affy} \cite{affy} package that also 
+allows NA values.
 
 \begin{Sinput}
 
@@ -192,7 +192,7 @@ values.
 
 \end{Sinput}
 
-By default, normalize() return log2 intensity values.  This could be
+By default, \Rfunction{normalize} return log2 intensity values.  This could be
 changed setting the parameter log.it to FALSE.
 
 
@@ -200,12 +200,11 @@ changed setting the parameter log.it to FALSE.
 
 There are some plotting functions available that can use directly the
 Codelink objects. These are functions for producing MA plots
-(plotMA()), scatterplots (plotCorrelation()) and density
-plots (plotDensities()).  All functions use the available intensity
-value (i.e.  Smean, Ri or Ni) to make the
-plot.
+(\Rfunction{plotMA}), scatterplots (\Rfunction{plotCorrelation}) and density
+plots (\Rfunction{plotDensities}).  All functions use the available intensity
+value (i.e.  Smean, Ri or Ni) to make the plot.
 
-The function plotMA() can highlight spots based on type values
+The function \Rfunction{plotMA} can highlight spots based on type values
 (by default) or SNR values setting the argument label. It requires array1 and
 array2 arguments and compute M and A values based on equations \ref{eq:M} and
 \ref{eq:A}.
@@ -229,9 +228,9 @@ A=\frac{Array2+Array1}{2}
 \label{eq:A}
 \end{equation}
 
-The function plotDensities() plot the density of intensity values of
+The function \Rfunction{plotDensities} plot the density of intensity values of
 all arrays. If the subset argument is supplied it can use only a subset of the 
-arrays in the Codelink object.
+arrays in the \Robject{Codelink} object.
 
 \begin{center}
 <<plotDensity, fig=TRUE>>=
@@ -248,9 +247,9 @@ useful for someone.
 
 \subsection{Using weights}
 
-The createWeights() function creates a matrix of weights based on probe type 
-labels to be used, for example, in fitting a linear model with limma 
-\cite{limma}.
+The \Rfunction{createWeights} function creates a matrix of weights based on 
+probe type labels to be used, for example, in fitting a linear model with 
+\Rpackage{limma} \cite{limma}.
 
 <<createWeights>>=
 
@@ -262,13 +261,13 @@ w[1:10,]
 
 \subsection{Merging arrays}
 
-In case you want to merge array intensities the mergeArray() function help on 
-this task. It computes the mean of Ni values on arrays of 
-the same class. The grouping is done by means of the 'class' argument 
-(numerical vector of classes). New sample names should be assigned to 
-sample slot with the 'names' argument. The function also returns the 
-coefficient of variation in the 'CV' slot. The distribution of coefficients of 
-variations can be checked with the function plotCV().
+In case you want to merge array intensities the \Rfunction{mergeArray} function 
+help on this task. It computes the mean of Ni values on arrays of the same 
+class.  The grouping is done by means of the 'class' argument (numerical vector 
+of classes). New sample names should be assigned to sample slot with the 
+'names' argument. The function also returns the coefficient of variation in the 
+'cv' slot. The distribution of coefficients of variations can be checked with 
+the function \Rfunction{plotCV}.
 
 \begin{Sinput}
 

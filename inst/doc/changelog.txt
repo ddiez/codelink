@@ -316,3 +316,15 @@ that column.
 0.7.12
   - Rewrite of writeCodelink().
   - FIX htmlpage link in man pages.
+
+0.7.13
+  - FIX a bug in writeCodelink().
+  - Rename temporally plotMA() to plotMA2() as mask plotMA() from limma
+  package. The ploting of MArrayLM object is lost.
+  - This version is not committed to svn repository.
+
+0.99.0
+  - Renamed again plotMA2() to plotMA().
+  - Added support for "MArrayLM" object from limma package in plotMA().
+  - Version set to 0.99.0 to be (hopefuly) part of BioC 1.8.
+  - Some FIXES in package vignette.
