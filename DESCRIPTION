@@ -1,13 +1,16 @@
 Package: codelink
 Version: 1.1.0
-Date: 2006/04/01
+Date: 2006/05/22
 Title: Manipulation of Codelink Bioarrays data.
-Author: Diego Díez <ddiez@iib.uam.es>
-Maintainer: Diego Díez <ddiez@iib.uam.es>
-Depends: R (>= 2.2), limma, annotate
+Author: Diego Diez <diez@kuicr.kyoto-u.ac.jp>
+Maintainer: Diego Diez <diez@kuicr.kyoto-u.ac.jp>
+Depends: R (>= 2.3), limma, annotate
 Suggests:
 LazyLoad: yes
-Description: Manipulation of Codelink Bioarrays data. 
+Description: This packages allow reading into R of Codelink bioarray data \\
+ exported as text from the Codelink software. Also includes some functions \\
+ to ease the manipulation and pre-processing of data, such in background \\
+ correction and normalization. 
 License: GPL
 URL: http://www.iib.uam.es/~ddiez
 Packaged: Fri Oct 28 13:49:56 2005; ddiez
