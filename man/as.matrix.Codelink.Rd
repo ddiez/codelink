@@ -16,7 +16,7 @@ as.matrix.Codelink(x)
 }
 \note{
 }
-\author{Diego Diez Ruiz}
+\author{Diego Diez}
 \seealso{\code{\link{as.matrix}}}
 \examples{
 #	data(codelink.example)

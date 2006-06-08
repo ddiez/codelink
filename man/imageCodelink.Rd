@@ -5,16 +5,22 @@
   Plot and image of a Codelink array if the layout information is found.
 }
 \usage{
-  imageCodelink(object, array=1, what="smean",
-                rows=NULL, cols=NULL, col=NULL, ...)
+
+imageCodelink(object, array = 1, what = "bg",
+    low="black", high="white", mar=c(2,1,1,1),
+    gr=1, gc=1, log.it=FALSE, ...)
+	
 }
 \arguments{
   \item{object}{an object of class "Codelink".}
   \item{array}{array to be used.}
   \item{what}{with data plot: bg, smean, ri, ni.}
-  \item{rows}{rows subset to plot.}
-  \item{cols}{cols subset to plot.}
-  \item{col}{colors to use.}
+  \item{low}{color used for low intensities.}
+  \item{high}{color used for high intensities-}
+  \item{mar}{character vector specifiying margings.}
+  \item{gc}{numerical; number of grid columns.}
+  \item{gr}{numerical; number of grid rows.}
+  \item{log.it}{logical; if TRUE data is log2 transformed (if not yet).}
   \item{...}{additional arguments passed to image.}
 }
 \value{
@@ -23,7 +29,7 @@
 }
 \note{
 }
-\author{Diego Díez Ruiz}
+\author{Diego Diez}
 \seealso{
 }
 \examples{

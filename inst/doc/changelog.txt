@@ -339,3 +339,9 @@ that column.
   - Added support for normexp background adjusment from limma package.
   - Added offset argument to bkgdCorrect() with default=0.
   - Updated maintainer information.
+
+1.1.2
+  - Improvements to imageCodelink().
+  - New function arrayNew() creates calls x11() device to set suitable
+  dimensions to be used with imageCodelink().
+

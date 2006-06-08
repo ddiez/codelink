@@ -24,7 +24,7 @@ by Codelink Software or not) flags and information about probes.
 }
 \note{
 }
-\author{Diego Díez Ruiz}
+\author{Diego Diez}
 \seealso{\code{\link{read.table}}}
 \examples{
     ## NOT RUN ##

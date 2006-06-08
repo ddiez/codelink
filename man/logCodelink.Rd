@@ -15,7 +15,7 @@ logCodelink(object)
 }
 \note{
 }
-\author{Diego Díez Ruiz}
+\author{Diego Diez}
 \seealso{\code{\link{log2}}}
 \examples{
     #### NOT RUN

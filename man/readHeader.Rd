@@ -16,7 +16,7 @@ readHeader(file, dec=FALSE)
 }
 \note{
 }
-\author{Diego Díez Ruiz}
+\author{Diego Diez}
 \seealso{}
 \examples{
     ## NOT RUN ##

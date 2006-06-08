@@ -303,40 +303,68 @@ plotCV <- function(object, subset=c(1:dim(object)[2]), cutoff=NULL, title=NULL, 
 
 ## imageCodelink()
 # Function to plot images of arrays.
-imageCodelink <- function(object, array=1, what="smean",
-                          rows=NULL, cols=NULL, col=NULL, ...)
-{
-        what <- match.arg(what, c("bg", "snr", "smean", "ri", "ni"))
-        switch(what,
-                bg=val <- object$Bmedian[,array],
-		snr=val <- object$snr[,array],
-                smean=val <- object$Smean[,array],
-                ri=val <- object$Ri[,array],
-                ni=val <- object$Ni[,array]
-        )
-	if(what!="ni") val <- log2(val)
-	if(what=="ni" & !object$method$log) val <- log2(val)
-        o.row <- range(object$logical[,"row"])
-        o.col <- range(object$logical[,"col"])
-        foo <- matrix(NA, nrow=o.row[2], ncol=o.col[2])
-        for(n in 1:dim(object)[1]) {
-                foo[object$logical[n,"row"], object$logical[n,"col"]] <- val[n]
-        }
-        if(is.null(col)) {
-                whitered <- colorRampPalette(c("white", "red"))
-                col <- whitered(50)
-        }
-        if(is.null(rows) && is.null(cols)) {
-                mat <- foo
-        } else {
-                if(is.null(rows)) {
-                        mat <- foo[rows,]
-                } else if(is.null(cols)) {
-                        mat <- foo[, cols]
-                } else {
-                        mat <- foo[rows, cols]
+imageCodelink <- function (object, array = 1, what = "bg",
+    low="black", high="white", mar = c(2, 1, 1, 1),
+    gr=1, gc=1, log.it=FALSE, ...) {
+
+	what <- match.arg(what, c("bg", "snr", "smean", "ri", "ni"))
+	switch(what,
+		bg = val <- object$Bmedian[, array],
+		snr = val <- object$snr[, array],
+		smean = val <- object$Smean[, array],
+		ri = val <- object$Ri[,	array],
+		ni = val <- object$Ni[, array]
+	)
+	if(!object$method$log & log.it)
+		val <- log2(val)
+
+	o.row <- range(object$logical[, "row"])
+	o.col <- range(object$logical[, "col"])
+	
+	foo <- matrix(NA, nrow = o.row[2], ncol = o.col[2])
+
+	for (n in 1:dim(object)[1]) {
+		foo[object$logical[n, "row"],object$logical[n, "col"]] <- val[n]
+	}
+
+	col <- colorRampPalette(c(low, high))(123)
+	old.par <- par(mar = mar)
+	on.exit(par(old.par))
+
+	sc <- o.col[2]/gc
+	sr <- o.row[2]/gr
+
+	image(0:(gr * sr), 0:(gc * sc), foo, col = col, xaxt="n", yaxt="n", ...)
+
+	for (igrid in 0:gc) lines(c(0, gr * sr), rep(igrid * sc, 2))
+		for (igrid in 0:gr) lines(rep(igrid * sr, 2), c(0, gc * sc))
+	mtext(paste("Slide:", array," File:", object$file[array]), side=1, cex=0.8)
+}
+# arrayNew
+# creates a suitable x11 device to see the chip with the correct dimensions.
+arrayNew <- function(chip="rwgcod", f=2) {
+        chip <- match.arg(chip, c("rwgcod", "mwgcod", "hwgcod"))
+        # This is hardcoded as it is not way to guess.
+        switch(chip,
+                rwgcod={
+                        gc <- 1
+                        gr <- 8
+                        sc <- 112
+                        sr <- 41
+                },
+                mwgcod={
+			gc <- 1
+			gr <- 10
+			sc <- 112
+			sr <- 41
+                },
+                hwgcod={
+                        gc <- 1
+                        gr <- 12
+                        sc <- 112
+                        sr <- 42
                 }
-        }
-        image(mat, col=col, axes=FALSE, ...)
-	box()
+        )
+        r <- sr / sc
+        x11(width=f*gr*r, height=f*gc)
 }

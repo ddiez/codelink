@@ -23,7 +23,7 @@ tion about these genes: Unigene, Genbank, Entrez Gene, etc.
 }
 \note{
 }
-\author{Diego Díez Ruiz}
+\author{Diego Diez}
 \seealso{\code{\link[annotate]{htmlpage}}}
 \examples{
 }

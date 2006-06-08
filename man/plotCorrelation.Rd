@@ -24,7 +24,7 @@
 }
 \note{
 }
-\author{Diego Diez Ruiz}
+\author{Diego Diez}
 \seealso{\code{\link{plot}}}
 \examples{
 #    data(codelink.example)

@@ -16,7 +16,7 @@
 }
 \note{
 }
-\author{Diego Diez Ruiz}
+\author{Diego Diez}
 \seealso{
 }
 \examples{
