@@ -6,7 +6,7 @@
     with imageCodelink().
 }
 \usage{
-  arrayNew(chip="rwgcod", f=2)
+  arrayNew(f=2, chip="rwgcod")
 }
 \arguments{
   \item{chip}{character; Codelink chip to be used in imageCodelink.}

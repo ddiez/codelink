@@ -31,7 +31,7 @@ mergeArray <- function(object, class, names=NULL, method="mean",
 				val.cv[,as.numeric(n)] <- apply(data, 1, function(x) sd(x[sel], na.rm=TRUE)/mean(x[sel],na.rm=TRUE))
 				if(doSNR) snr[,as.numeric(n)] <- apply(object$snr, 1, function(x) mean(x[sel], na.rm=TRUE))
 			}
-			object$method$merge <- "Mean"
+			object$method$merge <- "mean"
 		}
 	)
 	cat("\n")
@@ -55,15 +55,15 @@ bkgdCorrect <- function(object, method="half", preserve=FALSE,
 	switch(method,
 		none = {
 			object$Ri <- object$Smean
-			object$method$background <- "None"
+			object$method$background <- "NONE"
 		},
 		subtract = {
 			object$Ri <- object$Smean - object$Bmedian
-			object$method$background <- "Subtract"
+			object$method$background <- "subtract"
 		},
 		half = {
 			object$Ri <- pmax(object$Smean - object$Bmedian, 0.5)
-			object$method$background <- "Half"
+			object$method$background <- "half"
 		},
 		normexp = {
 			object$Ri <- object$Smean
@@ -74,6 +74,7 @@ bkgdCorrect <- function(object, method="half", preserve=FALSE,
 			    if (verbose)
 				cat("Corrected array", j, "\n")
 			}
+			object$method$background <- "normexp"
 		}
 	)
 	if(!preserve) object$Smean <- NULL

@@ -345,3 +345,6 @@ that column.
   - New function arrayNew() creates calls x11() device to set suitable
   dimensions to be used with imageCodelink().
 
+1.1.3
+  - Change order of parameters in arrayNew().
+  - Fix setting of slot method$background when using normexp method.

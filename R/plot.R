@@ -304,7 +304,7 @@ plotCV <- function(object, subset=c(1:dim(object)[2]), cutoff=NULL, title=NULL, 
 ## imageCodelink()
 # Function to plot images of arrays.
 imageCodelink <- function (object, array = 1, what = "bg",
-    low="black", high="white", mar = c(2, 1, 1, 1),
+    low="black", high="white", mar = c(1, 1, 1, 1),
     gr=1, gc=1, log.it=FALSE, ...) {
 
 	what <- match.arg(what, c("bg", "snr", "smean", "ri", "ni"))
@@ -342,29 +342,35 @@ imageCodelink <- function (object, array = 1, what = "bg",
 }
 # arrayNew
 # creates a suitable x11 device to see the chip with the correct dimensions.
-arrayNew <- function(chip="rwgcod", f=2) {
-        chip <- match.arg(chip, c("rwgcod", "mwgcod", "hwgcod"))
-        # This is hardcoded as it is not way to guess.
-        switch(chip,
-                rwgcod={
-                        gc <- 1
-                        gr <- 8
-                        sc <- 112
-                        sr <- 41
-                },
-                mwgcod={
+arrayNew <- function(f=2, chip="rwgcod") {
+	chip <- match.arg(chip, c("rwgcod", "mwgcod", "hwgcod", "h20kcod"))
+	# This is hardcoded as it is not way to guess.
+	switch(chip,
+		rwgcod={
+			gc <- 1
+			gr <- 8
+			sc <- 112
+			sr <- 41
+		},
+		mwgcod={
 			gc <- 1
 			gr <- 10
 			sc <- 112
 			sr <- 41
-                },
-                hwgcod={
-                        gc <- 1
-                        gr <- 12
-                        sc <- 112
-                        sr <- 42
-                }
-        )
-        r <- sr / sc
-        x11(width=f*gr*r, height=f*gc)
+		},
+		hwgcod={
+			gc <- 1
+			gr <- 12
+			sc <- 112
+			sr <- 42
+		},
+		h20kcod={
+			gc <- 1
+			gr <- 1
+			sc <- 71
+			sr <- 332
+		}
+	)
+	r <- sr / sc
+	x11(width=f*gr*r, height=f*gc)
 }

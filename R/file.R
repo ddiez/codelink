@@ -1,5 +1,5 @@
-## readHeader()
-# Read header information from codelink file.
+# readHeader()
+# read header information from codelink file.
 readHeader <- function(file, dec=FALSE) {
 	# Size of header:
 	#nlines <- 0
@@ -27,7 +27,6 @@ readHeader <- function(file, dec=FALSE) {
 	head$columns <- scan(file, skip=nlines, nlines=1, sep="\t", what="", quiet=TRUE)
 	return(head)
 }
-# Read header information from codelink file.
 # Read for text files exported from Excel.
 #readHeaderExcel <- function(file, dec=FALSE) {
 #	nlines <- 0
@@ -36,7 +35,7 @@ readHeader <- function(file, dec=FALSE) {
 #                nlines<-nlines+1
 #	}
 #}
-## decDetect()
+# decDetect()
 # detect decimal point.
 decDetect <- function(file, nlines) {
 	foo <- read.table(file, skip=nlines, nrows=1, header=TRUE, sep="\t", na.strings="")
@@ -47,15 +46,15 @@ decDetect <- function(file, nlines) {
         if(is(val,"numeric")) dec <- "." else dec <- ","
 	return(dec)
 }
-## arraySize()
+# arraySize()
 # calculate chip size.
 arraySize <- function(file, nlines) {
         data <- scan(file, skip=nlines+1, sep="\t", what="integer", flush=TRUE, na.strings="", quiet=TRUE)
         #ngenes <- length(data)  # number of genes.
         ngenes <- length(data[!is.na(data)]) # Codelink exporter is a little buggy. 
 }
-## readCodelink()
-# Dynamic detection of gene number.
+# readCodelink()
+# read of codelink data.
 readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag=list(M=NA,I=NA,C=NA), dec=NULL, type="Spot", preserve=FALSE, verbose=2) {
 	if(length(files)==0) stop("Codelink files not found.")
 	type <- match.arg(type,c("Spot", "Raw", "Norm"))
@@ -297,8 +296,8 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
         
 	new("Codelink", codelink)
 }
-## writeCodelink()
-#  write Codelink object to file
+# writeCodelink()
+# write Codelink object to file
 writeCodelink <- function(object, file=NULL, dec=".", flag=FALSE) {
 	if(!is(object, "Codelink")) stop("A Codelink object is needed.")
 	if(is.null(file)) stop("A file name is needed.")
@@ -322,8 +321,8 @@ writeCodelink <- function(object, file=NULL, dec=".", flag=FALSE) {
 	write.table(tmp2, file=file, quote=FALSE,sep="\t", dec=dec, col.names=FALSE)
 }
 
-## reportCodelink()
-#  report output to HTML.
+# reportCodelink()
+# report output to HTML.
 reportCodelink <- function(object, chip, filename=NULL, title="Main title", probe.type=FALSE, other=NULL, other.ord=NULL) {
 	if(!is(object,"Codelink") && !is(object,"character")) stop("Codelink object or character vector needed.")
 	if(probe.type && !is(object,"Codelink")) stop("Codelink object needed putting type")
