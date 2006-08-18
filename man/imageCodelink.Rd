@@ -7,7 +7,7 @@
 \usage{
 
 imageCodelink(object, array = 1, what = "bg",
-    low="black", high="white", mar=c(2,1,1,1),
+    low="black", high="white", mar=c(1,1,1,1),
     gr=1, gc=1, log.it=FALSE, ...)
 	
 }

@@ -4,7 +4,7 @@ normalize <- function(object, method="quantiles", log.it=TRUE, preserve=FALSE) {
 	if(!is(object,"Codelink")) stop("A Codelink object is needed.")
 	if(is.null(object$Ri)) stop("Background corrected intensities needed.")
 	if(log.it & object$method$log) stop("Intensities already log2.")
-	method <- match.arg(method,c("loess","quantiles"))
+	method <- match.arg(method,c("loess", "quantiles", "median"))
 
 	object$Ni <- object$Ri
 	if(log.it) object$Ni <- log2(object$Ni)
@@ -16,6 +16,15 @@ normalize <- function(object, method="quantiles", log.it=TRUE, preserve=FALSE) {
 		quantiles = {
 			object$Ni <- normalizeQuantiles(object$Ni)
                         object$method$normalization <- "Quantiles"
+		},
+		median = {
+			# taken from limma.
+			#if (is.null(weights))
+            	for (j in 1:dim(object)[2]) object$Ni[, j] <- object$Ni[, 
+                	j] - median(object$Ni[, j], na.rm = TRUE)
+			#else
+			#	for (j in 1:narrays) object$M[, j] <- object$M[, j] 
+			#		- weighted.median(object$M[, j], weights[, j], na.rm = TRUE)
 		}
 	)
 	if(!preserve) object$Ri <- NULL

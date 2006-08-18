@@ -348,3 +348,8 @@ that column.
 1.1.3
   - Change order of parameters in arrayNew().
   - Fix setting of slot method$background when using normexp method.
+
+1.1.4
+  - Small FIX in documentation.
+  - FIX Codelink-class.Rd as yet had some affy packages information...
+  - Added method "median" to normalize().

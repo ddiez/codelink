@@ -10,21 +10,21 @@
   Object are created after reading text codelink files with read.Codelink()}
 \section{Slots}{
   \describe{
-    \item{\code{Sample\_name}:}{Object of class \code{"character"} containing the probeset ID}
-    \item{\code{pm}:}{Object of class \code{"matrix"} containing the PM
-      intensities. Columns represent samples and rows the different probes.}
-    \item{\code{mm}:}{Object of class \code{"matrix"} containing the MM intensities}
+    \item{\code{sample}:}{Object of class \code{"character"} containing the sample names}
+    \item{\code{file}:}{Object of class \code{"character"} containing the file names}
+    \item{\code{name}:}{Object of class \code{"character"} containing the probe ID}
+    \item{\code{method}:}{Object of class \code{"list"} containing log information}
+    \item{\code{Smean}:}{Object of class \code{"matrix"} containing spot mean intensities}
+    \item{\code{Bmedian}:}{Object of class \code{"matrix"} containing background median intensities}
+    \item{\code{Ri}:}{Object of class \code{"matrix"} containing raw intensities}
+    \item{\code{Ni}:}{Object of class \code{"matrix"} containing normalized intensities}
+    \item{\code{snr}:}{Object of class \code{"matrix"} containing signal to noise ratio values}
+    \item{\code{flag}:}{Object of class \code{"character"} containing assigned flags}
   }
 }
 
 \section{Methods}{
   \describe{
-    \item{colnames}{\code{signature(x = "ProbeSet")}: the column names
-      of the \code{pm} matrices which  are the sample names}
-    \item{express.summary.stat}{\code{signature(x = "ProbeSet",
-	pmcorrect = "character", summary = "character")}: applies a summary statistic to the probe set.}
-    \item{sampleNames}{\code{signature(object = "ProbeSet")}: the column names
-      of the \code{pm} matrices which  are the sample names}
   }
 }
 \note{More details are cotained in the vignette}
