@@ -8,7 +8,7 @@ by Codelink Software or not) flags and information about probes.
 \usage{
     readCodelink(files=list.files(pattern="TXT"), sample.name=NULL,
 	flag=list(M=NA, I=NA, C=NA), dec=NULL, type="Spot",
-	preserve=FALSE, verbose=2)
+	preserve=FALSE, verbose=2, file.type="Codelink")
 }
 \arguments{
   \item{files}{list of files to read.}
@@ -18,6 +18,7 @@ by Codelink Software or not) flags and information about probes.
   \item{type}{character indicating which base value to read from files.}
   \item{preserve}{logical, if TRUE Bkgd\_stdev slot is not removed (if present).}
   \item{verbose}{numerical, set the level of information. Level 2 set as old behaviour. Level > 2 output some debug info.}
+  \item{file.type}{exported file type, currently Codelink or XLS file formats supported.}
 }
 \value{An object of class "Codelink".}
 \details{

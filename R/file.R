@@ -1,3 +1,22 @@
+#readHeaderXLS()
+#
+readHeaderXLS <- function(file, dec=FALSE) {
+	nlines <- grep("Idx", scan(file, flush=TRUE, what="", blank.lines.skip=F))
+	nlines <- nlines-1
+	head <- list()
+	if(!any(nlines)) stop("Not a Codelink XLS exported file.")
+	head$header <- scan(file, nlines=nlines, sep="\t", what="")
+	print(head$header)
+	head$nlines <- nlines
+	if(any(foo <- grep("Product:", head$header))) head$product <- head$header[foo+1] else head$product <- "Unknown"
+	if(any(foo <- grep("Sample Name", head$header))) head$sample <- head$header[foo+1] else head$sample <- file
+	head$size <- arraySize(file, nlines)
+	head$size <- head$size - 1
+	if(dec) head$dec <- decDetect(file, nlines)
+	head$columns <- scan(file, skip=nlines, nlines=1, sep="\t", what="", quiet=TRUE)
+	return(head)
+}
+
 # readHeader()
 # read header information from codelink file.
 readHeader <- function(file, dec=FALSE) {
@@ -38,7 +57,7 @@ readHeader <- function(file, dec=FALSE) {
 # decDetect()
 # detect decimal point.
 decDetect <- function(file, nlines) {
-	foo <- read.table(file, skip=nlines, nrows=1, header=TRUE, sep="\t", na.strings="")
+	foo <- read.table(file, skip=nlines, nrows=1, header=TRUE, sep="\t", na.strings="", comment.char="", fill=T)
         val <- NULL
         if(!is.null(foo$Spot_mean)) val <- foo$Spot_mean
         if(!is.null(foo$Raw_intensity) && is.null(val)) val <- foo$Raw_intensity
@@ -55,9 +74,11 @@ arraySize <- function(file, nlines) {
 }
 # readCodelink()
 # read of codelink data.
-readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag=list(M=NA,I=NA,C=NA), dec=NULL, type="Spot", preserve=FALSE, verbose=2) {
+readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag=list(M=NA,I=NA,C=NA), dec=NULL, type="Spot", preserve=FALSE, verbose=2, file.type="Codelink") {
 	if(length(files)==0) stop("Codelink files not found.")
 	type <- match.arg(type,c("Spot", "Raw", "Norm"))
+	file.type <- match.arg(file.type, c("Codelink","XLS"))
+	if(file.type=="XLS") readHeader <- readHeaderXLS
 	nslides <- length(files)
 	if(!is.null(sample.name) && (length(sample.name) != nslides)) stop("sample.name must have equal length as chips loaded.")
 	
@@ -101,10 +122,14 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
 		if(verbose>1) cat(paste("  + Sample Name:", codelink$sample[n],"\n"))
 
 		# Read bulk data.
-                data <- read.table(files[n], skip=head$nlines, sep="\t", header=TRUE, row.names=1, nrows=head$size, quote="", dec=head$dec)
+		data <- read.table(files[n], skip=head$nlines, sep="\t", header=TRUE, row.names=1, quote="", dec=head$dec, comment.char="", nrows=head$size, blank.lines.skip=TRUE)
+		print(data[1:10,])
 
 		# Assign Flag values.
-                codelink$flag[,n] <- as.character(data[,"Quality_flag"])
+		if(file.type=="Codelink") 
+			codelink$flag[,n] <- as.character(data[,"Quality_flag"])
+		else
+			codelink$flag[,n] <- as.character(data[,"Quality.Flag"])
 		# Flag information.
 		#flag.m <- codelink$flag[,n]=="M"	# MSR masked spots.
 		#flag.i <- codelink$flag[,n]=="I"	# Irregular spots.
@@ -141,8 +166,8 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
 		# Assignn Intensity values.
 		switch(type,
 			Spot = {
-                		codelink$Smean[,n] <- data[,"Spot_mean"]
-                		codelink$Bmedian[,n] <- data[,"Bkgd_median"]
+            	codelink$Smean[,n] <- data[,"Spot_mean"]
+               	codelink$Bmedian[,n] <- data[,"Bkgd_median"]
 				# If found Background sd get it to compute SNR.
 				if(any(grep("Bkgd_stdev", head$columns))) codelink$Bstdev[,n] <- data[,"Bkgd_stdev"] else codelink$Bstdev[,n] <- NA
 				# Set values based on Flags.
@@ -197,7 +222,10 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
 				}
 			},
 			Raw = {
-                		codelink$Ri[,n] <- data[,"Raw_intensity"]
+				if(file.type=="Codelink")
+	               	codelink$Ri[,n] <- data[,"Raw_intensity"]
+				else
+	               	codelink$Ri[,n] <- data[,"Raw_Intensity"]
 				codelink$method$backgrund <- "Codelink Subtract"
 				# Set values based on Flags.
                                 if(!is.null(flag$M)) {
@@ -279,16 +307,23 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
  			}
 		)
 		if(n==1) {
-                        codelink$name <- as.character(data[,"Probe_name"])
-                        codelink$type <- as.character(data[,"Probe_type"])
-			codelink$logical[,"row"] <- data[,"Logical_row"]
-			codelink$logical[,"col"] <- data[,"Logical_col"]
-                }
+			if(file.type=="CodelinK") {
+				codelink$name <- as.character(data[,"Probe_name"])
+				codelink$type <- as.character(data[,"Probe_type"])
+				codelink$logical[,"row"] <- data[,"Logical_row"]
+				codelink$logical[,"col"] <- data[,"Logical_col"]
+			} else {
+				codelink$name <- as.character(data[,"Probe_Name"])
+				codelink$type <- as.character(data[,"Type"])
+			}
+		}
 	}
 	# Compute SNR.
-        codelink$snr <- SNR(codelink$Smean, codelink$Bmedian, codelink$Bstdev)
-        if(verbose>0) cat("* Computing SNR...\n")
-	if(!preserve) codelink$Bstdev <- NULL
+	if(type=="Spot") {
+	    codelink$snr <- SNR(codelink$Smean, codelink$Bmedian, codelink$Bstdev)
+    	if(verbose>0) cat("* Computing SNR...\n")
+		if(!preserve) codelink$Bstdev <- NULL
+	}
 	
 	if(!is.null(sample.name)) codelink$sample <- sample.name
 	codelink$file <- files

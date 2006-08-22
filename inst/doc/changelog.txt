@@ -353,3 +353,7 @@ that column.
   - Small FIX in documentation.
   - FIX Codelink-class.Rd as yet had some affy packages information...
   - Added method "median" to normalize().
+
+1.1.5
+  - Added experimental support for XLS exported files with readHeaderXLS() function.
+  - Set parameters fill=TRUE and blank.lines.skip=TRUE in decDetect() to make it more robust.
