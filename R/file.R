@@ -1,12 +1,11 @@
-#readHeaderXLS()
-#
+# readHeaderXLS()
+# read header information from XLS exported file.
 readHeaderXLS <- function(file, dec=FALSE) {
-	nlines <- grep("Idx", scan(file, flush=TRUE, what="", blank.lines.skip=F))
+	nlines <- grep("Idx", scan(file, flush=TRUE, what="", blank.lines.skip=F, quiet=TRUE))
 	nlines <- nlines-1
 	head <- list()
 	if(!any(nlines)) stop("Not a Codelink XLS exported file.")
-	head$header <- scan(file, nlines=nlines, sep="\t", what="")
-	print(head$header)
+	head$header <- scan(file, nlines=nlines, sep="\t", what="", quiet=TRUE)
 	head$nlines <- nlines
 	if(any(foo <- grep("Product:", head$header))) head$product <- head$header[foo+1] else head$product <- "Unknown"
 	if(any(foo <- grep("Sample Name", head$header))) head$sample <- head$header[foo+1] else head$sample <- file
@@ -20,24 +19,12 @@ readHeaderXLS <- function(file, dec=FALSE) {
 # readHeader()
 # read header information from codelink file.
 readHeader <- function(file, dec=FALSE) {
-	# Size of header:
-	#nlines <- 0
-	#repeat {
-        #        foo <- scan(file, skip=nlines, nlines=1, sep="\t", what="", quiet=TRUE)
-        #        nlines<-nlines+1
-        #        #if(substr(foo[1],1,2)=="--") break # detect end of header.
-##		if(any(grep("-{30}", foo))) {
-#			break
-#		} else {
-#			if(nlines > 30) stop("30 lines without finding dashed header delimiter. Is this a Codelink exported file?")
-#		}
-#        }
-	foo <- grep("-{80}", scan(file, nlines=30, flush=T, quiet=T, what=""))
+	foo <- grep("-{80}", scan(file, nlines=30, flush=T, quiet=TRUE, what=""))
 	if(!any(foo)) stop("Not a Codelink exported file.")
 	nlines <- foo
 	# Return list:
 	head <- list(header=NULL, nlines=NULL, product=NULL, sample=NULL, size=NULL, dec=NULL, columns=NULL)
-        head$header <- scan(file, nlines=nlines, sep="\t", what="", quiet=TRUE)
+	head$header <- scan(file, nlines=nlines, sep="\t", what="", quiet=TRUE)
 	head$nlines <- nlines
 	if(any(foo <- grep("PRODUCT", head$header))) head$product <- head$header[foo+1] else head$product <- "Unknown"
 	if(any(foo <- grep("Sample Name", head$header))) head$sample <- head$header[foo+1] else head$sample <- file
@@ -46,14 +33,6 @@ readHeader <- function(file, dec=FALSE) {
 	head$columns <- scan(file, skip=nlines, nlines=1, sep="\t", what="", quiet=TRUE)
 	return(head)
 }
-# Read for text files exported from Excel.
-#readHeaderExcel <- function(file, dec=FALSE) {
-#	nlines <- 0
-#	repeat {
-#                foo <- scan(file, skip=nlines, nlines=1, sep="\t", what="", quiet=TRUE)
-#                nlines<-nlines+1
-#	}
-#}
 # decDetect()
 # detect decimal point.
 decDetect <- function(file, nlines) {
@@ -123,7 +102,6 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
 
 		# Read bulk data.
 		data <- read.table(files[n], skip=head$nlines, sep="\t", header=TRUE, row.names=1, quote="", dec=head$dec, comment.char="", nrows=head$size, blank.lines.skip=TRUE)
-		print(data[1:10,])
 
 		# Assign Flag values.
 		if(file.type=="Codelink") 
