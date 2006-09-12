@@ -125,4 +125,6 @@ function(x,i,j,drop=FALSE) {
 
 ##
 # onLoad stuff for S4 classes in NAMESPACE.
-.onLoad <- function(lib, pkg) require(methods)
+.onLoad <- function(lib, pkg) {
+	require(methods, quietly=TRUE) || stop("Package methods unavailable!")
+}
