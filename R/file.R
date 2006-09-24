@@ -285,7 +285,7 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
  			}
 		)
 		if(n==1) {
-			if(file.type=="CodelinK") {
+			if(file.type=="Codelink") {
 				codelink$name <- as.character(data[,"Probe_name"])
 				codelink$type <- as.character(data[,"Probe_type"])
 				codelink$logical[,"row"] <- data[,"Logical_row"]

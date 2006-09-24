@@ -358,3 +358,6 @@ that column.
   - Added experimental support for XLS exported files with readHeaderXLS() function.
   - Set parameters fill=TRUE and blank.lines.skip=TRUE in decDetect() to make it more robust.
   - Added methods to dependeces in DESCRIPTION file. Added a check for methods load in .onLoad() function.
+
+1.1.6
+  - FIXED a bug introduced in readCodelink() that prevented reading of files.
