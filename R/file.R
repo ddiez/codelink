@@ -65,14 +65,16 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
 	#head <- readHeader(files[1])
 	# Read arrays.
 	for(n in 1:nslides) {
-                if(verbose>0 && n>1) cat(paste("* Reading file", n, "of", nslides, ":", files[n], "\n"))
+		if(verbose>0 && n>1) cat(paste("* Reading file", n, "of", nslides, ":", files[n], "\n"))
 		if(is.null(dec)) head <- readHeader(files[n], dec=TRUE) else head <- readHeader(files[n])
 		if(n==1) {
 			product <- head$product
 			ngenes <- head$size
-			if(verbose>0) cat("* Product:", product, "\n")
-			if(verbose>0) cat("* Chip size:", ngenes, "\n")
-                	if(verbose>0) cat(paste("* Reading file", n, "of", nslides, ":", files[n], "\n"))
+			if(verbose>0) {
+				cat("* Product:", product, "\n")
+				cat("* Chip size:", ngenes, "\n")
+				cat(paste("* Reading file", n, "of", nslides, ":", files[n], "\n"))
+			}
 
 			# Define Codelink object.
 			Y <- matrix(NA, nrow=ngenes, ncol=nslides, dimnames=list(1:ngenes,1:nslides))
@@ -91,7 +93,7 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
 		}
 
 		if(verbose>2) print(head)
-        	if(verbose>1) cat(paste("  + Detected '", head$dec, "' as decimal symbol.\n",sep=""))
+		if(verbose>1) cat(paste("  + Detected '", head$dec, "' as decimal symbol.\n",sep=""))
 
 		if(head$product != product) stop("Different array type (", head$product, ")!")
 		if(head$product == "Unknown") warning("Product type for ", files[n], " is unknown (missing PRODUCT field in header).")
@@ -101,7 +103,8 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
 		if(verbose>1) cat(paste("  + Sample Name:", codelink$sample[n],"\n"))
 
 		# Read bulk data.
-		data <- read.table(files[n], skip=head$nlines, sep="\t", header=TRUE, row.names=1, quote="", dec=head$dec, comment.char="", nrows=head$size, blank.lines.skip=TRUE)
+		#data <- read.table(files[n], skip=head$nlines, sep="\t", header=TRUE, row.names=1, quote="", dec=head$dec, comment.char="", nrows=head$size, blank.lines.skip=TRUE)
+		data <- read.table(files[n], skip=head$nlines, sep="\t", header=TRUE, quote="", dec=head$dec, comment.char="", nrows=head$size, blank.lines.skip=TRUE)
 
 		# Assign Flag values.
 		if(file.type=="Codelink") 
@@ -109,13 +112,6 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
 		else
 			codelink$flag[,n] <- as.character(data[,"Quality.Flag"])
 		# Flag information.
-		#flag.m <- codelink$flag[,n]=="M"	# MSR masked spots.
-		#flag.i <- codelink$flag[,n]=="I"	# Irregular spots.
-		#flag.c <- codelink$flag[,n]=="C"	# Background contaminated
-		#flag.s <- codelink$flag[,n]=="S"	# Saturated spots.
-		#flag.g <- codelink$flag[,n]=="G"	# Good spots.
-		#flag.l <- codelink$flag[,n]=="L"	# Limit spots.
-		#flag.x <- codelink$flag[,n]=="X"	# User excluded spots.
 		# Allow combination of different flags.
 		flag.m <- grep("M", codelink$flag[,n])	# MSR masked spots.
 		flag.i <- grep("I", codelink$flag[,n])	# Irregular spots.
@@ -125,171 +121,119 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
 		flag.l <- grep("L", codelink$flag[,n])	# Limit spots.
 		flag.x <- grep("X", codelink$flag[,n])	# User excluded spots.
 
-		if(verbose>1) cat("  + Quality flags:\n")
-		#if(verbose>1) cat(paste("      G:",length(which(flag.g)),"\t"))
-		#if(verbose>1) cat(paste("      L:",length(which(flag.l)),"\t"))
-		#if(verbose>1) cat(paste("      M:",length(which(flag.m)),"\t"))
-		#if(verbose>1) cat(paste("      I:",length(which(flag.i)),"\n"))
-		#if(verbose>1) cat(paste("      C:",length(which(flag.c)),"\t"))
-		#if(verbose>1) cat(paste("      S:",length(which(flag.s)),"\t"))
-		#if(verbose>1) cat(paste("      X:",length(which(flag.x)),"\n"))
-		if(verbose>1) cat(paste("      G:",length(flag.g),"\t"))
-		if(verbose>1) cat(paste("      L:",length(flag.l),"\t"))
-		if(verbose>1) cat(paste("      M:",length(flag.m),"\t"))
-		if(verbose>1) cat(paste("      I:",length(flag.i),"\n"))
-		if(verbose>1) cat(paste("      C:",length(flag.c),"\t"))
-		if(verbose>1) cat(paste("      S:",length(flag.s),"\t"))
-		if(verbose>1) cat(paste("      X:",length(flag.x),"\n"))
+		if(verbose>1) {
+			cat("  + Quality flags:\n")
+			cat(paste("      G:",length(flag.g),"\t"))
+			cat(paste("      L:",length(flag.l),"\t"))
+			cat(paste("      M:",length(flag.m),"\t"))
+			cat(paste("      I:",length(flag.i),"\n"))
+			cat(paste("      C:",length(flag.c),"\t"))
+			cat(paste("      S:",length(flag.s),"\t"))
+			cat(paste("      X:",length(flag.x),"\n"))
+		}
 
 		# Assignn Intensity values.
 		switch(type,
 			Spot = {
-            	codelink$Smean[,n] <- data[,"Spot_mean"]
-               	codelink$Bmedian[,n] <- data[,"Bkgd_median"]
+				codelink$Smean[,n] <- data[,"Spot_mean"]
+				codelink$Bmedian[,n] <- data[,"Bkgd_median"]
 				# If found Background sd get it to compute SNR.
 				if(any(grep("Bkgd_stdev", head$columns))) codelink$Bstdev[,n] <- data[,"Bkgd_stdev"] else codelink$Bstdev[,n] <- NA
 				# Set values based on Flags.
 				if(!is.null(flag$M)) {
-					#sel.flag <- codelink$Smean[flag.m, n] > flag$M
-					#codelink$Smean[sel.flag, n] <- flag$M
-					#codelink$Bmedian[sel.flag, n] <- flag$M
 					codelink$Smean[flag.m, n] <- flag$M
 					codelink$Bmedian[flag.m, n] <- flag$M
 				}
 				if(!is.null(flag$I)) {
-					#sel.flag <- codelink$Smean[flag.i, n] > flag$I
-					#codelink$Smean[sel.flag, n] <- flag$I
-					#codelink$Bmedian[sel.flag, n] <- flag$I
 					codelink$Smean[flag.i, n] <- flag$I
 					codelink$Bmedian[flag.i, n] <- flag$I
 				}
 				if(!is.null(flag$C)) {
-					#sel.flag <- codelink$Smean[flag.c, n] > flag$C
-					#codelink$Smean[sel.flag, n] <- flag$C
-					#codelink$Bmedian[sel.flag, n] <- flag$C
 					codelink$Smean[flag.c, n] <- flag$C
 					codelink$Bmedian[flag.c, n] <- flag$C
 				}
 				if(!is.null(flag$S)) {
-      					#sel.flag <- codelink$Smean[flag.s, n] > flag$S
-					#codelink$Smean[sel.flag, n] <- flag$S
-					#codelink$Bmedian[sel.flag, n] <- flag$S
 					codelink$Smean[flag.s, n] <- flag$S
-                                        codelink$Bmedian[flag.s, n] <- flag$S
-                                }
+					codelink$Bmedian[flag.s, n] <- flag$S
+				}
 				if(!is.null(flag$G)) {
-					#sel.flag <- codelink$Smean[flag.g, n] > flag$G
-                                        #codelink$Smean[sel.flag, n] <- flag$G
-                                        #codelink$Bmedian[sel.flag, n] <- flag$G
-                                        codelink$Smean[flag.g, n] <- flag$G
-                                        codelink$Bmedian[flag.g, n] <- flag$G
-                                }
+					codelink$Smean[flag.g, n] <- flag$G
+					codelink$Bmedian[flag.g, n] <- flag$G
+				}
 				if(!is.null(flag$L)) {
-					#sel.flag <- codelink$Smean[flag.l, n] > flag$L
-                                        #codelink$Smean[sel.flag, n] <- flag$L
-                                        #codelink$Bmedian[sel.flag, n] <- flag$L
-                                        codelink$Smean[flag.l, n] <- flag$L
-                                        codelink$Bmedian[flag.l, n] <- flag$L
-                                }
+					codelink$Smean[flag.l, n] <- flag$L
+					codelink$Bmedian[flag.l, n] <- flag$L
+				}
 				if(!is.null(flag$X)) {
-					#sel.flag <- codelink$Smean[flag.x, n] > flag$X
-                                        #codelink$Smean[sel.flag, n] <- flag$X
-                                        #codelink$Bmedian[sel.flag, n] <- flag$X
 					codelink$Smean[flag.x, n] <- flag$X
 					codelink$Bmedian[flag.x, n] <- flag$X
 				}
 			},
 			Raw = {
 				if(file.type=="Codelink")
-	               	codelink$Ri[,n] <- data[,"Raw_intensity"]
+					codelink$Ri[,n] <- data[,"Raw_intensity"]
 				else
-	               	codelink$Ri[,n] <- data[,"Raw_Intensity"]
+					codelink$Ri[,n] <- data[,"Raw_Intensity"]
 				codelink$method$backgrund <- "Codelink Subtract"
 				# Set values based on Flags.
-                                if(!is.null(flag$M)) {
-					#sel.flag <- codelink$Ri[flag.m, n] > flag$M
-					#codelink$Ri[sel.flag, n] <- flag$M
+				if(!is.null(flag$M)) {
 					codelink$Ri[flag.m, n] <- flag$M
 				}
-                                if(!is.null(flag$I)) {
-					#sel.flag <- codelink$Ri[flag.i, n] > flag$I
-                                        #codelink$Ri[sel.flag, n] <- flag$I
+				if(!is.null(flag$I)) {
 					codelink$Ri[flag.i, n] <- flag$I
 				}
-                                if(!is.null(flag$C)) {
-					#sel.flag <- codelink$Ri[flag.c, n] > flag$C
-                                        #codelink$Ri[sel.flag, n] <- flag$C
+				if(!is.null(flag$C)) {
 					codelink$Ri[flag.c, n] <- flag$C
 				}
-                                if(!is.null(flag$S)) {
-                                        #sel.flag <- codelink$Ri[flag.s, n] > flag$S
-                                        #codelink$Ri[sel.flag, n] <- flag$S
+				if(!is.null(flag$S)) {
 					codelink$Ri[flag.s, n] <- flag$S
 				}
-                                if(!is.null(flag$G)) {
-                                        #sel.flag <- codelink$Ri[flag.g, n] > flag$G
-                                        #codelink$Ri[sel.flag, n] <- flag$G
+				if(!is.null(flag$G)) {
 					codelink$Ri[flag.g, n] <- flag$G
 				}
-                                if(!is.null(flag$L)) {
-                                        #sel.flag <- codelink$Ri[flag.l, n] > flag$L
-                                        #codelink$Ri[sel.flag, n] <- flag$L
+				if(!is.null(flag$L)) {
 					codelink$Ri[flag.l, n] <- flag$L
 				}
-                                if(!is.null(flag$X)) {
-                                        #sel.flag <- codelink$Ri[flag.x, n] > flag$X
-                                        #codelink$Ri[sel.flag, n] <- flag$X
+				if(!is.null(flag$X)) {
 					codelink$Ri[flag.x, n] <- flag$X
 				}
 			},
 			Norm = {
-                		codelink$Ni[,n] <- data[,"Normalized_intensity"]
+				codelink$Ni[,n] <- data[,"Normalized_intensity"]
 				codelink$method$background <- "Codelink Subtract"
 				codelink$method$normalization <- "Codelink Median"
 				# Set values based on Flags.
-                                 if(!is.null(flag$M)) {
-					#sel.flag <- codelink$Ni[flag.m, n] > flag$M
-					#codelink$Ni[sel.flag, n] <- flag$M
+				if(!is.null(flag$M)) {
 					codelink$Ni[flag.m, n] <- flag$M
 				}
-                                if(!is.null(flag$I)) {
-					#sel.flag <- codelink$Ni[flag.i, n] > flag$I
-                                        #codelink$Ni[sel.flag, n] <- flag$I
+				if(!is.null(flag$I)) {
 					codelink$Ni[flag.i, n] <- flag$I
 				}
-                                if(!is.null(flag$C)) {
-					#sel.flag <- codelink$Ni[flag.c, n] > flag$C
-                                        #codelink$Ni[sel.flag, n] <- flag$C
+				if(!is.null(flag$C)) {
 					codelink$Ni[flag.c, n] <- flag$C
 				}
-                                if(!is.null(flag$S)) {
-                                        #sel.flag <- codelink$Ni[flag.s, n] > flag$S
-                                        #codelink$Ni[sel.flag, n] <- flag$S
+				if(!is.null(flag$S)) {
 					codelink$Ni[flag.s, n] <- flag$S
 				}
-                                if(!is.null(flag$G)) {
-                                        #sel.flag <- codelink$Ni[flag.g, n] > flag$G
-                                        #codelink$Ni[sel.flag, n] <- flag$G
+				if(!is.null(flag$G)) {
 					codelink$Ni[flag.g, n] <- flag$G
 				}
-                                if(!is.null(flag$L)) {
-                                        #sel.flag <- codelink$Ni[flag.l, n] > flag$L
-                                        #codelink$Ni[sel.flag, n] <- flag$L
+				if(!is.null(flag$L)) {
 					codelink$Ni[flag.l, n] <- flag$L
 				}
-                                if(!is.null(flag$X)) {
-                                        #sel.flag <- codelink$Ni[flag.x, n] > flag$X
-                                        #codelink$Ni[sel.flag, n] <- flag$X
+				if(!is.null(flag$X)) {
 					codelink$Ni[flag.x, n] <- flag$X
 				}
- 			}
+			}
 		)
 		if(n==1) {
 			if(file.type=="Codelink") {
-				codelink$name <- as.character(data[,"Probe_name"])
-				codelink$type <- as.character(data[,"Probe_type"])
-				codelink$logical[,"row"] <- data[,"Logical_row"]
-				codelink$logical[,"col"] <- data[,"Logical_col"]
+				codelink$name <- as.character(data[, "Probe_name"])
+				codelink$type <- as.character(data[, "Probe_type"])
+				if(any(grep("Logical_row", head$columns)) & any(grep("Logical_col", head$column))) {
+					codelink$logical[,"row"] <- data[, "Logical_row"]
+					codelink$logical[,"col"] <- data[, "Logical_col"]
+				}
 			} else {
 				codelink$name <- as.character(data[,"Probe_Name"])
 				codelink$type <- as.character(data[,"Type"])
@@ -298,15 +242,15 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
 	}
 	# Compute SNR.
 	if(type=="Spot") {
-	    codelink$snr <- SNR(codelink$Smean, codelink$Bmedian, codelink$Bstdev)
-    	if(verbose>0) cat("* Computing SNR...\n")
+		codelink$snr <- SNR(codelink$Smean, codelink$Bmedian, codelink$Bstdev)
+		if(verbose>0) cat("* Computing SNR...\n")
 		if(!preserve) codelink$Bstdev <- NULL
 	}
 	
 	if(!is.null(sample.name)) codelink$sample <- sample.name
 	codelink$file <- files
 	codelink$product <- product
-        
+
 	new("Codelink", codelink)
 }
 # writeCodelink()

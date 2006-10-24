@@ -361,3 +361,13 @@ that column.
 
 1.1.6
   - FIXED a bug introduced in readCodelink() that prevented reading of files.
+
+1.2.0
+  - Version number increased for BioC-1.9 release.
+
+1.3.0
+  - Version number increased for BioC-2.0 development.
+
+1.3.1
+  - Some code cleanup in readCodelink().
+  - Remove row.names=1 from readCodelink() to allow files without Probe_idx to be read.
