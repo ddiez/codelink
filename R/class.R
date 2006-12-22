@@ -3,56 +3,55 @@
 setClass("Codelink",representation("list"))
 #setClass("LargeDataObject")
 #setIs("Codelink","LargeDataObject")
-printHead <- function(x)
 #  Print leading 5 elements or rows of atomic object
 #  Gordon Smyth
 #  May 2003.  Last modified 7 April 2004.
-{
-        if(is.atomic(x)) {
-                d <- dim(x)
-                if(length(d)<2) which <- "OneD"
-                if(length(d)==2) which <- "TwoD"
-                if(length(d)>2) which <- "Array"
-        } else {
-                if(inherits(x,"data.frame")) {
-                        d <- dim(x)
-                        which <- "TwoD"
-                } else
-                        which <- "Recursive"
-        }
-        switch(which,
-        OneD={
-                n <- length(x)
-                if(n > 20) {
-                        print(x[1:5])
-                        cat(n-5,"more elements ...\n")
-                } else
-                        print(x)
-        },
-        TwoD={
-                n <- d[1]
-                if(n > 10) {
-                        print(x[1:5,])
-                        cat(n-5,"more rows ...\n")
-                } else
-                        print(x)
-        },
-        Array={
-                n <- d[1]
-                if(n > 10) {
-                        dn <- dimnames(x)
-                        dim(x) <- c(d[1],prod(d[-1]))
-                        x <- x[1:5,]
-                        dim(x) <- c(5,d[-1])
-                        if(!is.null(dn[[1]])) dn[[1]] <- dn[[1]][1:5]
-                        dimnames(x) <- dn
-                        print(x)
-                        cat(n-5,"more rows ...\n")
-                } else
-                        print(x)
-        },
-        Recursive=print(x)
-        )
+printHead <- function(x) {
+	if(is.atomic(x)) {
+		d <- dim(x)
+		if(length(d)<2) which <- "OneD"
+		if(length(d)==2) which <- "TwoD"
+		if(length(d)>2) which <- "Array"
+	} else {
+		if(inherits(x,"data.frame")) {
+			d <- dim(x)
+			which <- "TwoD"
+		} else
+		which <- "Recursive"
+	}
+	switch(which,
+	OneD={
+		n <- length(x)
+		if(n > 20) {
+			print(x[1:5])
+			cat(n-5,"more elements ...\n")
+		} else
+		print(x)
+	},
+	TwoD={
+		n <- d[1]
+		if(n > 10) {
+			print(x[1:5,])
+			cat(n-5,"more rows ...\n")
+		} else
+		print(x)
+	},
+	Array={
+		n <- d[1]
+		if(n > 10) {
+			dn <- dimnames(x)
+			dim(x) <- c(d[1],prod(d[-1]))
+			x <- x[1:5,]
+			dim(x) <- c(5,d[-1])
+			if(!is.null(dn[[1]])) dn[[1]] <- dn[[1]][1:5]
+				dimnames(x) <- dn
+				print(x)
+				cat(n-5,"more rows ...\n")
+		} else
+		print(x)
+	},
+	Recursive=print(x)
+	)
 }
 
 #setMethod("show","LargeDataObject",
@@ -62,21 +61,21 @@ setMethod("show","Codelink",
 #  Gordon Smyth
 #  May 2003
 function(object) {
-        cat("An object of class \"",class(object),"\"\n",sep="")
-        for (what in names(object)) {
-                x <- object[[what]]
-                cat("$",what,"\n",sep="")
-                printHead(x)
-                cat("\n")
-        }
-        for (what in setdiff(slotNames(object),".Data")) {
-                x <- slot(object,what)
-                if(length(x) > 0) {
-                        cat("@",what,"\n",sep="")
-                        printHead(x)
-                        cat("\n")
-                }
-        }
+	cat("An object of class \"",class(object),"\"\n",sep="")
+	for (what in names(object)) {
+		x <- object[[what]]
+		cat("$",what,"\n",sep="")
+		printHead(x)
+		cat("\n")
+	}
+	for (what in setdiff(slotNames(object),".Data")) {
+		x <- slot(object,what)
+		if(length(x) > 0) {
+			cat("@",what,"\n",sep="")
+			printHead(x)
+			cat("\n")
+		}
+}
 })
 
 dim.Codelink <- function(x) {
@@ -96,27 +95,27 @@ as.matrix.Codelink <- function(x) {
 setMethod("[","Codelink",
 # Subsetting method.
 function(x,i,j,drop=FALSE) {
-        if(!missing(i)) {
-                x$Smean <- x$Smean[i,]
-                x$Bmedian <- x$Bmedian[i,]
-                x$Bstdev <- x$Bstdev[i,]
-                x$snr <- x$snr[i,]
-                x$Ri <- x$Ri[i,]
-                x$Ni <- x$Ni[i,]
-                x$cv <- x$cv[i,]
-                x$flag <- x$flag[i,]
-                x$name <- x$name[i]
-                x$type <- x$type[i]
-        }
-        if(!missing(j)) {
-                x$Smean <- x$Smean[,j]
-                x$Bmedian <- x$Bmedian[,j]
-                x$Bstdev <- x$Bstdev[,j]
-                x$snr <- x$snr[,j]
-                x$Ri <- x$Ri[,j]
-                x$Ni <- x$Ni[,j]
-                x$cv <- x$cv[,j]
-                x$flag <- x$flag[,j]
+	if(!missing(i)) {
+		x$Smean <- x$Smean[i,]
+		x$Bmedian <- x$Bmedian[i,]
+		x$Bstdev <- x$Bstdev[i,]
+		x$snr <- x$snr[i,]
+		x$Ri <- x$Ri[i,]
+		x$Ni <- x$Ni[i,]
+		x$cv <- x$cv[i,]
+		x$flag <- x$flag[i,]
+		x$name <- x$name[i]
+		x$type <- x$type[i]
+	}
+	if(!missing(j)) {
+		x$Smean <- x$Smean[,j]
+		x$Bmedian <- x$Bmedian[,j]
+		x$Bstdev <- x$Bstdev[,j]
+		x$snr <- x$snr[,j]
+		x$Ri <- x$Ri[,j]
+		x$Ni <- x$Ni[,j]
+		x$cv <- x$cv[,j]
+		x$flag <- x$flag[,j]
 		x$file <- x$file[j]
 		x$sample <- x$sample[j]
         }

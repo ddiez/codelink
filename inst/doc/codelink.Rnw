@@ -88,8 +88,12 @@ some Codelink files you do:
 
 \begin{Sinput}
 
+# NOT RUN #
+
 > library(codelink)
 > data <- readCodelink()
+
+# NOT RUN #
 
 \end{Sinput}
 
@@ -149,9 +153,11 @@ For example, if you want to set all M flagged spots to 0.01 and let other spot
 untouched you do:
 
 \begin{Sinput}
+# NOT RUN #
 
 > data <- readCodelink(flag=list(M=0.01) )
 
+# NOT RUN #
 \end{Sinput}
 
 It is possible to find probes wit more that one flag assigned, i.e. CL for a 

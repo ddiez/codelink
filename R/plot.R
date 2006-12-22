@@ -140,7 +140,7 @@ plotMA <- function(object, array1=1, array2=2, cutoff=NULL, label="type",
 
 ## plotDensities()
 # Densities plot of gene intensities.
-plotDensities <- function(object, subset=c(1:dim(object)[2]), title=NULL, legend.cex=1, what=NULL) {
+plotDensities <- function(object, subset=1:dim(object)[2], title=NULL, legend.cex=1, what=NULL) {
         if(!is(object,"Codelink")) stop("Codelink object needed.")
 	if(is.null(what)) {
 		if(!is.null(object$Smean)) {

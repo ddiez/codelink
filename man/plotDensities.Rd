@@ -1,12 +1,13 @@
 \name{plotDensities}
 \alias{plotDensities}
+\alias{plotDensities,Codelink-method}
 \title{Plot Densities}
 \description{
 	Takes a Codelink object and plot the distributions of intensities.
 }
 \usage{
-  plotDensities(object, subset=c(1:dim(object)[2]), title=NULL,
-                legend.cex=1, what=NULL)
+plotDensities(object, subset=1:dim(object)[2], title=NULL,
+    legend.cex=1, what=NULL)
 }
 \arguments{
   \item{object}{an object of class "Codelink".}
