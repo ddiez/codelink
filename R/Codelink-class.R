@@ -1,9 +1,9 @@
-#### To create Codelink Classes.
-## I base it on the definitions found in limma v1.8.20
-setClass("Codelink",representation("list"))
-#setClass("LargeDataObject")
-#setIs("Codelink","LargeDataObject")
-#  Print leading 5 elements or rows of atomic object
+# Codelink-class definition.
+# Based on the definitions found in limma v1.8.20 for RGList objects.
+setClass("Codelink", representation("list"))
+
+# Addapted? from limma:
+#  Print leading 5 elements or rows of atomic object.
 #  Gordon Smyth
 #  May 2003.  Last modified 7 April 2004.
 printHead <- function(x) {
@@ -54,10 +54,10 @@ printHead <- function(x) {
 	)
 }
 
-#setMethod("show","LargeDataObject",
+# show method.
 setMethod("show","Codelink",
 #  Print and show method large data objects
-#  Based on same from:
+#  Based on same from: limma
 #  Gordon Smyth
 #  May 2003
 function(object) {
@@ -78,23 +78,9 @@ function(object) {
 }
 })
 
-dim.Codelink <- function(x) {
-	if(is.null(x$Ni) && is.null(x$Ri) && is.null(x$Smean)) return(c(0,0))
-	if(!is.null(x$Smean)) return(dim(x$Smean))
-	if(!is.null(x$Ri)) return(dim(x$Ri))
-	if(!is.null(x$Ni)) return(dim(x$Ni))
-}
-
-as.matrix.Codelink <- function(x) {
-	if(is.null(x$Ni) && is.null(x$Ri) && is.null(x$Smean)) return(NULL)
-	if(!is.null(x$Smean)) return(x$Smean)
-	if(!is.null(x$Ri)) return(x$Ri)
-	if(!is.null(x$Ni)) return(x$Ni)
-}
-
-setMethod("[","Codelink",
-# Subsetting method.
-function(x,i,j,drop=FALSE) {
+# [ method.
+setMethod("[", "Codelink",
+function(x, i, j, ..., drop=FALSE) {
 	if(!missing(i)) {
 		x$Smean <- x$Smean[i,]
 		x$Bmedian <- x$Bmedian[i,]
@@ -121,6 +107,22 @@ function(x,i,j,drop=FALSE) {
         }
         return(x)
 })
+
+# S3 methods.
+# dim.
+dim.Codelink <- function(x) {
+	if(is.null(x$Ni) && is.null(x$Ri) && is.null(x$Smean)) return(c(0,0))
+	if(!is.null(x$Smean)) return(dim(x$Smean))
+	if(!is.null(x$Ri)) return(dim(x$Ri))
+	if(!is.null(x$Ni)) return(dim(x$Ni))
+}
+# as.matrix.
+as.matrix.Codelink <- function(x) {
+	if(is.null(x$Ni) && is.null(x$Ri) && is.null(x$Smean)) return(NULL)
+	if(!is.null(x$Smean)) return(x$Smean)
+	if(!is.null(x$Ri)) return(x$Ri)
+	if(!is.null(x$Ni)) return(x$Ni)
+}
 
 ##
 # onLoad stuff for S4 classes in NAMESPACE.

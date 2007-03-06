@@ -392,3 +392,8 @@ that column.
   - Removed also dependency on R version as I really dont know which minimum 
   version is needed. As I always use the current R version, this is the 
   recommended one.
+
+1.3.3
+  - FIX as.matrtix.Codelink.
+  - Reorganization of some code in class.R
+  - class.R renamed to Codelink-class.R

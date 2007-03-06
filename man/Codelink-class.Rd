@@ -12,7 +12,7 @@
   \describe{
     \item{\code{sample}:}{Object of class \code{"character"} containing the sample names}
     \item{\code{file}:}{Object of class \code{"character"} containing the file names}
-    \item{\code{name}:}{Object of class \code{"character"} containing the probe ID}
+	\item{\code{name}:}{Object of class \code{"character"} containing the probe ID}
     \item{\code{method}:}{Object of class \code{"list"} containing log information}
     \item{\code{Smean}:}{Object of class \code{"matrix"} containing spot mean intensities}
     \item{\code{Bmedian}:}{Object of class \code{"matrix"} containing background median intensities}
