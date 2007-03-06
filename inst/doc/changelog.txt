@@ -394,6 +394,6 @@ that column.
   recommended one.
 
 1.3.3
-  - FIX as.matrtix.Codelink.
+  - FIX as.matrtix.Codelink for R-2.5.x.
   - Reorganization of some code in class.R
   - class.R renamed to Codelink-class.R

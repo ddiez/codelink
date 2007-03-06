@@ -117,7 +117,7 @@ dim.Codelink <- function(x) {
 	if(!is.null(x$Ni)) return(dim(x$Ni))
 }
 # as.matrix.
-as.matrix.Codelink <- function(x) {
+as.matrix.Codelink <- function(x, ...) {
 	if(is.null(x$Ni) && is.null(x$Ri) && is.null(x$Smean)) return(NULL)
 	if(!is.null(x$Smean)) return(x$Smean)
 	if(!is.null(x$Ri)) return(x$Ri)

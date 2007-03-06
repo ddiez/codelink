@@ -6,10 +6,11 @@
 	the intensity values available.
 }
 \usage{
-as.matrix.Codelink(x)
+as.matrix.Codelink(x, ...)
 }
 \arguments{
   \item{x}{an object of class "Codelink".}
+  \item{...}{additional arguments added to generic as.matrix since R-2.5.x}
 }
 \value{A matrix with the intensity values.}
 \details{
