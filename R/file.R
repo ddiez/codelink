@@ -51,9 +51,17 @@ arraySize <- function(file, nlines) {
         #ngenes <- length(data)  # number of genes.
         ngenes <- length(data[!is.na(data)]) # Codelink exporter is a little buggy. 
 }
+# checkColumns()
+# check vector consistency.
+checkColumns <- function(x, y)
+{
+	for(n in 1:length(x))
+		if(x[n] != y[n]) return(FALSE)
+	return(TRUE)
+}
 # readCodelink()
 # read of codelink data.
-readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag=list(M=NA,I=NA,C=NA), dec=NULL, type="Spot", preserve=FALSE, verbose=2, file.type="Codelink") {
+readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag=list(M=NA,I=NA,C=NA), dec=NULL, type="Spot", preserve=FALSE, verbose=2, file.type="Codelink", check=FALSE, fix=FALSE) {
 	if(length(files)==0) stop("Codelink files not found.")
 	type <- match.arg(type,c("Spot", "Raw", "Norm"))
 	file.type <- match.arg(file.type, c("Codelink","XLS"))
@@ -105,6 +113,32 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
 		# Read bulk data.
 		#data <- read.table(files[n], skip=head$nlines, sep="\t", header=TRUE, row.names=1, quote="", dec=head$dec, comment.char="", nrows=head$size, blank.lines.skip=TRUE)
 		data <- read.table(files[n], skip=head$nlines, sep="\t", header=TRUE, quote="", dec=head$dec, comment.char="", nrows=head$size, blank.lines.skip=TRUE)
+
+		# check data consistency.
+		if(check) {
+			if(n==1) {
+				if(file.type=="Codelink")
+					check.first <- as.character(data[,"Probe_name"])
+				else
+					check.first <- as.character(data[,"Probe_Name"])
+			} else {
+				if(file.type=="Codelink")
+					check.now <- as.character(data[,"Probe_name"])
+				else
+					check.now <- as.character(data[,"Probe_Name"])
+				if(!checkColumns(check.first, check.now))
+					stop("Different column order in files! Check that files where generated with the same version of the Codelink Software. Alternatively you can turn the fix argument TRUE and I will do my best to FIX it.")
+			}
+		}
+
+		# try to fix data consistency.
+		if(fix) {
+			if(file.type=="Codelink")
+				fix.col <- as.character(data[,"Probe_name"])
+			else
+				fix.col <- as.character(data[,"Probe_Name"])
+			data <- data[order(fix.col), ]
+		}
 
 		# Assign Flag values.
 		if(file.type=="Codelink") 
