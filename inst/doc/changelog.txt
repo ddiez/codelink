@@ -409,3 +409,6 @@ that column.
   dirty fix is tried using Probe_name, which may end messing a little bit some
   duplicated probes, like control and fiducial as well as a few discovery 
   probes spotted in duplicate.
+  - Improvements done to the vignette including new entry for imageCodelink() 
+  and for the new readCodelink() arguments.
+  - Added CITATION file into inst directory.

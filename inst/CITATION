@@ -1,0 +1,21 @@
+citHeader("To cite codelink in publications use:")
+
+citEntry(entry="Article",
+	title = "codelink: An R package for analysis of GE Healthcare Gene 
+	Expression Bioarrays",
+	author = "Diez, Diego and Alvarez, Rebeca and Dopazo, Ana",
+	year = "2007",
+	journal = "Bioinformatics",
+	volume = "",
+	number = "",
+	pages = "btm072",
+	doi = "10.1093/bioinformatics/btm072",
+	url = "http://bioinformatics.oxfordjournals.org/cgi/content/abstract/btm072v1",
+
+	textVersion =
+	paste("codelink: An R package for analysis of GE Healthcare Gene",
+	"Expression	Bioarrays", "Diego Diez, Rebeca Alvarez, and Ana Dopazo,",
+	"2007, Bioinformatics, DOI:10.1093/bioinformatics/btm072")
+)
+
+citFooter("")
