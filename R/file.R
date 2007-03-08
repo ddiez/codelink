@@ -61,7 +61,7 @@ checkColumns <- function(x, y)
 }
 # readCodelink()
 # read of codelink data.
-readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag=list(M=NA,I=NA,C=NA), dec=NULL, type="Spot", preserve=FALSE, verbose=2, file.type="Codelink", check=FALSE, fix=FALSE) {
+readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag=list(M=NA,I=NA,C=NA), dec=NULL, type="Spot", preserve=FALSE, verbose=2, file.type="Codelink", check=TRUE, fix=FALSE) {
 	if(length(files)==0) stop("Codelink files not found.")
 	type <- match.arg(type,c("Spot", "Raw", "Norm"))
 	file.type <- match.arg(file.type, c("Codelink","XLS"))
@@ -81,6 +81,7 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
 			if(verbose>0) {
 				cat("* Product:", product, "\n")
 				cat("* Chip size:", ngenes, "\n")
+				if(fix) cat("* Requested Probe Order FIX\n")
 				cat(paste("* Reading file", n, "of", nslides, ":", files[n], "\n"))
 			}
 
@@ -114,8 +115,9 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
 		#data <- read.table(files[n], skip=head$nlines, sep="\t", header=TRUE, row.names=1, quote="", dec=head$dec, comment.char="", nrows=head$size, blank.lines.skip=TRUE)
 		data <- read.table(files[n], skip=head$nlines, sep="\t", header=TRUE, quote="", dec=head$dec, comment.char="", nrows=head$size, blank.lines.skip=TRUE)
 
+		#######################################################################
 		# check data consistency.
-		if(check) {
+		if(check & !fix) {
 			if(n==1) {
 				if(file.type=="Codelink")
 					check.first <- as.character(data[,"Probe_name"])
@@ -127,18 +129,25 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
 				else
 					check.now <- as.character(data[,"Probe_Name"])
 				if(!checkColumns(check.first, check.now))
-					stop("Different column order in files! Check that files where generated with the same version of the Codelink Software. Alternatively you can turn the fix argument TRUE and I will do my best to FIX it.")
+					warning("Different column order in files!\nCheck that files where generated with the same version of the Codelink Software.\nAlternatively you can turn on the fix argument and I will try to fix the order, using the Feature_id column if exists (optimal) or the Probe_name column otherwise (sub-optimal). Be aware that if I use the Probe_name, the control, fiducial and some few duplicated probes will probably be messed up. Depending on what you want to do, this would be unacceptable.")
 			}
 		}
 
 		# try to fix data consistency.
 		if(fix) {
-			if(file.type=="Codelink")
-				fix.col <- as.character(data[,"Probe_name"])
-			else
-				fix.col <- as.character(data[,"Probe_Name"])
+			if(any(grep("Feature_id", head$column))) {
+				cat("  + Using Feature_id to fix order (optimal).\n")
+				fix.col <- as.character(data[,"Feature_id"])
+			} else {
+				cat("  + Using Probe_name to fix order (sub-optimal).\n")
+				if(file.type=="Codelink")
+					fix.col <- as.character(data[,"Probe_name"])
+				 else
+					fix.col <- as.character(data[,"Probe_Name"])
+			}
 			data <- data[order(fix.col), ]
 		}
+		#######################################################################
 
 		# Assign Flag values.
 		if(file.type=="Codelink") 

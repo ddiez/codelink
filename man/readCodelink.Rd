@@ -8,7 +8,7 @@ by Codelink Software or not) flags and information about probes.
 \usage{
     readCodelink(files=list.files(pattern="TXT"), sample.name=NULL,
 	flag=list(M=NA, I=NA, C=NA), dec=NULL, type="Spot",	preserve=FALSE,
-	verbose=2, file.type="Codelink", check=FALSE, fix=FALSE)
+	verbose=2, file.type="Codelink", check=TRUE, fix=FALSE)
 }
 \arguments{
   \item{files}{list of files to read.}

@@ -399,12 +399,13 @@ that column.
   - class.R renamed to Codelink-class.R
 
 1.3.4
-  - Added argument 'check' (default=FALSE) to readCodelink() that allows 
+  - Added argument 'check' (default=TRUE) to readCodelink() that allows 
   checking for column order consistency. Some versions of the Codelink software 
   change the probes order in the exported file. You get weird results if that 
   is the case, but may not notice the cause.
-  - Added argument 'fix' (default=FALSE) to readCodelink() to allow a dirty fix 
-  of the probe order consistency problem. Basically probes are orderes based on 
-  Probe_name which may end messing a little bit those duplicated probes, like 
-  the control and fiducial as well the few discovery probes spotted in 
-  duplicate.
+  - Added argument 'fix' (default=FALSE) to readCodelink() to allow a fix of 
+  the probe order consistency problem. Probes are ordered based on Feature_id 
+  if present, which is an unique identifier based on probe position.  If not a 
+  dirty fix is tried using Probe_name, which may end messing a little bit some
+  duplicated probes, like control and fiducial as well as a few discovery 
+  probes spotted in duplicate.
