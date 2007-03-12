@@ -412,3 +412,7 @@ that column.
   - Improvements done to the vignette including new entry for imageCodelink() 
   and for the new readCodelink() arguments.
   - Added CITATION file into inst directory.
+
+1.3.5
+  - Added Colate field to DESCRIPTION to control the order .R files are read.  
+  Added import(method) to NAMESPACE.

@@ -1,3 +1,5 @@
+import(methods)
+
 S3method(as.matrix, Codelink)
 S3method(dim, Codelink)
 
