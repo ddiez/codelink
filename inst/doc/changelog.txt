@@ -416,3 +416,6 @@ that column.
 1.3.5
   - Added Colate field to DESCRIPTION to control the order .R files are read.  
   Added import(method) to NAMESPACE.
+
+1.3.6
+  - Changed use of LOCUSID to ENTREZID in reportCodelink().
