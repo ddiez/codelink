@@ -419,3 +419,7 @@ that column.
 
 1.3.6
   - Changed use of LOCUSID to ENTREZID in reportCodelink().
+
+1.3.7
+  - Updated example data codelink.example to new S4 representation in R-2.5.
+  - Added SaveImage: yes in the DESCRIPTION file.
