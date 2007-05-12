@@ -7,7 +7,7 @@ Maintainer: Diego Diez <diez@kuicr.kyoto-u.ac.jp>
 Depends: methods, limma, annotate
 Suggests:
 LazyLoad: yes
-SaveImage: yes
+LazyLoad: yes
 Description: This packages allow reading into R of Codelink bioarray data 
  exported as text from the Codelink software. Also includes some functions 
  to ease the manipulation and pre-processing of data, such in background 
