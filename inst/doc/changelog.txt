@@ -423,3 +423,15 @@ that column.
 1.3.7
   - Updated example data codelink.example to new S4 representation in R-2.5.
   - Added SaveImage: yes in the DESCRIPTION file.
+
+Realased BioC-2.0: 2007-04-26
+
+1.4.0
+  - Version number increased for BioC release.
+
+1.5.0
+  - Version number increased for next development version.
+
+1.5.1
+  - SaveImage in DESCRIPTION file is Deprecated in favor of LazyLoad: yes in 
+  R-devel.
