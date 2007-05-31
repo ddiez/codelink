@@ -1,21 +1,22 @@
-## normalize()
+# normalize()
 # Wrapper function to apply normalization methods to Codelink objects.
-normalize <- function(object, method="quantiles", log.it=TRUE, preserve=FALSE) {
+normalize <- function(object, method = "quantiles", log.it = TRUE, preserve = FALSE) {
 	if(!is(object,"Codelink")) stop("A Codelink object is needed.")
 	if(is.null(object$Ri)) stop("Background corrected intensities needed.")
 	if(log.it & object$method$log) stop("Intensities already log2.")
-	method <- match.arg(method,c("loess", "quantiles", "median"))
+	
+	method <- match.arg(method, c("loess", "quantiles", "median"))
 
 	object$Ni <- object$Ri
 	if(log.it) object$Ni <- log2(object$Ni)
 	switch(method,
 		loess = {
 			object$Ni <- normalize.loess(object$Ni, log.it=FALSE)
-			object$method$normalization <- "Cyclic Loess"
+			object$method$normalization <- "CyclicLoess"
 		},
 		quantiles = {
 			object$Ni <- normalizeQuantiles(object$Ni)
-                        object$method$normalization <- "Quantiles"
+            object$method$normalization <- "quantiles"
 		},
 		median = {
 			# taken from limma.
@@ -25,6 +26,7 @@ normalize <- function(object, method="quantiles", log.it=TRUE, preserve=FALSE) {
 			#else
 			#	for (j in 1:narrays) object$M[, j] <- object$M[, j] 
 			#		- weighted.median(object$M[, j], weights[, j], na.rm = TRUE)
+            object$method$normalization <- "median"
 		}
 	)
 	if(!preserve) object$Ri <- NULL
@@ -32,9 +34,9 @@ normalize <- function(object, method="quantiles", log.it=TRUE, preserve=FALSE) {
 	return(object)
 }
 
-## normalize.loess()
-# modified from normalize.loess from affy package.
-# Allow NA in input data.
+# normalize.loess()
+# modified from normalize.loess() from affy package.
+# allows NA in input data.
 normalize.loess <- function (mat, subset = sample(1:(dim(mat)[1]), min(c(5000, nrow(mat)))), 
     epsilon = 10^-2, maxit = 1, log.it = TRUE, verbose = TRUE, 
     span = 2/3, family.loess = "symmetric") 

@@ -5,7 +5,7 @@
 	Takes a Codelink object and applies normalization to intensity values.
 }
 \usage{
-    normalize(object, method="quantiles", log.it=TRUE, preserve=FALSE)
+    normalize(object, method = "quantiles", log.it=TRUE, preserve=FALSE)
 }
 \arguments{
 	\item{object}{an object of class "Codelink".}

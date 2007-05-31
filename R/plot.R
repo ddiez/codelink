@@ -1,55 +1,94 @@
+TYPE_COLOR = c(
+	DISCOVERY = "black",
+	POSITIVE = "gray",
+	NEGATIVE = "gray",
+	OTHER = "gray",
+	FIDUCIAL = "gray"
+)
+
+TYPE_BG = c(
+	DISCOVERY = "black",
+	POSITIVE = "blue",
+	NEGATIVE = "red",
+	OTHER = "green",
+	FIDUCIAL = "yellow"
+)
+
+TYPE_PCH = list(
+	DISCOVERY = ".",
+	POSITIVE = 21,
+	NEGATIVE = 21,
+	OTHER = 21,
+	FIDUCIAL = 21
+)
 ## plotMA()
 # MA plot of gene intensities.
-plotMA <- function(object, array1=1, array2=2, cutoff=NULL, label="type",
-                   type=NULL,
-                   high.list=NULL, high.col="blue", high.pch="*",
-                   snr.cutoff=1, legend.x="bottomright", pch=".", subset=NULL,
-                   title=NULL, xlim=NULL, ylim=NULL) {
-	#if(!is(object,"Codelink")) stop("Codelink object needed.")
-#	if(!is.null(high.list) && (!is(high.list,"logical") || !is(high.list,"vector"))) stop("logical vector needed.")
-#	if(!is.null(high.list) && length(high.list) != dim(object)[1]) stop("high.list and number of genes differ.")
+plotMA <- function(object, array1 = 1, array2 = NULL, cutoff = c(-1, 1),
+	label = NULL, type = NULL, high.list = NULL, high.col = "gray",
+	high.pch = 21, high.bg = "orange", snr.cutoff = 1, legend.x = NULL,
+	pch = ".", subset = NULL, title = NULL, xlim=NULL, ylim=NULL)
+{
 
+	if(!is.null(type) && length(type) != dim(object)[1])
+		warning("'type' has different length than object.")
+	
+	# get values.
 	switch(class(object),
 		Codelink={
 			if(!is.null(object$Smean)) {
 					val1 <- object$Smean[,array1]
-					val2 <- object$Smean[,array2]
-					what <- "Smean"
+					if(is.null(array2))
+						val2 <- rowMeans(object$Smean)
+					else
+						val2 <- object$Smean[,array2]
 			}
 			if(!is.null(object$Ri)) {
 					val1 <- object$Ri[,array1]
-					val2 <- object$Ri[,array2]
-					what <- "Ri"
+					if(is.null(array2))
+						val2 <- rowMeans(object$Ri)
+					else
+						val2 <- object$Ri[,array2]
 			}
 			if(!is.null(object$Ni)) {    
 					val1 <- object$Ni[,array1]
-					val2 <- object$Ni[,array2]
-					what <- "Ni"
+					if(is.null(array2))
+						val2 <- rowMeans(object$Ni)
+					else
+						val2 <- object$Ni[,array2]
 			}
 			if(!object$method$log) {
 				val1 <- log2(val1)
 				val2 <- log2(val2)
 			}
-			# M, A computation.
 			M <- val2 - val1
 			A <- (val2 + val1)/2
 			type <- object$type
 			snr <- object$snr
+			if(is.null(label) && !is.null(type))
+				label = "type"
 		},
 		MArrayLM={
 			M <- as.matrix(object$coefficients)[, array1]
 			A <- object$Amean
-			what <- "MArrayLM"
+			if(is.null(label))
+				label = "none"
+			snr <- NULL
 		},
 		stop("invalid parameter object")
 	)
-	
+
+	# check label.
 	label <- match.arg(label,c("type", "snr", "none"))
-	if(is.null(type) & label!="none") {
-		cat("no type information, reverting to label 'none'\n")
+	if(is.null(type) & label == "type") {
+		warning("missing 'type' information for labelling spots.\n")
+		label <- "none"
+	}
+	if(is.null(snr) & label == "snr") {
+		warning("missing 'snr' information for labelling spots.\n")
 		label <- "none"
 	}
 
+	# type based subset.
 	if(!is.null(subset)) {
 		if(is.null(type)) stop("need type information for subset.\n")
 		else {
@@ -64,79 +103,236 @@ plotMA <- function(object, array1=1, array2=2, cutoff=NULL, label="type",
 	}
 
 
-        # Range computation.
+    # plot range.
 	if(is.null(xlim)) xlim <- range(A, na.rm=TRUE)
 	if(is.null(ylim)) ylim <- range(M, na.rm=TRUE)
-	# Plotting.
+
+	# basic plot.
+	plot(0, col="white", xlim = xlim, ylim = ylim, xlab="A", ylab="M")
+	abline(h=0, col="steelblue", lwd=2)
+	if(!is.null(cutoff)) {
+	        abline(h=-cutoff, col = "gray", lty="dotted")
+        	abline(h=cutoff, col = "gray", lty="dotted")
+	}
+
+	# plot.
 	switch(label,
-                type = {
-                        negative <- type=="NEGATIVE"
-                        positive <- type=="POSITIVE"
-                        discovery <- type=="DISCOVERY"
-                        fiducial <- type=="FIDUCIAL"
-                        other <- type=="OTHER"
-                        plot(A[discovery], M[discovery], xlim=xlim, ylim=ylim, xlab="A", ylab="M", pch=pch)
-                        points(A[negative], M[negative], col="red", pch=20)
-                        points(A[positive], M[positive], col="blue", pch=20)
-                        points(A[fiducial], M[fiducial], col="yellow", pch=20)
-                        points(A[other], M[other], col="green", pch=20)
-			legend.text <- c("DISCOVERY", "NEGATIVE", "POSITIVE", "FIDUCIAL", "OTHER")
-			legend.fill <- c("black","red","blue","yellow","green")
+		type = {
+			#levels <- unique(type)
+			for(level in names(TYPE_COLOR)) {
+				sel <- type == level
+				points(A[sel], M[sel], col=TYPE_COLOR[level],
+					pch = TYPE_PCH[[level]], bg=TYPE_BG[level])
+			}
+			legend.text <- names(TYPE_COLOR)
+			legend.fill <- TYPE_BG
 		},
 		snr = {
 			sel.1 <- snr[, array1] >= snr.cutoff
-			sel.2 <- snr[, array2] >= snr.cutoff
-			plot(A[sel.1 & sel.2], M[sel.1 & sel.2], xlim=xlim, ylim=ylim, col="black", xlab="A", ylab="M", pch=pch)
-                        points(A[xor(sel.1, sel.2)], M[xor(sel.1, sel.2)], col="orange", pch=".")
-                        points(A[!sel.1 & !sel.2], M[!sel.1 & !sel.2], col="red", pch=".")
+			if(is.null(array2)) {
+				tmp <- rowMeans(snr)
+				sel.2 <- tmp >= snr.cutoff
+			} else {
+				sel.2 <- snr[, array2] >= snr.cutoff
+			}
+			points(A[sel.1 & sel.2], M[sel.1 & sel.2], col="black", pch=pch)
+			points(A[xor(sel.1, sel.2)], M[xor(sel.1, sel.2)], col="orange", pch=".")
+			points(A[!sel.1 & !sel.2], M[!sel.1 & !sel.2], col="red", pch=".")
 			legend.text <- c("SNR >= 1 in all","SNR >= 1 in any","SNR < 1 in all")
 			legend.fill <- c("black", "orange", "red")
 		},
 		none = {
-			plot(A, M, xlab="A", ylab="M", pch=pch);
+			points(A, M, pch=pch);
 		}
 	)
 
-	# Highlighted genes.
-        if(!is.null(high.list)) {
-		#names <- object$name[high.list]
-                #text(A[high.list], M[high.list], names, col="blue", cex=0.75)
-		points(A[high.list], M[high.list], col=high.col,pch=high.pch)
-        }
 
-	## Lowess line.
-	# Remove NA.
+	## lowess line.
+	# remove NA.
 	sel <- which(!is.na(M))
-	M <- M[sel]
-	A <- A[sel]
-	# Take a sample.
-	subset=sample(1:length(M),min(c(10000, length(M))))
-	A <- A[subset]
-	M <- M[subset]
-	# Order it and remove duplicates.
-	o <- order(A[subset])
-	o <- which(!duplicated(A))
+	M.l <- M[sel]
+	A.l <- A[sel]
+	# take a sample.
+	subset=sample(1:length(M.l), min(c(10000, length(M.l))))
+	A.l <- A.l[subset]
+	M.l <- M.l[subset]
+	# order it and remove duplicates.
+	o <- order(A.l[subset])
+	o <- which(!duplicated(A.l))
 	# draw the line.
-	lines(approx(lowess(A[o], M[o])), col = "green", lwd=4)
+	lines(approx(lowess(A.l[o], M.l[o])), col = "green", lwd=4)
 	
-	# Misc.
-        abline(h=0, col="blue")
-	if(!is.null(cutoff)) {
-	        abline(h=-cutoff, lty="dotted")
-        	abline(h=cutoff, lty="dotted")
-	}
+	# highligh genes.
+	if(!is.null(high.list))
+		points(A[high.list], M[high.list], col=high.col, pch=high.pch, bg=high.bg)
+
+	# title.
 	switch(class(object),
 		Codelink={
-			names <- paste(object$sample[array2],"-",object$sample[array1], sep="")
+			if(is.null(array2))
+				names <- paste("Mean Array vs.", object$sample[array1])
+			else
+				names <- paste(object$sample[array2],"vs.",object$sample[array1])
 		},
 		MArrayLM={
 			names <- colnames(object$contrasts)[array1]
 		}
 	)
-	if(is.null(title)) title(paste(names, " MA Plot of ", what, sep=""))
+	if(is.null(title)) title(names)
 	else title(title)
+
+	# guess legend position.
+	if(is.null(legend.x)) {
+		if(abs(ylim[1]) > abs(ylim[2]))
+			legend.x <- "bottomright"
+		else
+			legend.x <- "topright"
+	}
+		
 	if(label != "none") legend(x=legend.x, legend=legend.text, fill=legend.fill, inset=0.05)
 }
+
+### plotMA()
+## MA plot of gene intensities.
+#plotMA <- function(object, array1=1, array2=2, cutoff=NULL, label="type",
+	#type=NULL, high.list=NULL, high.col="gray", high.pch=21, high.bg="orange",
+	#snr.cutoff=1, legend.x="bottomright", pch=".", subset=NULL, title=NULL, 
+	#xlim=NULL, ylim=NULL)
+#{
+	##if(!is(object,"Codelink")) stop("Codelink object needed.")
+##	if(!is.null(high.list) && (!is(high.list,"logical") || !is(high.list,"vector"))) stop("logical vector needed.")
+##	if(!is.null(high.list) && length(high.list) != dim(object)[1]) stop("high.list and number of genes differ.")
+
+	#switch(class(object),
+		#Codelink={
+			#if(!is.null(object$Smean)) {
+					#val1 <- object$Smean[,array1]
+					#val2 <- object$Smean[,array2]
+					#what <- "Smean"
+			#}
+			#if(!is.null(object$Ri)) {
+					#val1 <- object$Ri[,array1]
+					#val2 <- object$Ri[,array2]
+					#what <- "Ri"
+			#}
+			#if(!is.null(object$Ni)) {    
+					#val1 <- object$Ni[,array1]
+					#val2 <- object$Ni[,array2]
+					#what <- "Ni"
+			#}
+			#if(!object$method$log) {
+				#val1 <- log2(val1)
+				#val2 <- log2(val2)
+			#}
+			## M, A computation.
+			#M <- val2 - val1
+			#A <- (val2 + val1)/2
+			#type <- object$type
+			#snr <- object$snr
+		#},
+		#MArrayLM={
+			#M <- as.matrix(object$coefficients)[, array1]
+			#A <- object$Amean
+			#what <- "MArrayLM"
+		#},
+		#stop("invalid parameter object")
+	#)
+	
+	#label <- match.arg(label,c("type", "snr", "none"))
+	#if(is.null(type) & label!="none") {
+		#cat("no type information, reverting to label 'none'\n")
+		#label <- "none"
+	#}
+
+	#if(!is.null(subset)) {
+		#if(is.null(type)) stop("need type information for subset.\n")
+		#else {
+			#subset <- match.arg(subset, levels(as.factor(type)), several.ok=TRUE)
+			#subset.sel <- type %in% as.character(subset)
+			#M <- M[subset.sel]
+			#A <- A[subset.sel]
+			#type <- type[subset.sel]
+			#if(class(object)=="Codelink") snr <- snr[subset.sel,]
+			#if(!is.null(high.list)) high.list <- high.list[subset.sel]
+		#}
+	#}
+
+
+        ## Range computation.
+	#if(is.null(xlim)) xlim <- range(A, na.rm=TRUE)
+	#if(is.null(ylim)) ylim <- range(M, na.rm=TRUE)
+	## Plotting.
+	#switch(label,
+                #type = {
+                        #negative <- type=="NEGATIVE"
+                        #positive <- type=="POSITIVE"
+                        #discovery <- type=="DISCOVERY"
+                        #fiducial <- type=="FIDUCIAL"
+                        #other <- type=="OTHER"
+                        #plot(A[discovery], M[discovery], xlim=xlim, ylim=ylim, xlab="A", ylab="M", pch=pch)
+                        #points(A[negative], M[negative], col="red", pch=20)
+                        #points(A[positive], M[positive], col="blue", pch=20)
+                        #points(A[fiducial], M[fiducial], col="yellow", pch=20)
+                        #points(A[other], M[other], col="green", pch=20)
+			#legend.text <- c("DISCOVERY", "NEGATIVE", "POSITIVE", "FIDUCIAL", "OTHER")
+			#legend.fill <- c("black","red","blue","yellow","green")
+		#},
+		#snr = {
+			#sel.1 <- snr[, array1] >= snr.cutoff
+			#sel.2 <- snr[, array2] >= snr.cutoff
+			#plot(A[sel.1 & sel.2], M[sel.1 & sel.2], xlim=xlim, ylim=ylim, col="black", xlab="A", ylab="M", pch=pch)
+                        #points(A[xor(sel.1, sel.2)], M[xor(sel.1, sel.2)], col="orange", pch=".")
+                        #points(A[!sel.1 & !sel.2], M[!sel.1 & !sel.2], col="red", pch=".")
+			#legend.text <- c("SNR >= 1 in all","SNR >= 1 in any","SNR < 1 in all")
+			#legend.fill <- c("black", "orange", "red")
+		#},
+		#none = {
+			#plot(A, M, xlab="A", ylab="M", pch=pch);
+		#}
+	#)
+
+	## Misc.
+    #abline(h=0, col="steelblue")
+	#if(!is.null(cutoff)) {
+	        #abline(h=-cutoff, col = "gray", lty="dotted")
+        	#abline(h=cutoff, col = "gray", lty="dotted")
+	#}
+	## Highlighted genes.
+	#if(!is.null(high.list)) {
+		##names <- object$name[high.list]
+		##text(A[high.list], M[high.list], names, col="blue", cex=0.75)
+		#points(A[high.list], M[high.list], col=high.col, pch=high.pch,
+			#bg=high.bg)
+	#}
+
+	### Lowess line.
+	## Remove NA.
+	#sel <- which(!is.na(M))
+	#M <- M[sel]
+	#A <- A[sel]
+	## Take a sample.
+	#subset=sample(1:length(M),min(c(10000, length(M))))
+	#A <- A[subset]
+	#M <- M[subset]
+	## Order it and remove duplicates.
+	#o <- order(A[subset])
+	#o <- which(!duplicated(A))
+	## draw the line.
+	#lines(approx(lowess(A[o], M[o])), col = "green", lwd=4)
+	
+	#switch(class(object),
+		#Codelink={
+			#names <- paste(object$sample[array2],"-",object$sample[array1], sep="")
+		#},
+		#MArrayLM={
+			#names <- colnames(object$contrasts)[array1]
+		#}
+	#)
+	##if(is.null(title)) title(paste(names, " MA Plot of ", what, sep=""))
+	#if(is.null(title)) title(names)
+	#else title(title)
+	#if(label != "none") legend(x=legend.x, legend=legend.text, fill=legend.fill, inset=0.05)
+#}
 
 ## plotDensities()
 # Densities plot of gene intensities.
