@@ -21,12 +21,13 @@ TYPE_PCH = list(
 	OTHER = 21,
 	FIDUCIAL = 21
 )
-## plotMA()
+# plotMA()
 # MA plot of gene intensities.
 plotMA <- function(object, array1 = 1, array2 = NULL, cutoff = c(-1, 1),
 	label = NULL, type = NULL, high.list = NULL, high.col = "gray",
-	high.pch = 21, high.bg = "orange", snr.cutoff = 1, legend.x = NULL,
-	pch = ".", subset = NULL, title = NULL, xlim=NULL, ylim=NULL)
+	high.pch = 21, high.bg = "orange", snr = NULL, snr.cutoff = 1, 
+	legend.x = NULL, pch = ".", subset = NULL, title = NULL, xlim = NULL,
+	ylim = NULL)
 {
 
 	if(!is.null(type) && length(type) != dim(object)[1])
@@ -34,25 +35,25 @@ plotMA <- function(object, array1 = 1, array2 = NULL, cutoff = c(-1, 1),
 	
 	# get values.
 	switch(class(object),
-		Codelink={
+		Codelink = {
 			if(!is.null(object$Smean)) {
 					val1 <- object$Smean[,array1]
 					if(is.null(array2))
-						val2 <- rowMeans(object$Smean)
+						val2 <- rowMeans(object$Smean, na.rm = TRUE)
 					else
 						val2 <- object$Smean[,array2]
 			}
 			if(!is.null(object$Ri)) {
 					val1 <- object$Ri[,array1]
 					if(is.null(array2))
-						val2 <- rowMeans(object$Ri)
+						val2 <- rowMeans(object$Ri, na.rm = TRUE)
 					else
 						val2 <- object$Ri[,array2]
 			}
 			if(!is.null(object$Ni)) {    
 					val1 <- object$Ni[,array1]
 					if(is.null(array2))
-						val2 <- rowMeans(object$Ni)
+						val2 <- rowMeans(object$Ni, na.rm = TRUE)
 					else
 						val2 <- object$Ni[,array2]
 			}
@@ -63,16 +64,23 @@ plotMA <- function(object, array1 = 1, array2 = NULL, cutoff = c(-1, 1),
 			M <- val2 - val1
 			A <- (val2 + val1)/2
 			type <- object$type
-			snr <- object$snr
+			if(is.null(snr))
+				snr <- rowMeans(object$snr, na.rm = TRUE)
 			if(is.null(label) && !is.null(type))
 				label = "type"
+			if(is.null(array2))
+				names <- paste("Mean Array vs.", object$sample[array1])
+			else
+				names <- paste(object$sample[array2], "vs.",
+					object$sample[array1])
 		},
-		MArrayLM={
+		MArrayLM = {
 			M <- as.matrix(object$coefficients)[, array1]
 			A <- object$Amean
-			if(is.null(label))
-				label = "none"
-			snr <- NULL
+			# SNRmean can be added manually to the MArrayLM objects.
+			if(is.null(snr))
+				snr <- object$SNRmean
+			names <- colnames(object$contrasts)[array1]
 		},
 		stop("invalid parameter object")
 	)
@@ -97,69 +105,73 @@ plotMA <- function(object, array1 = 1, array2 = NULL, cutoff = c(-1, 1),
 			M <- M[subset.sel]
 			A <- A[subset.sel]
 			type <- type[subset.sel]
-			if(class(object)=="Codelink") snr <- snr[subset.sel,]
+			snr <- snr[subset.sel]
 			if(!is.null(high.list)) high.list <- high.list[subset.sel]
 		}
 	}
 
-
     # plot range.
-	if(is.null(xlim)) xlim <- range(A, na.rm=TRUE)
-	if(is.null(ylim)) ylim <- range(M, na.rm=TRUE)
+	if(is.null(xlim)) xlim <- range(A, na.rm = TRUE)
+	if(is.null(ylim)) ylim <- range(M, na.rm = TRUE)
 
 	# basic plot.
-	plot(0, col="white", xlim = xlim, ylim = ylim, xlab="A", ylab="M")
-	abline(h=0, col="steelblue", lwd=2)
+	plot(0, col = "white", xlim = xlim, ylim = ylim, xlab="A", ylab="M")
+	abline(h = 0, col = "steelblue", lwd = 2)
 	if(!is.null(cutoff)) {
-	        abline(h=-cutoff, col = "gray", lty="dotted")
-        	abline(h=cutoff, col = "gray", lty="dotted")
+		abline(h=-cutoff, col = "gray", lty = "dotted")
+		abline(h=cutoff, col = "gray", lty = "dotted")
 	}
 
 	# plot.
 	switch(label,
 		type = {
-			#levels <- unique(type)
 			for(level in names(TYPE_COLOR)) {
 				sel <- type == level
-				points(A[sel], M[sel], col=TYPE_COLOR[level],
-					pch = TYPE_PCH[[level]], bg=TYPE_BG[level])
+				points(A[sel], M[sel], col = TYPE_COLOR[level],
+					pch = TYPE_PCH[[level]], bg = TYPE_BG[level])
 			}
 			legend.text <- names(TYPE_COLOR)
 			legend.fill <- TYPE_BG
 		},
 		snr = {
-			sel.1 <- snr[, array1] >= snr.cutoff
-			if(is.null(array2)) {
-				tmp <- rowMeans(snr)
-				sel.2 <- tmp >= snr.cutoff
-			} else {
-				sel.2 <- snr[, array2] >= snr.cutoff
+			g <- colorRampPalette(c("red", "orange"))
+			s <- c(0, 0.85, snr.cutoff)
+			col <- g(length(s) - 1)
+
+			legend.text <- c()
+			legend.fill <- c()
+
+			for(n in 1:(length(s) - 1)) {
+				sel <- snr >= s[n] & snr < s[n + 1]
+				points(A[sel], M[sel], col = col[n], pch = pch);
+				legend.text <- c(legend.text,
+					paste(format(s[n], digits = 2, nsmall = 2), "<= SNR <",
+					format(s[n + 1], digits = 2, nsmall = 2)))
+				legend.fill <- c(legend.fill, col[n])
 			}
-			points(A[sel.1 & sel.2], M[sel.1 & sel.2], col="black", pch=pch)
-			points(A[xor(sel.1, sel.2)], M[xor(sel.1, sel.2)], col="orange", pch=".")
-			points(A[!sel.1 & !sel.2], M[!sel.1 & !sel.2], col="red", pch=".")
-			legend.text <- c("SNR >= 1 in all","SNR >= 1 in any","SNR < 1 in all")
-			legend.fill <- c("black", "orange", "red")
+			sel <- snr >= snr.cutoff
+			points(A[sel], M[sel], col = "black", pch = pch);
+			legend.text <- c(legend.text, paste("SNR >=", snr.cutoff))
+			legend.fill <- c(legend.fill, "black")
 		},
 		none = {
 			points(A, M, pch=pch);
 		}
 	)
 
-
-	## lowess line.
+	# lowess line block.
 	# remove NA.
 	sel <- which(!is.na(M))
 	M.l <- M[sel]
 	A.l <- A[sel]
-	# take a sample.
-	subset=sample(1:length(M.l), min(c(10000, length(M.l))))
+	# take sample.
+	subset = sample(1:length(M.l), min(c(5000, length(M.l))))
 	A.l <- A.l[subset]
 	M.l <- M.l[subset]
 	# order it and remove duplicates.
 	o <- order(A.l[subset])
 	o <- which(!duplicated(A.l))
-	# draw the line.
+	# draw loess line.
 	lines(approx(lowess(A.l[o], M.l[o])), col = "green", lwd=4)
 	
 	# highligh genes.
@@ -167,17 +179,6 @@ plotMA <- function(object, array1 = 1, array2 = NULL, cutoff = c(-1, 1),
 		points(A[high.list], M[high.list], col=high.col, pch=high.pch, bg=high.bg)
 
 	# title.
-	switch(class(object),
-		Codelink={
-			if(is.null(array2))
-				names <- paste("Mean Array vs.", object$sample[array1])
-			else
-				names <- paste(object$sample[array2],"vs.",object$sample[array1])
-		},
-		MArrayLM={
-			names <- colnames(object$contrasts)[array1]
-		}
-	)
 	if(is.null(title)) title(names)
 	else title(title)
 

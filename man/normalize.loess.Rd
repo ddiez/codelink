@@ -6,10 +6,9 @@
 	normalize.loess from package affy but supports NA.
 }
 \usage{
-	normalize.loess(mat, subset = sample(1:(dim(mat)[1]),
-            min(c(5000,	nrow(mat)))), epsilon = 10^-2, maxit = 1,
-            log.it = TRUE, verbose = TRUE, span = 2/3,
-            family.loess = "symmetric")
+  normalize.loess(mat, subset = sample(1:(dim(mat)[1]), 
+    min(c(5000,	nrow(mat)))), epsilon = 10^-2, maxit = 1, log.it = TRUE,
+	verbose = FALSE, span = 2/3, family.loess = "symmetric", weights = NULL)
 }
 \arguments{
   \item{mat}{a matrix with columns containing the values of the chips
@@ -25,6 +24,7 @@
   \item{family.loess}{parameter to be passed the function
     \code{\link[stats]{loess}}. \code{"gaussian"} or \code{"symmetric"}
     are acceptable values for this parameter.}
+  \item{weights}{a vector of weights for the individual measurements.}
 }
 \value{A matrix of normalized values.}
 \details{

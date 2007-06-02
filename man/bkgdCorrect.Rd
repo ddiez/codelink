@@ -6,8 +6,8 @@
 	and corrects applying one of the methods available.
 }
 \usage{
-  bkgdCorrect(object, method="half", preserve=FALSE,
-              verbose=TRUE, offset=0)
+  bkgdCorrect(object, method = "half", preserve = FALSE, verbose = FALSE,
+    offset = 0)
 }
 \arguments{
   \item{object}{character; an object of class "Codelink".}
@@ -20,11 +20,11 @@
 	Ri slot.}
 \details{
   Available methods are:
-  . None: Left intensities untouched.
-  . Subtract: Simple subtraction of Bkgd median from Spot mean.
-  . Half: The same as above but aboid negative values setting all intensity
+  . none: left intensities untouched.
+  . subtract: simple subtraction of Bkgd median from Spot mean.
+  . half: the same as above but aboid negative values setting all intensity
           values below zero to 0.5.
-  . Normexp: Apply normexp background adjustment from package limma.
+  . normexp: apply normexp background adjustment from package limma.
 }
 \note{
 }

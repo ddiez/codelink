@@ -514,3 +514,13 @@
   - FIXED: no info stored when using normalize() with method = 'median'.
   - FIXED: header was not writen to exported file in writeCodelink().
   - Added SNR to output of writeCodelink(). Improved header information.
+
+1.5.5
+  - plotMA() now plot mean SNR values when label = "snr" instead of individual 
+  pairs. In addition, it can use SNRmean if present in a MArrayLM object (which 
+  has to be added before by hand) or it can be passed to the snr argument. This 
+  allows showing the SNR information with fitted objects.
+  - Added weights support for method CyclicLoess ('loess' method) in 
+  normalize() through the corresponding argument.
+  - Added verbose option to normalize(), default to FALSE. Set same option in 
+  bkgdCorrect() to FALSE too.

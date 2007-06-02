@@ -48,8 +48,8 @@ mergeArray <- function(object, class, names=NULL, method="mean",
 }
 ## bkgdCorrect()
 # Correct Spot intensity by background.
-bkgdCorrect <- function(object, method="half", preserve=FALSE,
-                        verbose=TRUE, offset=0) {
+bkgdCorrect <- function(object, method = "half", preserve = FALSE,
+                        verbose = FALSE, offset = 0) {
 	if(!is(object,"Codelink")) stop("Codelink object needed.")
 	method <- match.arg(method, c("none", "subtract", "half", "normexp"))
 	switch(method,
@@ -72,7 +72,7 @@ bkgdCorrect <- function(object, method="half", preserve=FALSE,
 			    out <- normexp.fit(x)
 			    object$Ri[, j] <- normexp.signal(out$par, x)
 			    if (verbose)
-				cat("Corrected array", j, "\n")
+					cat(" + Corrected array", j, "\n")
 			}
 			object$method$background <- "normexp"
 		}

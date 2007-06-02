@@ -7,7 +7,7 @@
 \usage{
   plotMA(object, array1 = 1, array2 = NULL, cutoff = c(-1, 1), label = NULL,
     type = NULL, high.list = NULL, high.col = "gray", high.pch = 21,
-	high.bg = "orange",	snr.cutoff = 1, legend.x = NULL, pch = ".", 
+	high.bg = "orange",	snr = NULL, snr.cutoff = 1, legend.x = NULL, pch = ".", 
 	subset = NULL, title = NULL, xlim = NULL, ylim = NULL)
 }
 \arguments{
@@ -21,6 +21,7 @@
   \item{high.col}{color used for high genes.}
   \item{high.pch}{pch used for high genes.}
   \item{high.bg}{background color used for high genes.}
+  \item{snr}{vector with SNR values, usually, taking rowMeans() from a SNR matrix.}
   \item{snr.cutoff}{SNR cutoff used for label spots.}
   \item{legend.x}{relative position of the legend.}
   \item{pch}{pch style used to main spots.}
