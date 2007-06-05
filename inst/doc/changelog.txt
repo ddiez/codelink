@@ -524,3 +524,17 @@
   normalize() through the corresponding argument.
   - Added verbose option to normalize(), default to FALSE. Set same option in 
   bkgdCorrect() to FALSE too.
+
+1.5.6
+  - Some improvements on the vignette as well as adding information about the 
+  new methods and options.
+  - Code cleanup in file.R. Now readCodelink() try to read the Feature_id field 
+  if present. This will allow in the future the transition from Codelink-class 
+  to CodelinkSet-class based object (class derived from eSet). The Feature_id 
+  is stored in the 'id' slot.
+  - Added initial files CodelinkSet-class.R CodelinkSet-methods.R and 
+  CodelinkSet-tools.R with definition of CodelinkSet, a class based on eSet.  
+  The function readCodelink2() readsdata into the old class and converts it to 
+  a CodelinkSet-object using the function Codelink2eSet(). Some methods are 
+  available but most the functionality is not working. This is a very first 
+  step for moving to eSet-based objects. The package now depends on Biobase.

@@ -166,7 +166,7 @@ other spot untouched you do:
 \begin{Sinput}
 # NOT RUN #
 
-> foo <- readCodelink(flag=list(M=0.01) )
+> foo <- readCodelink(flag = list(M = 0.01) )
 
 # NOT RUN #
 \end{Sinput}
@@ -186,8 +186,8 @@ instance, if you want to apply \emph{half} method you do:
 
 \begin{Sinput}
 
-> foo <- bkgdCorrect(foo, method="half")
-
+> foo <- bkgdCorrect(foo, method = "half")
+ 
 \end{Sinput}
 
 The default method used is \emph{half} and is based in the same method applied 
@@ -207,19 +207,18 @@ function \Rfunction{normalize}. The default method is \emph{quantile}
 normalization that in fact call \Rfunction{normalizeQuantiles()} from 
 \Rpackage{limma} package (allowing for NAs). There is also the possibility to 
 use a modified version of CyclicLoess from \Rpackage{affy} \cite{affy} package 
-that also allows NA values. Finally, the \emph{median} normalization allow to 
-normalize using a method analog to the default method in the Codelink software.  
-To normalize you usually do:
+that allow using weights and missing values. Finally, the \emph{median} 
+normalization allows to normalize using a method analog to the default method 
+in the Codelink software. To normalize you usually do:
 
 \begin{Sinput}
 
-> foo <- normalize(foo, method="quantile")
+> foo <- normalize(foo, method = "quantiles")
 
 \end{Sinput}
 
 By default, \Rfunction{normalize} return log2 intensity values.  This could be
 controlled setting the parameter log.it to FALSE.
-
 
 \section{Plotting}
 
@@ -231,16 +230,19 @@ the plot.
 
 The functions \Rfunction{plotMA} and \Rfunction{plotCorrelation} can highlight 
 points based on the Spot Type, which is the default behavior or using the SNR 
-values.  The mode is controlled with argument \emph{label}. Both function 
-require arguments \emph{array1} and \emph{array2} to be set in order to select 
-which arrays are going to be plotted. For \Rfunction{plotMA} M and A values are 
-computed following equations \ref{eq:M} and \ref{eq:A}.
+values.  The mode is controlled with argument \emph{label}.  
+\Rfunction{plotCorrelation} requires arguments \emph{array1} and \emph{array2} 
+to be set in order to select which arrays are going to be plotted. For 
+\Rfunction{plotMA} if only \emph{array1} is specified, the values are plotted 
+againts a pseudoarray constructed with the mean of the probe intensities along 
+all available arrays. M and A values are computed following equations 
+\ref{eq:M} and \ref{eq:A}.
 
 \begin{center}
 
 <<plotMA, fig=TRUE>>=
 
-plotMA(codelink.example, legend.x="topright")
+plotMA(codelink.example)
 
 @
 \end{center}
@@ -275,7 +277,7 @@ intensities. To plot a pseudo image you should use:
 \begin{Sinput}
 
 > imageCodelink(foo)
-> imageCodelink(foo, what="snr")
+> imageCodelink(foo, what = "snr")
 
 \end{Sinput}
 
@@ -296,7 +298,8 @@ probe type labels to be used, for example, when fitting a linear model with
 
 <<createWeights>>=
 
-w <- createWeights(codelink.example, type=list(FIDUCIAL=0.01, NEGATIVE=0.1))
+w <- createWeights(codelink.example, type = list(FIDUCIAL = 0.01, NEGATIVE = 
+0.1))
 
 w[1:10,]
 
@@ -314,8 +317,8 @@ can be checked with the function \Rfunction{plotCV}.
 
 \begin{Sinput}
 
-> foo <- mergeArray(foo, group=c(1,1,2,2),
-+ names=c("A","B"))
+> foo <- mergeArray(foo, group = c(1, 1, 2, 2),
++ names = c("A", "B"))
 
 > plotCV(foo)
 
@@ -335,7 +338,7 @@ old files again using the updated version of the software. If this is
 impossible for whatever reason, the codelink package can try to fix the order 
 of the files.
 
-To the aim, a new argument \emph{fix=TRUE} can be passed to 
+To the aim, a new argument \emph{fix = TRUE} can be passed to 
 \Rfunction{readCodelink}. The method will try to order the probes using the 
 Feature\_id column, which is a combination of Logical\_row and Logical\_col and 
 for this, a unique identifier of each probe. This is the optimal fix, and the 
@@ -349,7 +352,7 @@ the software.
 
 \begin{Sinput}
 
-> foo <- readCodelink(fix=TRUE)
+> foo <- readCodelink(fix = TRUE)
 
 \end{Sinput}
 

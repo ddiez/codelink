@@ -1,55 +1,71 @@
 # readHeaderXLS()
 # read header information from XLS exported file.
-readHeaderXLS <- function(file, dec=FALSE) {
-	nlines <- grep("Idx", scan(file, flush=TRUE, what="", blank.lines.skip=F, quiet=TRUE))
+readHeaderXLS <- function(file, dec = FALSE) {
+	nlines <- grep("Idx", scan(file, flush = TRUE, what = "",
+		blank.lines.skip = F, quiet = TRUE))
 	nlines <- nlines-1
 	head <- list()
 	if(!any(nlines)) stop("Not a Codelink XLS exported file.")
-	head$header <- scan(file, nlines=nlines, sep="\t", what="", quiet=TRUE)
+	head$header <- scan(file, nlines = nlines, sep = "\t", what = "",
+		quiet = TRUE)
 	head$nlines <- nlines
-	if(any(foo <- grep("Product:", head$header))) head$product <- head$header[foo+1] else head$product <- "Unknown"
-	if(any(foo <- grep("Sample Name", head$header))) head$sample <- head$header[foo+1] else head$sample <- file
+	if(any(foo <- grep("Product:", head$header)))
+		head$product <- head$header[foo + 1] else head$product <- "Unknown"
+	if(any(foo <- grep("Sample Name", head$header)))
+		head$sample <- head$header[foo + 1] else head$sample <- file
 	head$size <- arraySize(file, nlines)
 	head$size <- head$size - 1
 	if(dec) head$dec <- decDetect(file, nlines)
-	head$columns <- scan(file, skip=nlines, nlines=1, sep="\t", what="", quiet=TRUE)
+	head$columns <- scan(file, skip = nlines, nlines = 1, sep = "\t",
+		what = "", quiet = TRUE)
 	return(head)
 }
 
 # readHeader()
 # read header information from codelink file.
-readHeader <- function(file, dec=FALSE) {
-	foo <- grep("-{80}", scan(file, nlines=30, flush=T, quiet=TRUE, what=""))
+readHeader <- function(file, dec = FALSE) {
+	foo <- grep("-{80}", scan(file, nlines = 30, flush = T, quiet = TRUE,
+		what = ""))
 	if(!any(foo)) stop("Not a Codelink exported file.")
 	nlines <- foo
 	# Return list:
-	head <- list(header=NULL, nlines=NULL, product=NULL, sample=NULL, size=NULL, dec=NULL, columns=NULL)
-	head$header <- scan(file, nlines=nlines, sep="\t", what="", quiet=TRUE)
+	head <- list(header = NULL, nlines = NULL, product = NULL, sample = NULL,
+		size = NULL, dec = NULL, columns = NULL)
+	head$header <- scan(file, nlines = nlines, sep = "\t", what = "",
+		quiet = TRUE)
 	head$nlines <- nlines
-	if(any(foo <- grep("PRODUCT", head$header))) head$product <- head$header[foo+1] else head$product <- "Unknown"
-	if(any(foo <- grep("Sample Name", head$header))) head$sample <- head$header[foo+1] else head$sample <- file
+	if(any(foo <- grep("PRODUCT", head$header)))
+		head$product <- head$header[foo + 1] else head$product <- "Unknown"
+	if(any(foo <- grep("Sample Name", head$header)))
+		head$sample <- head$header[foo + 1] else head$sample <- file
 	head$size <- arraySize(file, nlines)
 	if(dec) head$dec <- decDetect(file, nlines)
-	head$columns <- scan(file, skip=nlines, nlines=1, sep="\t", what="", quiet=TRUE)
+	head$columns <- scan(file, skip = nlines, nlines = 1, sep = "\t",
+		what = "", quiet = TRUE)
 	return(head)
 }
 # decDetect()
 # detect decimal point.
 decDetect <- function(file, nlines) {
-	foo <- read.table(file, skip=nlines, nrows=1, header=TRUE, sep="\t", na.strings="", comment.char="", fill=T)
+	foo <- read.table(file, skip = nlines, nrows = 1, header = TRUE,
+		sep = "\t", na.strings = "", comment.char = "", fill = TRUE)
         val <- NULL
         if(!is.null(foo$Spot_mean)) val <- foo$Spot_mean
-        if(!is.null(foo$Raw_intensity) && is.null(val)) val <- foo$Raw_intensity
-        if(!is.null(foo$Normalized_intensity) && is.null(val)) val <- foo$NormalNormalized_intensity
-        if(is(val,"numeric")) dec <- "." else dec <- ","
+        if(!is.null(foo$Raw_intensity) && is.null(val))
+			val <- foo$Raw_intensity
+        if(!is.null(foo$Normalized_intensity) && is.null(val))
+			val <- foo$NormalNormalized_intensity
+        if(is(val, "numeric")) dec <- "." else dec <- ","
 	return(dec)
 }
 # arraySize()
 # calculate chip size.
 arraySize <- function(file, nlines) {
-        data <- scan(file, skip=nlines+1, sep="\t", what="integer", flush=TRUE, na.strings="", quiet=TRUE)
+        data <- scan(file, skip = nlines + 1, sep = "\t", what = "integer",
+			flush = TRUE, na.strings = "", quiet = TRUE)
         #ngenes <- length(data)  # number of genes.
-        ngenes <- length(data[!is.na(data)]) # Codelink exporter is a little buggy. 
+		# Codelink exporter is buggy.
+        ngenes <- length(data[!is.na(data)])
 }
 # checkColumns()
 # check vector consistency.
@@ -61,73 +77,99 @@ checkColumns <- function(x, y)
 }
 # readCodelink()
 # read of codelink data.
-readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag=list(M=NA,I=NA,C=NA), dec=NULL, type="Spot", preserve=FALSE, verbose=2, file.type="Codelink", check=TRUE, fix=FALSE) {
-	if(length(files)==0) stop("Codelink files not found.")
-	type <- match.arg(type,c("Spot", "Raw", "Norm"))
-	file.type <- match.arg(file.type, c("Codelink","XLS"))
-	if(file.type=="XLS") readHeader <- readHeaderXLS
+readCodelink <- function(files = list.files(pattern = "TXT"),
+	sample.name = NULL, flag = list(M = NA, I = NA, C = NA), dec = NULL,
+	type = "Spot", preserve = FALSE, verbose = 2, file.type = "Codelink",
+	check = TRUE, fix = FALSE)
+{
+	if(length(files) == 0) stop("no Codelink files found.")
 	nslides <- length(files)
-	if(!is.null(sample.name) && (length(sample.name) != nslides)) stop("sample.name must have equal length as chips loaded.")
+
+	type <- match.arg(type,c("Spot", "Raw", "Norm"))
+	file.type <- match.arg(file.type, c("Codelink", "XLS"))
+
+	if(file.type=="XLS") readHeader <- readHeaderXLS
 	
-	# Read Header.
+	if(!is.null(sample.name) && (length(sample.name) != nslides))
+		stop("sample.name must have equal length as files.")
+	
+	# read Header.
 	#head <- readHeader(files[1])
-	# Read arrays.
+
+	# read arrays.
 	for(n in 1:nslides) {
-		if(verbose>0 && n>1) cat(paste("* Reading file", n, "of", nslides, ":", files[n], "\n"))
-		if(is.null(dec)) head <- readHeader(files[n], dec=TRUE) else head <- readHeader(files[n])
+		if(verbose > 0 && n > 1) cat(paste("* Reading file", n, "of",
+			nslides, ":", files[n], "\n"))
+		
+		if(is.null(dec)) head <- readHeader(files[n], dec = TRUE)
+		else head <- readHeader(files[n])
+
 		if(n==1) {
 			product <- head$product
 			ngenes <- head$size
-			if(verbose>0) {
+			if(verbose > 0) {
 				cat("* Product:", product, "\n")
 				cat("* Chip size:", ngenes, "\n")
 				if(fix) cat("* Requested Probe Order FIX\n")
 				cat(paste("* Reading file", n, "of", nslides, ":", files[n], "\n"))
 			}
 
-			# Define Codelink object.
-			Y <- matrix(NA, nrow=ngenes, ncol=nslides, dimnames=list(1:ngenes,1:nslides))
+			# define Codelink object.
+			Y <- matrix(NA, nrow = ngenes, ncol = nslides,
+				dimnames = list(1:ngenes, 1:nslides))
 			Z <- rep(NA, ngenes)
 			X <- c(1:nslides)
-			J <- matrix(NA, nrow=ngenes, ncol=2, dimnames=list(1:ngenes, c("row","col")))
-			method.list <- list(background="NONE", normalization="NONE", merge="NONE", log=FALSE)
-			head.list <- list(product="NONE", sample=X,  file=X,
-					name=Z, type=Z, flag=Y, method=method.list, Bstdev=Y, snr=Y, logical=J)
+			J <- matrix(NA, nrow = ngenes, ncol = 2,
+				dimnames = list(1:ngenes, c("row","col")))
+			
+			method.list <- list(background = "NONE", normalization = "NONE",
+				merge = "NONE", log = FALSE)
+			head.list <- list(product = "NONE", sample = X,  file = X,
+				name = Z, type = Z, id = Z, flag = Y, method = method.list,
+				Bstdev = Y,	snr = Y, logical = J)
+
 			switch(type,
-				Spot = data.list <- list(Smean=Y, Bmedian=Y),
-				Raw = data.list <- list(Ri=Y),
-				Norm = data.list <- list(Ni=Y)
+				Spot = data.list <- list(Smean = Y, Bmedian = Y),
+				Raw = data.list <- list(Ri = Y),
+				Norm = data.list <- list(Ni = Y)
 			)
 			codelink <- c(head.list,  data.list)
 		}
 
 		if(verbose>2) print(head)
-		if(verbose>1) cat(paste("  + Detected '", head$dec, "' as decimal symbol.\n",sep=""))
+		if(verbose>1) cat(paste("  + Detected", head$dec, 
+			"as decimal symbol.\n"))
 
-		if(head$product != product) stop("Different array type (", head$product, ")!")
-		if(head$product == "Unknown") warning("Product type for ", files[n], " is unknown (missing PRODUCT field in header).")
-		if(head$size != ngenes) stop("Mmm. Something is wrong. Different number of probes (", head$size, ")\n")
+		if(head$product != product) stop("Different array type (",
+			head$product, ")!")
+		if(head$product == "Unknown") warning("Product type for ", files[n],
+			" is unknown (missing PRODUCT field in header).")
+		if(head$size != ngenes)	stop("Different number of probes (",
+			head$size, ")\n")
 
 		if(is.null(sample.name)) codelink$sample[n] <- head$sample
-		if(verbose>1) cat(paste("  + Sample Name:", codelink$sample[n],"\n"))
+		if(verbose > 1) cat(paste("  + Sample Name:", codelink$sample[n], "\n"))
 
-		# Read bulk data.
+		# read bulk data.
 		#data <- read.table(files[n], skip=head$nlines, sep="\t", header=TRUE, row.names=1, quote="", dec=head$dec, comment.char="", nrows=head$size, blank.lines.skip=TRUE)
-		data <- read.table(files[n], skip=head$nlines, sep="\t", header=TRUE, quote="", dec=head$dec, comment.char="", nrows=head$size, blank.lines.skip=TRUE)
+		data <- read.table(files[n], skip = head$nlines, sep = "\t",
+			header = TRUE, quote = "", dec = head$dec, comment.char = "",
+			nrows = head$size, blank.lines.skip = TRUE)
 
 		#######################################################################
 		# check data consistency.
 		if(check & !fix) {
-			if(n==1) {
-				if(file.type=="Codelink")
-					check.first <- as.character(data[,"Probe_name"])
+			if(n == 1) {
+				if(file.type == "Codelink")
+					check.first <- as.character(data[, "Probe_name"])
 				else
-					check.first <- as.character(data[,"Probe_Name"])
+					check.first <- as.character(data[, "Probe_Name"])
 			} else {
-				if(file.type=="Codelink")
-					check.now <- as.character(data[,"Probe_name"])
+				if(file.type == "Codelink")
+					check.now <- as.character(data[, "Probe_name"])
 				else
-					check.now <- as.character(data[,"Probe_Name"])
+					check.now <- as.character(data[, "Probe_Name"])
+
 				if(!checkColumns(check.first, check.now))
 					warning("Different column order in files!\nCheck that files where generated with the same version of the Codelink Software.\nAlternatively you can turn on the fix argument and I will try to fix the order, using the Feature_id column if exists (optimal) or the Probe_name column otherwise (sub-optimal). Be aware that if I use the Probe_name, the control, fiducial and some few duplicated probes will probably be messed up. Depending on what you want to do, this would be unacceptable.")
 			}
@@ -137,25 +179,25 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
 		if(fix) {
 			if(any(grep("Feature_id", head$column))) {
 				cat("  + Using Feature_id to fix order (optimal).\n")
-				fix.col <- as.character(data[,"Feature_id"])
+				fix.col <- as.character(data[, "Feature_id"])
 			} else {
 				cat("  + Using Probe_name to fix order (sub-optimal).\n")
-				if(file.type=="Codelink")
-					fix.col <- as.character(data[,"Probe_name"])
+				if(file.type == "Codelink")
+					fix.col <- as.character(data[, "Probe_name"])
 				 else
-					fix.col <- as.character(data[,"Probe_Name"])
+					fix.col <- as.character(data[, "Probe_Name"])
 			}
 			data <- data[order(fix.col), ]
 		}
 		#######################################################################
 
-		# Assign Flag values.
-		if(file.type=="Codelink") 
-			codelink$flag[,n] <- as.character(data[,"Quality_flag"])
+		# assign flag values.
+		if(file.type == "Codelink") 
+			codelink$flag[,n] <- as.character(data[, "Quality_flag"])
 		else
-			codelink$flag[,n] <- as.character(data[,"Quality.Flag"])
-		# Flag information.
-		# Allow combination of different flags.
+			codelink$flag[,n] <- as.character(data[, "Quality.Flag"])
+		# flag information.
+		# allow combination of different flags.
 		flag.m <- grep("M", codelink$flag[,n])	# MSR masked spots.
 		flag.i <- grep("I", codelink$flag[,n])	# Irregular spots.
 		flag.c <- grep("C", codelink$flag[,n])	# Background contaminated
@@ -175,14 +217,18 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
 			cat(paste("      X:",length(flag.x),"\n"))
 		}
 
-		# Assignn Intensity values.
+		# assignn intensity values.
 		switch(type,
 			Spot = {
-				codelink$Smean[,n] <- data[,"Spot_mean"]
-				codelink$Bmedian[,n] <- data[,"Bkgd_median"]
-				# If found Background sd get it to compute SNR.
-				if(any(grep("Bkgd_stdev", head$columns))) codelink$Bstdev[,n] <- data[,"Bkgd_stdev"] else codelink$Bstdev[,n] <- NA
-				# Set values based on Flags.
+				codelink$Smean[,n] <- data[, "Spot_mean"]
+				codelink$Bmedian[,n] <- data[, "Bkgd_median"]
+
+				# if found bkgd stdev get it to compute SNR.
+				if(any(grep("Bkgd_stdev", head$columns)))
+					codelink$Bstdev[,n] <- data[, "Bkgd_stdev"]
+				else codelink$Bstdev[,n] <- NA
+
+				# set values based on flags.
 				if(!is.null(flag$M)) {
 					codelink$Smean[flag.m, n] <- flag$M
 					codelink$Bmedian[flag.m, n] <- flag$M
@@ -213,10 +259,10 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
 				}
 			},
 			Raw = {
-				if(file.type=="Codelink")
-					codelink$Ri[,n] <- data[,"Raw_intensity"]
+				if(file.type == "Codelink")
+					codelink$Ri[, n] <- data[, "Raw_intensity"]
 				else
-					codelink$Ri[,n] <- data[,"Raw_Intensity"]
+					codelink$Ri[, n] <- data[, "Raw_Intensity"]
 				codelink$method$backgrund <- "Codelink Subtract"
 				# Set values based on Flags.
 				if(!is.null(flag$M)) {
@@ -242,7 +288,7 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
 				}
 			},
 			Norm = {
-				codelink$Ni[,n] <- data[,"Normalized_intensity"]
+				codelink$Ni[,n] <- data[, "Normalized_intensity"]
 				codelink$method$background <- "Codelink Subtract"
 				codelink$method$normalization <- "Codelink Median"
 				# Set values based on Flags.
@@ -269,24 +315,27 @@ readCodelink <- function(files=list.files(pattern="TXT"), sample.name=NULL, flag
 				}
 			}
 		)
-		if(n==1) {
-			if(file.type=="Codelink") {
+		if(n == 1) {
+			if(file.type == "Codelink") {
 				codelink$name <- as.character(data[, "Probe_name"])
 				codelink$type <- as.character(data[, "Probe_type"])
-				if(any(grep("Logical_row", head$columns)) & any(grep("Logical_col", head$column))) {
+				codelink$id <- as.character(data[, "Feature_id"])
+				if(any(grep("Logical_row", head$columns)) &
+					any(grep("Logical_col", head$column))) {
 					codelink$logical[,"row"] <- data[, "Logical_row"]
 					codelink$logical[,"col"] <- data[, "Logical_col"]
 				}
 			} else {
-				codelink$name <- as.character(data[,"Probe_Name"])
-				codelink$type <- as.character(data[,"Type"])
+				codelink$name <- as.character(data[, "Probe_Name"])
+				codelink$type <- as.character(data[, "Type"])
 			}
 		}
 	}
-	# Compute SNR.
-	if(type=="Spot") {
+	# compute SNR.
+	if(type == "Spot") {
+		if(verbose>0) cat("* Computing SNR ...")
 		codelink$snr <- SNR(codelink$Smean, codelink$Bmedian, codelink$Bstdev)
-		if(verbose>0) cat("* Computing SNR...\n")
+		if(verbose>0) cat("OK\n")
 		if(!preserve) codelink$Bstdev <- NULL
 	}
 	

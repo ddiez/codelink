@@ -1,5 +1,11 @@
 import(methods)
 
+importClassesFrom(Biobase, eSet, VersionedBiobase, Versioned)
+
+exportClasses(CodelinkSet)
+exportMethods(codCorrect, codNormalize, probeNames, probeTypes, getSNR, 
+	getInt, getBkg, getInfo)
+
 S3method(as.matrix, Codelink)
 S3method(dim, Codelink)
 
@@ -9,4 +15,5 @@ exportMethods("[", show)
 export(readCodelink, writeCodelink, reportCodelink,
 	plotMA, plotCorrelation, plotDensities, plotCV, imageCodelink,
 	bkgdCorrect, normalize, mergeArray, createWeights, arrayNew,
-	selCV, cutCV, fc2Cond, na2false, logCodelink)
+	selCV, cutCV, fc2Cond, na2false, logCodelink,
+	readCodelink2)
