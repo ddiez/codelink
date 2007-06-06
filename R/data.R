@@ -83,6 +83,19 @@ bkgdCorrect <- function(object, method = "half", preserve = FALSE,
 	return(object)
 }
 
+# bgcorrect.normexp()
+bgcorrect.normexp <- function(x, y, verbose = FALSE) {
+	#z <- matrix(NA, nrow = nrow(x), ncol = ncol(x), dimnames = dimnames(x))
+	for (j in 1:ncol(x)) {
+		xc <- x[, j] - y[, j]
+		out <- normexp.fit(xc)
+		x[, j] <- normexp.signal(out$par, xc)
+		if (verbose)
+			cat(" + Corrected array", j, "\n")
+	}
+	x
+}
+
 ## logCodelink()
 # apply log2 to Codelink object.
 logCodelink <- function(object) {

@@ -538,3 +538,20 @@
   a CodelinkSet-object using the function Codelink2eSet(). Some methods are 
   available but most the functionality is not working. This is a very first 
   step for moving to eSet-based objects. The package now depends on Biobase.
+
+1.5.7
+  - Modified getInfo() to retrieve all preprocessing info from experimentData 
+  if no argument what is suplied.
+  - Added codPlot() an experimental general interface for all plotting 
+  functions. Implemented codPlotMA() function.
+  - Added column meanSNR to phenoData object. This way, it don't have to be 
+  computed every time we want to plot SNR in a codPlotMA. Added method 
+  meanSNR() to extract this information.
+  - Implemented normalization interface codNormalize(). Implemented 
+  pre-processing interface codPreprocess() that includes codCorrect() and 
+  codNormalize().
+  - Added functions normalize.median() and bgcorrect.normexp() to manage common 
+  computing.
+  - Implemented codPlotMA() for CodelinkSet and MArrayLM objects. Implemented 
+  codPlotDensities() for CodelinkSet objects. Added basic function plotma() for 
+  plotting common stuff in codPlotMA().

@@ -34,30 +34,37 @@ plotMA <- function(object, array1 = 1, array2 = NULL, cutoff = c(-1, 1),
 		warning("'type' has different length than object.")
 	
 	# get values.
+	islog <- object$method$log
 	switch(class(object),
 		Codelink = {
 			if(!is.null(object$Smean)) {
 					val1 <- object$Smean[,array1]
-					if(is.null(array2))
-						val2 <- rowMeans(object$Smean, na.rm = TRUE)
-					else
+					if(is.null(array2)) {
+						val2 <- rowMeans(if(!islog) object$Smean
+							else 2**object$Smean, na.rm = TRUE)
+						if(islog) val2 <- log2(val2)
+					} else
 						val2 <- object$Smean[,array2]
 			}
 			if(!is.null(object$Ri)) {
 					val1 <- object$Ri[,array1]
-					if(is.null(array2))
-						val2 <- rowMeans(object$Ri, na.rm = TRUE)
-					else
+					if(is.null(array2)) {
+						val2 <- rowMeans(if(!islog) object$Ri else
+							2**object$Ri, na.rm = TRUE)
+						if(islog) val2 <- log2(val2)
+					} else
 						val2 <- object$Ri[,array2]
 			}
 			if(!is.null(object$Ni)) {    
 					val1 <- object$Ni[,array1]
-					if(is.null(array2))
-						val2 <- rowMeans(object$Ni, na.rm = TRUE)
-					else
+					if(is.null(array2)) {
+						val2 <- rowMeans(if(!islog) object$Ni else
+							2**object$Ni, na.rm = TRUE)
+						if(islog) val2 <- log2(val2)
+					} else
 						val2 <- object$Ni[,array2]
 			}
-			if(!object$method$log) {
+			if(!islog) {
 				val1 <- log2(val1)
 				val2 <- log2(val2)
 			}
@@ -191,6 +198,75 @@ plotMA <- function(object, array1 = 1, array2 = NULL, cutoff = c(-1, 1),
 	}
 		
 	if(label != "none") legend(x=legend.x, legend=legend.text, fill=legend.fill, inset=0.05)
+}
+
+# basic plotma function.
+plotma <- function(A, M, label = "type", cutoff = c(-1, 1), 
+	snr.cutoff = 1, legend.x, pch = ".", xlim, ylim, type, snr, ...) {
+	
+	label <- match.arg(label, c("type", "snr", "none"))
+	if(missing(type) || missing(snr) && label != "none") {
+		label = "none"
+		warning("missing type or snr info.")
+	}
+	
+	# basic plot.
+	if(missing(xlim)) xlim <- range(A, na.rm = TRUE)
+	if(missing(ylim)) ylim <- range(M, na.rm = TRUE)
+
+	plot(0, col = "white", xlim = xlim, ylim = ylim, xlab = "A", ylab = "M")
+	abline(h = 0, col = "steelblue", lwd = 2)
+	if(!is.null(cutoff))
+		abline(h = cutoff, col = "gray", lty = "dotted")
+
+	# plot MA values.
+	switch(label,
+		type = {
+			#type <- probeTypes(x)
+			for(level in names(TYPE_COLOR)) {
+				sel <- type == level
+				points(A[sel], M[sel], col = TYPE_COLOR[level],
+					pch = TYPE_PCH[[level]], bg = TYPE_BG[level], ...)
+			}
+			legend.text = names(TYPE_COLOR)
+			legend.fill = TYPE_BG
+		},
+		snr = {
+			#snr <- meanSNR(x)
+			s <- c(0, 0.85, snr.cutoff)
+			col <- c("red", "orange")
+
+			legend.text <- c()
+			legend.fill <- c()
+
+			for(n in 1:(length(s) - 1)) {
+				sel <- snr >= s[n] & snr < s[n + 1]
+				points(A[sel], M[sel], col = col[n], pch = pch, ...)
+				legend.text <- c(legend.text,
+					paste(format(s[n], digits = 2, nsmall = 2), "<= SNR <",
+					format(s[n + 1], digits = 2, nsmall = 2)))
+				legend.fill <- c(legend.fill, col[n])
+			}
+
+			sel <- snr >= snr.cutoff
+			points(A[sel], M[sel], col = "black", pch = pch, ...)
+			legend.text <- c(legend.text, paste("SNR >=", snr.cutoff))
+			legend.fill <- c(legend.fill, "black")
+		},
+		none = points(A, M, pch = pch, ...)
+	)
+
+	# guess legend position.
+	if(missing(legend.x)) {
+		if(abs(ylim[1]) > abs(ylim[2]))
+			legend.x <- "bottomright"
+		else
+			legend.x <- "topright"
+	}
+
+	if(label != "none")
+		legend(x = legend.x, legend = legend.text, fill = legend.fill,
+			bty = "n")
 }
 
 ### plotMA()

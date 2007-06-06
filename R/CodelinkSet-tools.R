@@ -14,9 +14,9 @@ Codelink2eSet <- function(object, annotation=NULL) {
 
 	Rep <- data.frame(probeName = object$name, probeType = object$type,
 		logicalRow = object$logical[, "row"],
-		logicalCol = object$logical[, "col"])
-	feMet <- data.frame(labelDescription = c("probe names", "probe types", "probe row position", "probe column position"),
-		row.names = c("probeName", "probeType", "logicalRow", "logicalCol"))
+		logicalCol = object$logical[, "col"], meanSNR = rowMeans(object$snr, na.rm = TRUE))
+	feMet <- data.frame(labelDescription = c("probe names", "probe types", "probe row position", "probe column position", "mean snr"),
+		row.names = c("probeName", "probeType", "logicalRow", "logicalCol", "meanSNR"))
 	Rep <- new("AnnotatedDataFrame", data = Rep, varMetadata = feMet)
 
 	if(is.null(annotation))

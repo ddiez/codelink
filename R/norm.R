@@ -1,5 +1,5 @@
 # normalize()
-# Wrapper function to apply normalization methods to Codelink objects.
+# wrapper function to apply normalization methods to Codelink objects.
 normalize <- function(object, method = "quantiles", log.it = TRUE,
 	preserve = FALSE, weights = NULL, verbose = FALSE) {
 
@@ -22,14 +22,8 @@ normalize <- function(object, method = "quantiles", log.it = TRUE,
             object$method$normalization <- "quantiles"
 		},
 		median = {
-			# taken from limma.
-			#if (is.null(weights))
-            	for (j in 1:dim(object)[2])
-					object$Ni[, j] <- object$Ni[, j] - median(object$Ni[, j],
-						na.rm = TRUE)
-			#else
-			#	for (j in 1:narrays) object$M[, j] <- object$M[, j] 
-			#		- weighted.median(object$M[, j], weights[, j], na.rm = TRUE)
+			# no weights used right now.
+			object$Ni <- normalize.median(object$Ni)
             object$method$normalization <- "median"
 		}
 	)
@@ -38,9 +32,26 @@ normalize <- function(object, method = "quantiles", log.it = TRUE,
 	return(object)
 }
 
+# normalize.median()
+# based on limma implementation.
+normalize.median <- function(x, weights = NULL) {
+	l <- dim(x)[2]
+	
+	if(is.null(weights)) {
+		for(j in 1:l)
+			x[, j] <- x[, j] - median(x[, j], na.rm = TRUE)
+	} else {
+		for(j in 1:l)
+			x[, j] <- x[, j] - weighted.median(x[, j], weights[, j],
+				na.rm = TRUE)
+	}
+
+	x
+}
+
 # normalize.loess()
-# modified from normalize.loess() from affy package.
-# allows NA in input data and weights.
+# based on affy implementation.
+# modified to allows missing values and weights.
 normalize.loess <- function (mat, 
 	subset = sample(1:(dim(mat)[1]), min(c(5000, nrow(mat)))),
 	epsilon = 10^-2, maxit = 1, log.it = TRUE,

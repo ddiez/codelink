@@ -8,22 +8,31 @@
 % generic.
 \alias{codCorrect}
 \alias{codNormalize}
+\alias{codPreprocess}
 \alias{getBkg}
 \alias{getInt}
 \alias{getInfo}
 \alias{getSNR}
+\alias{getType}
 \alias{probeNames}
 \alias{probeTypes}
+\alias{meanSNR}
+\alias{codPlot}
+\alias{normalize.median}
 
 % CodelinkSet-methods.
 \alias{codCorrect,CodelinkSet-method}
 \alias{codNormalize,CodelinkSet-method}
+\alias{codPreprocess,CodelinkSet-method}
 \alias{getBkg,CodelinkSet-method}
 \alias{getInt,CodelinkSet-method}
 \alias{getInfo,CodelinkSet-method}
 \alias{getSNR,CodelinkSet-method}
 \alias{probeNames,CodelinkSet-method}
 \alias{probeTypes,CodelinkSet-method}
+\alias{meanSNR,CodelinkSet-method}
+\alias{codPlot,CodelinkSet-method}
+\alias{exprs,CodelinkSet-method}
 
 % non-class methods.
 \alias{readCodelink2}
