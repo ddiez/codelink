@@ -32,6 +32,7 @@
 \alias{probeTypes,CodelinkSet-method}
 \alias{meanSNR,CodelinkSet-method}
 \alias{codPlot,CodelinkSet-method}
+\alias{codPlot,MArrayLM-method}
 \alias{exprs,CodelinkSet-method}
 
 % non-class methods.

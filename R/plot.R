@@ -202,13 +202,11 @@ plotMA <- function(object, array1 = 1, array2 = NULL, cutoff = c(-1, 1),
 
 # basic plotma function.
 plotma <- function(A, M, label = "type", cutoff = c(-1, 1), 
-	snr.cutoff = 1, legend.x, pch = ".", xlim, ylim, type, snr, ...) {
-	
+	snr.cutoff = 1, legend.x, pch = ".", xlim, ylim, type, snr,
+	high.list, ...)
+{
+
 	label <- match.arg(label, c("type", "snr", "none"))
-	if(missing(type) || missing(snr) && label != "none") {
-		label = "none"
-		warning("missing type or snr info.")
-	}
 	
 	# basic plot.
 	if(missing(xlim)) xlim <- range(A, na.rm = TRUE)
@@ -255,6 +253,12 @@ plotma <- function(A, M, label = "type", cutoff = c(-1, 1),
 		},
 		none = points(A, M, pch = pch, ...)
 	)
+	# highligh genes.
+	high.pch <- 21
+	high.col <- "gray"
+	high.bg <- "magenta"
+	if(!missing(high.list))
+		points(A[high.list], M[high.list], col=high.col, pch=high.pch, bg=high.bg)
 
 	# guess legend position.
 	if(missing(legend.x)) {

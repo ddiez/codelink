@@ -4,8 +4,10 @@ setGeneric("codCorrect", function(x, method = "half")
 setMethod("codCorrect", "CodelinkSet",
 function(x, method = "half")
 {
-	if(getInfo(x, "background") != "NONE")
-		warning("data already corrected.")
+	if(getInfo(x, "background") != "NONE") {
+		warning("data already corrected, skipped.")
+		return(x)
+	}
 	
 	method <- match.arg(method, c("none"< "subtract", "half", "normexp"))
 
@@ -51,8 +53,10 @@ function(x, method = "quantile", log.it = TRUE)
 {
 	method <- match.arg(method, c("median", "quantile", "loess"))
 
-	if(getInfo(x, "normalization") != "NONE")
-		warning("data already normalized.")
+	if(getInfo(x, "normalization") != "NONE") {
+		warning("data already normalized, skipped.")
+		return(x)
+	}
 	
 	# take data.
 	newInt <- assayDataElement(x, "intensity")
@@ -174,6 +178,14 @@ function(x, array, what = "ma", ...)
 		image = { if(missing(array)) array = 1; codPlotImage(x, array, ...) }
 	)
 })
+# codPlot(), MArrayLM-method.
+setMethod("codPlot", "MArrayLM",
+function(x, array, what = "ma", ...)
+{
+	if(missing(array)) array = 1
+	codPlotMA(x, array = array, ...)
+})
+
 # codPlotMA, CodelinkSet-method.
 setGeneric("codPlotMA", function(x, array = 1, ...)
 	standardGeneric("codPlotMA"))
@@ -211,9 +223,18 @@ function(x, array = 1, array2, label = "type", cutoff = c(-1, 1),
 # codPlotMA, MArrayLM-method.
 setMethod("codPlotMA", "MArrayLM",
 function(x, array = 1, label = "type", cutoff = c(-1, 1),
-	snr.cutofof = 1, legend.x, pch = ".", Amean, ...)
+	snr.cutoff = 1, legend.x, pch = ".", Amean, type, snr, ...)
 {
 	label <- match.arg(label, c("type", "snr", "none"))
+	
+	if(missing(type) && label == "type") {
+		label = "none"
+		warning("missing type information.")
+	}   
+	if(missing(snr) && label == "snr") {
+		label = "none" 
+		warning("missing snr info.")
+	}
 
 	M <- x$coef[, array]
 	if(is.null(x$Amean))

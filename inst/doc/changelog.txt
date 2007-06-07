@@ -555,3 +555,11 @@
   - Implemented codPlotMA() for CodelinkSet and MArrayLM objects. Implemented 
   codPlotDensities() for CodelinkSet objects. Added basic function plotma() for 
   plotting common stuff in codPlotMA().
+
+1.5.8
+
+  - FIXED: codPlotMA() for MArrayLM-class. Added method for codPlot().
+  - When trying to correct or normalized data already corrected or normalized 
+  the functions show a warning and return the original data object.
+  - FIXED: plotma() in managing presence of type/snr information.
+  - ADDED: support for highlight spots in codPlotMA().
