@@ -183,7 +183,8 @@ plotMA <- function(object, array1 = 1, array2 = NULL, cutoff = c(-1, 1),
 	
 	# highligh genes.
 	if(!is.null(high.list))
-		points(A[high.list], M[high.list], col=high.col, pch=high.pch, bg=high.bg)
+		points(A[high.list], M[high.list], col=high.col, pch=high.pch,
+			bg=high.bg)
 
 	# title.
 	if(is.null(title)) title(names)
@@ -197,13 +198,14 @@ plotMA <- function(object, array1 = 1, array2 = NULL, cutoff = c(-1, 1),
 			legend.x <- "topright"
 	}
 		
-	if(label != "none") legend(x=legend.x, legend=legend.text, fill=legend.fill, inset=0.05)
+	if(label != "none") legend(x = legend.x, legend = legend.text,
+		fill = legend.fill, bty = "n")
 }
 
 # basic plotma function.
 plotma <- function(A, M, label = "type", cutoff = c(-1, 1), 
 	snr.cutoff = 1, legend.x, pch = ".", xlim, ylim, type, snr,
-	high.list, ...)
+	high.list, title, ...)
 {
 
 	label <- match.arg(label, c("type", "snr", "none"))
@@ -253,12 +255,31 @@ plotma <- function(A, M, label = "type", cutoff = c(-1, 1),
 		},
 		none = points(A, M, pch = pch, ...)
 	)
+	
+	# lowess line block.
+	# remove NA.
+	sel <- which(!is.na(M))
+	M.l <- M[sel]
+	A.l <- A[sel]
+	# take sample.
+	subset = sample(1:length(M.l), min(c(5000, length(M.l))))
+	A.l <- A.l[subset]
+	M.l <- M.l[subset]
+	# order it and remove duplicates.
+	o <- order(A.l[subset])
+	o <- which(!duplicated(A.l))
+	# draw loess line.
+	lines(approx(lowess(A.l[o], M.l[o])), col = "green", lwd = 4)
+	
 	# highligh genes.
 	high.pch <- 21
 	high.col <- "gray"
 	high.bg <- "magenta"
 	if(!missing(high.list))
 		points(A[high.list], M[high.list], col=high.col, pch=high.pch, bg=high.bg)
+
+	# title.
+	if(!missing(title)) title(title)
 
 	# guess legend position.
 	if(missing(legend.x)) {
@@ -617,37 +638,20 @@ imageCodelink <- function (object, array = 1, what = "bg",
 		for (igrid in 0:gr) lines(rep(igrid * sr, 2), c(0, gc * sc))
 	mtext(paste("Slide:", array," File:", object$file[array]), side=1, cex=0.8)
 }
+
 # arrayNew
 # creates a suitable x11 device to see the chip with the correct dimensions.
-arrayNew <- function(f=2, chip="rwgcod") {
-	chip <- match.arg(chip, c("rwgcod", "mwgcod", "hwgcod", "h20kcod"))
-	# This is hardcoded as it is not way to guess.
-	switch(chip,
-		rwgcod={
-			gc <- 1
-			gr <- 8
-			sc <- 112
-			sr <- 41
-		},
-		mwgcod={
-			gc <- 1
-			gr <- 10
-			sc <- 112
-			sr <- 41
-		},
-		hwgcod={
-			gc <- 1
-			gr <- 12
-			sc <- 112
-			sr <- 42
-		},
-		h20kcod={
-			gc <- 1
-			gr <- 1
-			sc <- 71
-			sr <- 332
-		}
-	)
+arrayNew <- function(f = 2, chip = "rwgcod") {
+	d <- getChipDimensions(chip)
+	
+	if(is.null(d))
+		stop("unknown chip.")
+	
+	gc <- d["gc"]
+	gr <- d["gr"]
+	sc <- d["sc"]
+	sr <- d["sr"]
+
 	r <- sr / sc
-	x11(width=f*gr*r, height=f*gc)
+	x11(width = f * gr * r, height = f * gc)
 }

@@ -19,6 +19,7 @@
 \alias{meanSNR}
 \alias{codPlot}
 \alias{normalize.median}
+\alias{chipDevice}
 
 % CodelinkSet-methods.
 \alias{codCorrect,CodelinkSet-method}
@@ -34,6 +35,7 @@
 \alias{codPlot,CodelinkSet-method}
 \alias{codPlot,MArrayLM-method}
 \alias{exprs,CodelinkSet-method}
+\alias{chipDevice,CodelinkSet-method}
 
 % non-class methods.
 \alias{readCodelink2}

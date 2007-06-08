@@ -152,12 +152,28 @@ function(object)
 	as.character(pData(featureData(object))[, "probeType"])
 })
 
-# probeTypes method to get feature types.
+# meanSNR method to get mean SNR values.
 setGeneric("meanSNR", function(object) standardGeneric("meanSNR"))
 setMethod("meanSNR", "CodelinkSet",
 function(object)
 {
 	pData(featureData(object))[, "meanSNR"]
+})
+
+# logicalRow method to get chip row positions.
+setGeneric("logicalRow", function(object) standardGeneric("logicalRow"))
+setMethod("logicalRow", "CodelinkSet",
+function(object)
+{
+	pData(featureData(object))[, "logicalRow"]
+})
+
+# logicalCol method to get chip col positions.
+setGeneric("logicalCol", function(object) standardGeneric("logicalCol"))
+setMethod("logicalCol", "CodelinkSet",
+function(object)
+{
+	pData(featureData(object))[, "logicalCol"]
 })
 
 # experimental codPlot-method.
@@ -167,6 +183,8 @@ setGeneric("codPlot", function(x, array, what = "ma", ...)
 setMethod("codPlot", "CodelinkSet",
 function(x, array, what = "ma", ...)
 {
+	what <- match.arg(what, c("ma", "density", "scatter", "image"))
+
 	switch(what,
 		ma = { if(missing(array)) array = 1; codPlotMA(x, array, ...) },
 		density = {
@@ -217,8 +235,16 @@ function(x, array = 1, array2, label = "type", cutoff = c(-1, 1),
 	M <- X2 - X1
 	A <- (X1 + X2) / 2
 
+	samples <- sampleNames(x)
+	if(missing(array2)) {
+		title <- paste("Median vs", samples[array])
+	} else {
+		title <- paste(samples[array2], "vs", samples[array])
+	}
+
 	plotma(A, M, label = label,	cutoff = cutoff, snr.cutoff = snr.cutoff,
-		legend.x = legend.x, pch = pch, type = type, snr = snr, ...)
+		legend.x = legend.x, pch = pch, type = type, snr = snr, title = title, 
+		...)
 })
 # codPlotMA, MArrayLM-method.
 setMethod("codPlotMA", "MArrayLM",
@@ -243,8 +269,11 @@ function(x, array = 1, label = "type", cutoff = c(-1, 1),
 	else
 		A <- x$Amean
 	
+	title <- colnames(x$coef)[array]
+	
 	plotma(A, M, label = label,	cutoff = cutoff, snr.cutoff = snr.cutoff,
-		legend.x = legend.x, pch = pch, type = type, snr = snr, ...)
+		legend.x = legend.x, pch = pch, type = type, snr = snr, title = title, 
+		...)
 })
 
 # codPlotDensity-method.
@@ -285,7 +314,104 @@ function(x, array = NULL, ...)
 setGeneric("codPlotImage", function(x, array = 1, ...)
 	standardGeneric("codPlotImage"))
 setMethod("codPlotImage", "CodelinkSet",
-function(x, array = 1, ...)
+function(x, array = 1, signal = "bg", low = "white", high = "blue",
+	log.it = FALSE, ...)
 {
-	warning("FIXME: codPlotImage()  not implemented.")
+	signal <- match.arg(signal, c("bg", "intensity", "snr"))
+	switch(signal,
+		bg = X <- getBkg(x)[, array],
+		intensity = X <- getInt(x)[, array],
+		snr = X <- getSNR(x)[, array]
+	)
+
+	if(log.it) X <- log2(X)
+	
+	d <- getChipDimensions(x)
+	if(is.null(d)) {
+		gc <- 1
+		gr <- 1
+	} else {
+		gc <- d["gc"]
+		gr <- d["gr"]
+	}
+
+	rows <- logicalRow(x)
+	cols <- logicalCol(x)
+
+	or <- max(rows)
+	oc <- max(cols)
+	o <- matrix(NA, nrow = or, ncol = oc)
+	for(n in 1:length(rows)) {
+		o[rows[n], cols[n]] <- X[n]
+	}
+
+	col <- colorRampPalette(c(low, high))(123)
+	op <- par(mar = c(1, 1, 1, 1))
+	on.exit(par(op))
+
+	if(is.null(d)) {
+		sc <- oc/gc
+		sr <- or/gr
+	} else {
+		sc <- d["sc"]
+		sr <- d["sr"]
+	}
+
+	image(0:(gr * sr), 0:(gc * sc), o, col = col, xaxt = "n", yaxt = "n", ...)
+
+	for (igrid in 0:gc) lines(c(0, gr * sr), rep(igrid * sc, 2), lwd = 2)
+	for (igrid in 0:gr) lines(rep(igrid * sr, 2), c(0, gc * sc), lwd = 2)
+	box(lwd = 2)
+
+	mtext(paste("Array:", array, "Signal: ", signal, " Sample:",
+		sampleNames(x)[array]), side=1, cex=0.8)
+})
+#
+setGeneric("getChipDimensions", function(x)
+	standardGeneric("getChipDimensions"))
+setMethod("getChipDimensions", "character",
+function(x)
+{
+	#if(missing(x)) return(NULL)
+	switch(x,
+		hwgcod = {
+			gc <- 1
+			gr <- 12
+			sc <- 112
+			sr <- 42
+		},
+		mwgcod = {
+			gc <- 1
+			gr <- 10
+			sc <- 112
+			sr <- 41
+		},
+		rwgcod = {
+			gc <- 1
+			gr <- 8
+			sc <- 112
+			sr <- 41
+		},
+		h20kcod = {
+			gc <- 1
+			gr <- 1
+			sc <- 71
+			sr <- 332
+		},
+		return(NULL)
+	)
+	return(c(gc = gc, gr = gr, sc = sc, sr = sr))
+})
+#
+setMethod("getChipDimensions", "CodelinkSet",
+function(x)
+{
+	getChipDimensions(x@annotation)
+})
+#
+setGeneric("chipDevice", function(x, f = 3) standardGeneric("chipDevice"))
+setMethod("chipDevice", "CodelinkSet",
+function(x, f = 3)
+{
+	arrayNew(f = f, chip = x@annotation)
 })

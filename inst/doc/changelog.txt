@@ -557,9 +557,17 @@
   plotting common stuff in codPlotMA().
 
 1.5.8
-
   - FIXED: codPlotMA() for MArrayLM-class. Added method for codPlot().
   - When trying to correct or normalized data already corrected or normalized 
   the functions show a warning and return the original data object.
   - FIXED: plotma() in managing presence of type/snr information.
   - ADDED: support for highlight spots in codPlotMA().
+
+1.5.9
+  - Added left features to codPlotMA() method.
+  - Added partial argument support to 'what' argument in codPlot() by using 
+  match.arg() function.
+  - Implemented codPlotImage() function. Added support function 
+  getChipDimensions() to get the grid/subgrid values for the knwon chips.
+  - Modified arrayNew() to use getChipDimensions(). Added function chipDevice() 
+  that creates an X11 device with the correct dimensions, calling arrayNew().
