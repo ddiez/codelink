@@ -6,8 +6,8 @@
 }
 \usage{
   plotMA(object, array1 = 1, array2 = NULL, cutoff = c(-1, 1), label = NULL,
-    type = NULL, high.list = NULL, high.col = "gray", high.pch = 21,
-	high.bg = "orange",	snr = NULL, snr.cutoff = 1, legend.x = NULL, pch = ".", 
+    type = NULL, high.list = NULL, high.col = "blue", high.pch = 21,
+	high.bg = "cyan",	snr = NULL, snr.cutoff = 1, legend.x = NULL, pch = ".", 
 	subset = NULL, title = NULL, xlim = NULL, ylim = NULL)
 }
 \arguments{

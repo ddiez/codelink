@@ -24,8 +24,8 @@ TYPE_PCH = list(
 # plotMA()
 # MA plot of gene intensities.
 plotMA <- function(object, array1 = 1, array2 = NULL, cutoff = c(-1, 1),
-	label = NULL, type = NULL, high.list = NULL, high.col = "gray",
-	high.pch = 21, high.bg = "orange", snr = NULL, snr.cutoff = 1, 
+	label = NULL, type = NULL, high.list = NULL, high.col = "blue",
+	high.pch = 21, high.bg = "cyan", snr = NULL, snr.cutoff = 1, 
 	legend.x = NULL, pch = ".", subset = NULL, title = NULL, xlim = NULL,
 	ylim = NULL)
 {
@@ -34,9 +34,9 @@ plotMA <- function(object, array1 = 1, array2 = NULL, cutoff = c(-1, 1),
 		warning("'type' has different length than object.")
 	
 	# get values.
-	islog <- object$method$log
 	switch(class(object),
 		Codelink = {
+			islog <- object$method$log
 			if(!is.null(object$Smean)) {
 					val1 <- object$Smean[,array1]
 					if(is.null(array2)) {
@@ -273,8 +273,8 @@ plotma <- function(A, M, label = "type", cutoff = c(-1, 1),
 	
 	# highligh genes.
 	high.pch <- 21
-	high.col <- "gray"
-	high.bg <- "magenta"
+	high.col <- "blue"
+	high.bg <- "cyan"
 	if(!missing(high.list))
 		points(A[high.list], M[high.list], col=high.col, pch=high.pch, bg=high.bg)
 
