@@ -18,7 +18,8 @@ normalize <- function(object, method = "quantiles", log.it = TRUE,
 			object$method$normalization <- "CyclicLoess"
 		},
 		quantiles = {
-			object$Ni <- normalizeQuantiles(object$Ni)
+			#object$Ni <- normalizeQuantiles(object$Ni)
+			object$Ni <- normalize.quantiles(object$Ni)
             object$method$normalization <- "quantiles"
 		},
 		median = {

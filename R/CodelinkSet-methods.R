@@ -71,7 +71,8 @@ function(x, method = "quantile", log.it = TRUE)
 	# do normalization stuff.
 	switch(method,
 		median = newInt <- normalize.median(newInt),
-		quantile = newInt <- normalizeQuantiles(newInt),
+		#quantile = newInt <- normalizeQuantiles(newInt),
+		quantile = newInt <- normalize.quantiles(newInt),
 		loess = newInt <- normalize.loess(newInt, log.it = FALSE,
 			verbose = FALSE)
 	)
@@ -180,6 +181,18 @@ function(object)
 # this intends to be a general interface for all plotting utilities.
 setGeneric("codPlot", function(x, array, what = "ma", ...)
 	standardGeneric("codPlot"))
+
+# codPlot, Codelink-method.
+# WARNING: WILL BE DEPRECATED.
+setMethod("codPlot", "Codelink",
+function(x, array, what = "ma", ...)
+{
+	warning("Use of Codelink objects with the CodelinkSet interface is slow and will be deprecated in the next release.")
+	x <- Codelink2eSet(x)
+	codPlot(x, array = array, what = what, ...)
+})
+
+# codPlot, CodelinkSet-method.
 setMethod("codPlot", "CodelinkSet",
 function(x, array, what = "ma", ...)
 {
@@ -188,8 +201,9 @@ function(x, array, what = "ma", ...)
 	switch(what,
 		ma = { if(missing(array)) array = 1; codPlotMA(x, array, ...) },
 		density = {
-			if(missing(array)) array = NULL
-			codPlotDensity(x, array, ...) },
+			#if(missing(array)) array = NULL
+			#codPlotDensity(x, array, ...) },
+			codPlotDensity(x, ...) },
 		scatter = {
 			if(missing(array)) array = 1;
 			codPlotScatter(x, array, ...) },
@@ -204,9 +218,10 @@ function(x, array, what = "ma", ...)
 	codPlotMA(x, array = array, ...)
 })
 
-# codPlotMA, CodelinkSet-method.
+# codPlotMA, generic.
 setGeneric("codPlotMA", function(x, array = 1, ...)
 	standardGeneric("codPlotMA"))
+# codPlotMA, CodelinkSet-method.
 setMethod("codPlotMA", "CodelinkSet",
 function(x, array = 1, array2, label = "type", cutoff = c(-1, 1),
 	snr.cutoff = 1,	legend.x, pch = ".", ...)
@@ -280,12 +295,15 @@ function(x, array = 1, label = "type", cutoff = c(-1, 1),
 setGeneric("codPlotDensity", function(x, array, ...)
 	standardGeneric("codPlotDensity"))
 setMethod("codPlotDensity", "CodelinkSet",
-function(x, array = NULL, ...)
+function(x, array, lwd, ...)
 {
 	X <- getInt(x)
+	islog <- getInfo(x, "log")
 
-	if(is.null(array))
+	if(missing(array))
 		array <- 1:dim(X)[2]
+	
+	if(!islog) X <- log2(X)
 
 	narray <- length(array)
 	col <- rainbow(narray)
@@ -305,10 +323,14 @@ function(x, array = NULL, ...)
 	plot(0, col = "white", xlim = xlim, ylim = ylim, xlab = "Intensity",
 		ylab = "Density")
 	
+	if(missing(lwd)) lwd <- 2
+
 	for(n in 1:narray)
-		lines(d[[n]], col = col[n], lwd = 2)
+		lines(d[[n]], col = col[n], lwd = lwd, ...)
 	
 	legend("topright", legend = sampleNames(x), fill = col, bty = "n")
+	
+	invisible(d)
 })
 # codPlotImage-method.
 setGeneric("codPlotImage", function(x, array = 1, ...)

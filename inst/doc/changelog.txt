@@ -576,3 +576,13 @@
   - FIXED: islog is only assigned for Codelink-objects in plotMA().
   - CHANGED: default colors for highlighted probes in plotMA() and codPlotMA() 
   are set to cyan for background and blue for borders.
+
+1.5.11
+  - Imported especific variables from packages in Depends. In particular,   
+  normalizeQuantiles (as normalize.quantiles) from package limma and lookUp and 
+  htmlpage from package annotate.
+  - ADDED: If non log2 intensities are passed to codPlotDensity() then the 
+  transformation is done. Now, ... is passed to lines() and lwd is a parameter 
+  with default 2.
+  - ADDED: Interface to codPlot() for old Codelink-objects. It will be 
+  accessible until Codelink-class is deprecated.

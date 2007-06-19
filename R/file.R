@@ -392,13 +392,11 @@ reportCodelink <- function(object, chip, filename=NULL, title="Main title", prob
 	}
 	if(probe.type) genes.type <- object$type
 	genes.acc <- lookUp(genes, chip, "ACCNUM")
-#	genes.acc <- strsplit(unlist(genes.acc),"|",extended=FALSE)
 	genes.eg <- lookUp(genes, chip, "ENTREZID")
 	genes.ug <- lookUp(genes, chip, "UNIGENE")
 	genes.sym <- lookUp(genes, chip, "SYMBOL")
 	genes.name <- lookUp(genes, chip, "GENENAME")
-#	genes.go <- lookUp(genes, chip, "GO")
-
+	
 	genes.list <- list(genes, genes.acc, as.character(genes.eg), as.character(genes.ug))
 	head <- c("ID", "GENBANK", "LOCUSID", "UNIGENE", "SYMBOL", "NAME")
 	other.list <- list(genes.sym, genes.name)

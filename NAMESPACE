@@ -1,4 +1,6 @@
 import(methods)
+importFrom(limma, normalize.quantiles=normalizeQuantiles)
+importFrom(annotate, lookUp, htmlpage)
 
 importClassesFrom(Biobase, eSet, VersionedBiobase, Versioned)
 
