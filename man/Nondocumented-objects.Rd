@@ -20,6 +20,15 @@
 \alias{codPlot}
 \alias{normalize.median}
 \alias{chipDevice}
+\alias{filterSNR}
+\alias{codUniverse}
+
+% matrix-methods.
+\alias{filterSNR,matrix-method}
+
+% Codelink-methods.
+\alias{filterSNR,Codelink-method}
+\alias{codUniverse,Codelink-method}
 
 % CodelinkSet-methods.
 \alias{codCorrect,CodelinkSet-method}
@@ -37,6 +46,8 @@
 \alias{codPlot,MArrayLM-method}
 \alias{exprs,CodelinkSet-method}
 \alias{chipDevice,CodelinkSet-method}
+\alias{filterSNR,CodelinkSet-method}
+\alias{codUniverse,CodelinkSet-method}
 
 % non-class methods.
 \alias{readCodelink2}

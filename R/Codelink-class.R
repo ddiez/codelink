@@ -92,6 +92,7 @@ function(x, i, j, ..., drop=FALSE) {
 		x$flag <- x$flag[i,]
 		x$name <- x$name[i]
 		x$type <- x$type[i]
+		x$logical <- x$logical[i, ]
 	}
 	if(!missing(j)) {
 		x$Smean <- x$Smean[,j]

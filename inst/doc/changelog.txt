@@ -586,3 +586,13 @@
   with default 2.
   - ADDED: Interface to codPlot() for old Codelink-objects. It will be 
   accessible until Codelink-class is deprecated.
+
+1.5.12
+  - FIXED: correct subsetting of logical$row and logical$col in Codelink 
+  objects.
+  - ADDED: functions to filter based on SNR, filtersnr is a function for use 
+  with the genefilter package. filterSNR() are wrapper functions for Codelink 
+  and CodelinkSet objects.
+  - ADDED: codUniverse() creates a universe of the especified annotation ids to 
+  be used with GOstats. Currently supported and tested ENTREZID. Works on 
+  Codelink and CodelinkSet objects.
