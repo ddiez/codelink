@@ -596,3 +596,9 @@
   - ADDED: codUniverse() creates a universe of the especified annotation ids to 
   be used with GOstats. Currently supported and tested ENTREZID. Works on 
   Codelink and CodelinkSet objects.
+
+1.5.13
+  - ADDED: functions writeCluster() to output intensity values suitable for use 
+  with Cluster/TreeView. Currently methods are for Codelink, CodelinkSet and 
+  MArrayLM objects. The name is likely to change in favor of the new API 
+  convention, probably as an all-purpose exporting function.

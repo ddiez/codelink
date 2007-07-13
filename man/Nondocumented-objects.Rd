@@ -22,13 +22,20 @@
 \alias{chipDevice}
 \alias{filterSNR}
 \alias{codUniverse}
+\alias{writeCluster}
 
 % matrix-methods.
 \alias{filterSNR,matrix-method}
 
+% MArrayLM-methods.
+\alias{codPlot,MArrayLM-method}
+\alias{writeCluster,MArrayLM-method}
+
 % Codelink-methods.
+\alias{codPlot,Codelink-method}
 \alias{filterSNR,Codelink-method}
 \alias{codUniverse,Codelink-method}
+\alias{writeCluster,Codelink-method}
 
 % CodelinkSet-methods.
 \alias{codCorrect,CodelinkSet-method}
@@ -41,15 +48,14 @@
 \alias{probeNames,CodelinkSet-method}
 \alias{probeTypes,CodelinkSet-method}
 \alias{meanSNR,CodelinkSet-method}
-\alias{codPlot,Codelink-method}
 \alias{codPlot,CodelinkSet-method}
-\alias{codPlot,MArrayLM-method}
 \alias{exprs,CodelinkSet-method}
 \alias{chipDevice,CodelinkSet-method}
 \alias{filterSNR,CodelinkSet-method}
 \alias{codUniverse,CodelinkSet-method}
+\alias{writeCluster,CodelinkSet-method}
 
-% non-class methods.
+% non-generic functions.
 \alias{readCodelink2}
 \alias{Codelink2eSet}
 \alias{eSet2Codelink}
