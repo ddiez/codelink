@@ -400,6 +400,7 @@ reportCodelink <- function(object, chip, filename=NULL, title="Main title", prob
 	genes.list <- list(genes, genes.acc, as.character(genes.eg), as.character(genes.ug))
 	head <- c("ID", "GENBANK", "LOCUSID", "UNIGENE", "SYMBOL", "NAME")
 	other.list <- list(genes.sym, genes.name)
+	other.list <- lapply(other.list, function(x) gsub("NA", "", x))
 	
 	if(probe.type) {
 		head <- c(head, "TYPE")

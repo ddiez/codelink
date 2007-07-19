@@ -44,7 +44,11 @@ writecluster <- function(file, mat, samples, probes, chip) {
 
 	symbol <- unlist(mget(probes, envir = get(paste(chip, "SYMBOL", sep = ""))))
 	desc <- unlist(mget(probes, envir = get(paste(chip, "GENENAME", sep = ""))))
-	info <- paste(probes, symbol, desc, sep = " | ")
+
+	symbol[is.na(symbol)] <- ""
+	desc[is.na(desc)] <- ""
+	
+	info <- paste(probes, symbol, desc)
 
 	header <- c("ORF", "NAME", samples)
 

@@ -602,3 +602,8 @@
   with Cluster/TreeView. Currently methods are for Codelink, CodelinkSet and 
   MArrayLM objects. The name is likely to change in favor of the new API 
   convention, probably as an all-purpose exporting function.
+
+1.5.14
+  - FIXED reportCodelink() when NAs appeared in HTML, changed to blank.
+  - MODIFIED writeCluster() format of annotation and fixed NA in some 
+  annotations.
