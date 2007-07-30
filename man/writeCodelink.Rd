@@ -28,8 +28,10 @@ character is the point.
 \seealso{
 }
 \examples{
-#    data(codelink.example)
-#    writeCodelink(codelink.example, file="codelink.example.txt")
+\dontrun{
+    data(codelink.example)
+    writeCodelink(codelink.example, file = "foo.txt")
+}
 }
 \keyword{documentation}
 \keyword{utilities}

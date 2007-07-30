@@ -27,8 +27,10 @@
 \author{Diego Diez}
 \seealso{\code{\link{plot}}}
 \examples{
-#    data(codelink.example)
-#    plotCorrelation(codelink.example)
+\dontrun{
+    data(codelink.example)
+    plotCorrelation(codelink.example)
+}
 }
 \keyword{documentation}
 \keyword{utilities}

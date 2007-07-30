@@ -19,10 +19,10 @@ readHeader(file, dec=FALSE)
 \author{Diego Diez}
 \seealso{}
 \examples{
-    ## NOT RUN ##
-    #files <- list.files(pattern="TXT")
-    #head <- readHeader(files[1])
-    #############
+\dontrun{
+    files <- list.files(pattern = "TXT")
+    head <- readHeader(files[1])
+}
 }
 \keyword{documentation}
 \keyword{utilities}

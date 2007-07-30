@@ -33,6 +33,8 @@
 \seealso{}
 
 \examples{
-#data(codelink.example)
+\dontrun{
+    data(codelink.example)
+}
 }
 \keyword{classes}

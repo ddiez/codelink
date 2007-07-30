@@ -6,6 +6,7 @@
 \alias{CodelinkSet-class}
 
 % generic.
+%\alias{arraySize}
 \alias{codCorrect}
 \alias{codNormalize}
 \alias{codPreprocess}

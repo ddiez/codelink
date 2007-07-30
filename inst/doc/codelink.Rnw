@@ -21,25 +21,27 @@
 
 \section{Introduction}
 
-GE Healthcare Gene Expression Bioarrays (also known as 
-Codelink\textsuperscript{\textsc{tm}}) is a platform for the analysis of gene
-expression on biological samples using short (30 base long) oligonucleotide
-probes. There is a proprietary software for reading scanned images, spot
-intensity quantization and some diagnostics.  Quality flags (see 
-Table~\ref{tab:Flag}) are assigned to the spot based on a signal to noise ratio 
-(SNR) computation (Eq: \ref{eq:SNR}) and other morphological characteristics as
-irregular shape of the spots, saturation of the signal or manufacturer spots
-removed. The software performs a subtract background correction followed by 
-median normalization. The results can be exported in many formats as XML, 
-Excel, plain text, etc. This library allows to read Codelink plain text 
-exported data into R \cite{r} for analysis of gene expression with any of the 
-available tools in R+Bioconductor\cite{BIOC}.
+Codelink is a platform  for the analysis of gene expression on biological 
+samples property of Applied Microarrays, Inc. (previously was GE Healthcare and 
+Amersham). The hybridization reagents are still supplied by GE Healthcare.
 
-The old \Robject{exprSet} class found in the package \Rpackage{Biobase} is not 
-a convenient store class for Codelink data, because it doesn't allow probes 
-with duplicated names, as those names are stored as rownames in the expression 
-matrix. For this reason, a new class is defined that allows to store all the 
-information available from the Codelink platform.
+The system uses 30 base long oligonucleotide probes for expression testing.  
+There is a proprietary software for reading scanned images, doing spot 
+intensity quantization and some diagnostics. The software assigns quality flags 
+(see Table~\ref{tab:Flag}) to each spot on the basis of a signal to noise ratio 
+(SNR) computation (Eq: \ref{eq:SNR}) and other morphological characteristics as 
+irregular shape of the spots, saturation of the signal or manufacturer spots 
+removed. By default, the software performs background correction (subtract) 
+followed by median normalization. The results can be exported in several 
+formats as XML, Excel, plain text, etc. This library allows to read Codelink 
+plain text exported data into R \cite{r} for the analysis of gene expression 
+with any of the available tools in R+Bioconductor\cite{BIOC}.
+
+For storing the available data, a new class \Robject{Codelink} was designed.
+The \Robject{exprSet} class found in the \Rpackage{Biobase} package is not a 
+convenient store class for Codelink data, because it doesn't allow probes with 
+duplicated names, as those names are stored as rownames in the expression 
+matrix.
 
 \begin{table}[ht]
 \begin{center}

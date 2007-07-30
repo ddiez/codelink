@@ -1,24 +1,15 @@
 \name{arraySize}
 \alias{arraySize}
-\title{Determine size of Codelink array}
+\title{Determine the size of the array}
 \description{
-	Determine size of Codelink array. Is used by readHeader().
-}
-\usage{
-    arraySize(file, nlines)
-}
-\arguments{
-    \item{file}{the file to be read.}
-    \item{nlines}{number of lines to skip.}
-}
-\value{Array size.}
-\details{
+  When loading Codelink arrays in text format (as exported from the Codelink 
+  software) this function retrieves the correct size of the array. This is 
+  useful beacuse those files contain and indetermined number of empty lines at 
+  the end. Thus, reading the entire data matrix don't works.
 }
 \note{
+  Not meant to be used directly.
 }
-\author{Diego Díez}
-\seealso{}
-\examples{
-}
+\author{Diego Diez}
 \keyword{documentation}
 \keyword{utilities}

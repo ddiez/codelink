@@ -8,7 +8,8 @@
 }
 \usage{data(codelink.example)}
 \format{
-	An \code{\link[codelink:Codelink-class]{Codelink}} of 2 samples.
+	A \code{\link[codelink:Codelink-class]{Codelink}} object containing 20469 
+	probes and 2 samples.
 }
 \author{Diego Diez}
 \keyword{datasets}

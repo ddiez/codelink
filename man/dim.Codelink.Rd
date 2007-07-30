@@ -5,7 +5,7 @@
 	Takes a Codelink object and returns the dimension (genes x samples).
 }
 \usage{
-	dim.Codelink(x)
+  \method{dim}{Codelink}(x)
 }
 \arguments{
   \item{x}{an object of class "Codelink".}
@@ -19,8 +19,10 @@
 \seealso{
 }
 \examples{
-#	data(codelink.example)
-#	dim(codelink.example)
+\dontrun{
+	data(codelink.example)
+	dim(codelink.example)
+}
 }
 \keyword{documentation}
 \keyword{utilities}

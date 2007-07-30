@@ -20,10 +20,10 @@ readHeaderXLS(file, dec=FALSE)
 \author{Diego Diez}
 \seealso{}
 \examples{
-    ## NOT RUN ##
-    #files <- list.files(pattern="TXT")
-    #head <- readHeaderHeader(files[1])
-    #############
+\dontrun{
+    files <- list.files(pattern = "TXT")
+    head <- readHeaderHeader(files[1])
+}
 }
 \keyword{documentation}
 \keyword{utilities}

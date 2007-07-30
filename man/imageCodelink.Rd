@@ -33,8 +33,10 @@ imageCodelink(object, array = 1, what = "bg",
 \seealso{
 }
 \examples{
-#    data(codelink.example)
-#    imageCodelink(codelink.example)
+\dontrun{
+    data(codelink.example)
+    imageCodelink(codelink.example)
+}
 }
 \keyword{documentation}
 \keyword{utilities}

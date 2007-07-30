@@ -607,3 +607,13 @@
   - FIXED reportCodelink() when NAs appeared in HTML, changed to blank.
   - MODIFIED writeCluster() format of annotation and fixed NA in some 
   annotations.
+
+1.5.15
+  - FIXED createUniverse() using always rwgcodGO as GO environment. Now it uses 
+  the one determined by the chip.
+  - FIXED documentation of as.matrix() and dim() where it was using the full 
+  names of the S3 methods as.matrix.Codelink() and as.dim.Codelink().
+  - FIXED encoding issue with arraySize.Rd. Small improvements.
+  - ADDED \dontrun{} to the pertinent \examples{} section in the documentation 
+  as is the proper method to display not run commands. Some minor improvements 
+  in the documentation.

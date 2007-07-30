@@ -26,8 +26,10 @@ plotDensities(object, subset=1:dim(object)[2], title=NULL,
 \seealso{
 }
 \examples{
-#    data(codelink.example)
-#    plotDensities(codelink.example)
+\dontrun{
+    data(codelink.example)
+    plotDensities(codelink.example)
+}
 }
 \keyword{documentation}
 \keyword{utilities}

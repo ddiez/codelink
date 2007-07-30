@@ -69,15 +69,16 @@ createUniverse <- function(chip, probesname, mediansnr) {
 	if(!do.call(require, list(chip)))
 		stop("package", chip, "not found.")
 
-	envir <- get(paste(chip, "ENTREZID", sep = ""))
-	eg <- mget(probesname, envir = envir)
-	
 	# probes with EG.
+	envirEG <- get(paste(chip, "ENTREZID", sep = ""))
+	eg <- mget(probesname, envir = envirEG)
+	
 	haveEG <- sapply(eg, function(x) !is.na(x))
 	haveEG <- unique(names(which(haveEG)))
 
 	# probes with GO.
-	go <- mget(probesname, envir = rwgcodGO)
+	envirGO <- get(paste(chip, "GO", sep = ""))
+	go <- mget(probesname, envir = envirGO)
 	haveGO <- sapply(go, function(x)
 		ifelse(length(x) == 1 && is.na(x), FALSE, TRUE))
 	haveGO <- unique(names(which(haveGO)))
@@ -102,7 +103,7 @@ createUniverse <- function(chip, probesname, mediansnr) {
 	})
 
 	# now, get the ids from universe and check it's ok.
-	egUniverse <- unlist(mget(allProbesUnique, envir = envir))
+	egUniverse <- unlist(mget(allProbesUnique, envir = envirEG))
 	if(any(duplicated(egUniverse)))
 		stop("error in gene universe: can't have duplicated ids.")
 	else

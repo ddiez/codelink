@@ -18,9 +18,10 @@ logCodelink(object)
 \author{Diego Diez}
 \seealso{\code{\link{log2}}}
 \examples{
-    #### NOT RUN
-    ## data(codelink.example)
-    ## codelink.example <- logCodelink(codelink.example)
+\dontrun{
+    data(codelink.example)
+    codelink.example <- logCodelink(codelink.example)
+}
 }
 \keyword{documentation}
 \keyword{utilities}

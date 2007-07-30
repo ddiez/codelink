@@ -35,8 +35,10 @@
 \seealso{
 }
 \examples{
-#	mat <- matrix(sample(500), 100, 5)
-#	mat <- normalize.loess(mat)
+\dontrun{
+	mat <- matrix(sample(500), 100, 5)
+	mat <- normalize.loess(mat)
+}
 }
 \keyword{documentation}
 \keyword{utilities}

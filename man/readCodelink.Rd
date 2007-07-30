@@ -30,13 +30,17 @@ by Codelink Software or not) flags and information about probes.
 \author{Diego Diez}
 \seealso{\code{\link{read.table}}}
 \examples{
-    ## NOT RUN ##
-    #files <- list.files(pattern="TXT")
-    #data <- readCodelink(files)
-    #############
+\dontrun{
+    # reading default extension (TXT).
+    data <- readCodelink()
 
-#    data(codelink.example)
-    # codelink.example
+    # specify a different one.
+    files <- list.files(pattern = "txt")
+    data <- readCodelink(files = files)
+
+    # example.
+    data(codelink.example)
+}
 }
 \keyword{documentation}
 \keyword{utilities}

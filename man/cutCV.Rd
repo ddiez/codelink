@@ -26,9 +26,10 @@
 \seealso{
 }
 \examples{
-    ## NOT RUN ##
+\dontrun{
     # data: Normalized Codelink object merged.
-    # cutoff <- cutCV(data)
+    cutoff <- cutCV(data)
+}
 }
 \keyword{documentation}
 \keyword{utilities}

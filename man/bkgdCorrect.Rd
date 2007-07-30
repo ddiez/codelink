@@ -32,8 +32,10 @@
 \seealso{
 }
 \examples{
-#    data(codelink.example)
-#    codelink.example <- bkgdCorrect(codelink.example, method="half")
+\dontrun{
+    data(codelink.example)
+    codelink.example <- bkgdCorrect(codelink.example, method = "half")
+}
 }
 \keyword{documentation}
 \keyword{utilities}

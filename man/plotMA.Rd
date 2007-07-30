@@ -67,8 +67,10 @@
 \seealso{
 }
 \examples{
-#    data(codelink.example)
-#    plotMA(codelink.example)
+\dontrun{
+    data(codelink.example)
+    plotMA(codelink.example)
+}
 }
 \keyword{documentation}
 \keyword{utilities}

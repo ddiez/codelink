@@ -6,7 +6,7 @@
 	the intensity values available.
 }
 \usage{
-as.matrix.Codelink(x, ...)
+  \method{as.matrix}{Codelink}(x, ...)
 }
 \arguments{
   \item{x}{an object of class "Codelink".}
@@ -20,9 +20,11 @@ as.matrix.Codelink(x, ...)
 \author{Diego Diez}
 \seealso{\code{\link{as.matrix}}}
 \examples{
-#	data(codelink.example)
-#	mat <- as.matrix(codelink.example)
-#	is(mat)
+\dontrun{
+	data(codelink.example)
+	mat <- as.matrix(codelink.example)
+	is(mat)
+}
 }
 \keyword{documentation}
 \keyword{utilities}

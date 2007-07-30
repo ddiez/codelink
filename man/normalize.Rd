@@ -31,13 +31,15 @@
 \seealso{
 }
 \examples{
-#	data(codelink.example)
+\dontrun{
+	data(codelink.example)
 	# Background correction.
-#	codelink.example <- bkgdCorrect(codelink.example,
-#        method="half")
+	codelink.example <- bkgdCorrect(codelink.example,
+        method = "half")
 	# Normalization.
-#	codelink.example <- normalize(codelink.example,
-#        method="quantile")
+	codelink.example <- normalize(codelink.example,
+        method = "quantile")
+}
 }
 \keyword{documentation}
 \keyword{utilities}

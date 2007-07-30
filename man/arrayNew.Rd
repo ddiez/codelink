@@ -22,9 +22,11 @@
 \seealso{
 }
 \examples{
-#    data(codelink.example)
-#    arrayNew()
-#    imageCodelink(codelink.example)
+\dontrun{
+    data(codelink.example)
+    arrayNew()
+    imageCodelink(codelink.example)
+}
 }
 \keyword{documentation}
 \keyword{utilities}
