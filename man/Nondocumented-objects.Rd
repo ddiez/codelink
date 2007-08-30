@@ -58,9 +58,11 @@
 
 % non-generic functions.
 \alias{readCodelink2}
+\alias{readCodelinkFiles}
 \alias{Codelink2eSet}
 \alias{eSet2Codelink}
 \alias{guessAnnotation}
+\alias{summary,Codelink-method}
 
 
 \title{Here goes every undocumented function.}

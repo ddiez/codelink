@@ -1,3 +1,4 @@
+useDynLib(codelink)
 import(methods)
 importFrom(limma, normalize.quantiles=normalizeQuantiles)
 importFrom(annotate, lookUp, htmlpage)
@@ -14,7 +15,7 @@ S3method(as.matrix, Codelink)
 S3method(dim, Codelink)
 
 exportClasses(Codelink)
-exportMethods("[", show)
+exportMethods("[", show, summary)
 
 export(readCodelink, writeCodelink, reportCodelink,
 	plotMA, plotCorrelation, plotDensities, plotCV, imageCodelink,

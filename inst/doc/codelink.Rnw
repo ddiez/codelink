@@ -366,7 +366,8 @@ will allow a better integration with all the tools available through the
 Bioconductor project.
 
 
-\bibliographystyle{plain} \bibliography{codelink}
+\bibliographystyle{plain}
+\bibliography{codelink}
 
 
 \end{document}

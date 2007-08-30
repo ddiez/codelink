@@ -412,3 +412,82 @@ reportCodelink <- function(object, chip, filename=NULL, title="Main title", prob
 	}
 	htmlpage(genelist=genes.list, filename=filename, table.head=head, othernames = other.list, title=title, repository = list("gb","gb","ll","ug"))
 }
+
+readCodelinkFiles <- function(files = list.files(pattern = "TXT"),
+	what = "Spot_mean", flag)
+{
+	what <- match.arg(what, c("Spot_mean", "Raw_intensity", "Norm_intensity"))
+	tmp <- .Call("R_read_codelink", files, what, PACKAGE="codelink")
+
+	flags <- c("G", "L", "S", "C", "I", "M", "X")
+	flag.cc <- list(M=NA, C=NA, I=NA)
+	if(!missing(flag)) {
+		for(k in names(flag)) {
+
+			if(any(k %in% flags))
+				flag.cc[[k]] <- flag[[k]]
+			else
+				warning("unknown flag ", k, " skipping.\n")
+		}
+	}
+
+	nfiles <- ncol(tmp$intensity)
+	nprobes <- nrow(tmp$intensity)
+	dims <- list(1:nprobes, 1:nfiles)
+
+	cod <- new("Codelink")
+	cod$product <- tmp$product
+	cod$file <- tmp$file
+	cod$sample <- tmp$sample
+	switch(tmp$what,
+		Spot_mean = {
+			cod$method$background = "NONE"
+			cod$method$normalization = "NONE"
+			cod$method$merge = "NONE"
+			cod$method$log = FALSE
+		},
+		Raw_intensity = {
+			cod$method$background = "Codelink subtract"
+			cod$method$normalization = "NONE"
+			cod$method$merge = "NONE"
+			cod$method$log = FALSE
+		},
+		Norm_intensity = {
+			cod$method$background = "Codelink subtract"
+			cod$method$normalization = "Codelink median"
+			cod$method$merge = "NONE"
+			cod$method$log = FALSE
+		}
+	)
+	cod$name <- tmp$name
+	cod$type <- tmp$type
+	cod$id <- tmp$id
+	cod$logical <- cbind(row = tmp$row, col = tmp$col)
+	cod$flag <- tmp$flag
+	cod$Smean <- tmp$intensity
+	cod$Bmedian <- tmp$background
+	cod$Bstdev <- tmp$bstdev
+	
+	# fix flags.
+	cat("** applying flags ...")
+	for(k in names(flag.cc)) {
+		sel <- grep(k, cod$flag)
+		cod$Smean[sel] <- flag.cc[[k]]
+		cod$Bmedian[sel] <- flag.cc[[k]]
+	}
+	cat("OK\n")
+	
+	# compute snr.
+	cat("** computing SNR ...")
+	cod$snr <- SNR(tmp$intensity, tmp$background, tmp$bstdev)
+	cat("OK\n")
+
+	# fix dimnames.
+	dimnames(cod$flag) <- dims
+	dimnames(cod$snr) <- dims
+	dimnames(cod$Smean) <- dims
+	dimnames(cod$Bmedian) <- dims
+	dimnames(cod$Bstdev) <- dims
+
+	cod
+}

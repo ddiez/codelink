@@ -617,3 +617,14 @@
   - ADDED \dontrun{} to the pertinent \examples{} section in the documentation 
   as is the proper method to display not run commands. Some minor improvements 
   in the documentation.
+
+1.5.16
+  - FIXED weird return in codCorrect().
+  - ADDED experimental C code in src/ to fast reading of Codelink files. The 
+  function readCodelinkFiles() works pretty much the same as readCodelink() but 
+  is much faster. Currectly it reads data as a Codelink object. In addition, it 
+  reads also the feature_id field, that can be used for creating suitable 
+  CodelinkSet objects.
+  - ADDED this comments for the first time to the svn log.
+  - ADDED summary method for Codelink objects. Actually it outputs a summary of 
+  the flags.

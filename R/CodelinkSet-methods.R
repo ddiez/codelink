@@ -30,7 +30,7 @@ function(x, method = "half")
 	# info.
 	experimentData(x)@preprocessing[["background"]] <- method
 	
-	as(x, "CodelinkSet")
+	x
 })
 
 # getInfo-method.

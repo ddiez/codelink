@@ -195,3 +195,15 @@ createWeights <- function(object, type=NULL) {
 	if(!is.null(type$OTHER)) w[other,] <- type$OTHER
 	return(w)
 }
+
+setMethod("summary", "Codelink",
+function(object, ...)
+{
+	flags <- c("G", "L", "S", "C", "I", "M", "X")
+	res <- matrix(NA, length(flags), ncol(object),
+		dimnames=list(flags, object$sample))
+	for(flag in flags) {
+		res[flag,] <- apply(object$flag, 2, function(z) length(grep(flag, z)))
+	}
+	res
+})
