@@ -94,11 +94,11 @@ plotMA <- function(object, array1 = 1, array2 = NULL, cutoff = c(-1, 1),
 
 	# check label.
 	label <- match.arg(label,c("type", "snr", "none"))
-	if(is.null(type) & label == "type") {
+	if(is.null(type) && label == "type") {
 		warning("missing 'type' information for labelling spots.\n")
 		label <- "none"
 	}
-	if(is.null(snr) & label == "snr") {
+	if(is.null(snr) && label == "snr") {
 		warning("missing 'snr' information for labelling spots.\n")
 		label <- "none"
 	}
@@ -341,7 +341,7 @@ plotma <- function(A, M, label = "type", cutoff = c(-1, 1),
 	#)
 	
 	#label <- match.arg(label,c("type", "snr", "none"))
-	#if(is.null(type) & label!="none") {
+	#if(is.null(type) && label!="none") {
 		#cat("no type information, reverting to label 'none'\n")
 		#label <- "none"
 	#}
@@ -479,7 +479,7 @@ plotDensities <- function(object, subset=1:dim(object)[2], title=NULL, legend.ce
 		)
 	}
 	if(what!="Ni") val <- log2(val)
-	if(what=="Ni" & !object$method$log) val <- log2(val)
+	if(what=="Ni" && !object$method$log) val <- log2(val)
 	colors <- rainbow(length(subset))
 	y.max <- c()
         x.max <- c()
@@ -613,7 +613,7 @@ imageCodelink <- function (object, array = 1, what = "bg",
 		ri = val <- object$Ri[,	array],
 		ni = val <- object$Ni[, array]
 	)
-	if(!object$method$log & log.it)
+	if(!object$method$log && log.it)
 		val <- log2(val)
 
 	o.row <- range(object$logical[, "row"])

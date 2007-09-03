@@ -158,7 +158,7 @@ readCodelink <- function(files = list.files(pattern = "TXT"),
 
 		#######################################################################
 		# check data consistency.
-		if(check & !fix) {
+		if(check && !fix) {
 			if(n == 1) {
 				if(file.type == "Codelink")
 					check.first <- as.character(data[, "Probe_name"])
@@ -320,7 +320,7 @@ readCodelink <- function(files = list.files(pattern = "TXT"),
 				codelink$name <- as.character(data[, "Probe_name"])
 				codelink$type <- as.character(data[, "Probe_type"])
 				codelink$id <- as.character(data[, "Feature_id"])
-				if(any(grep("Logical_row", head$columns)) &
+				if(any(grep("Logical_row", head$columns)) &&
 					any(grep("Logical_col", head$column))) {
 					codelink$logical[,"row"] <- data[, "Logical_row"]
 					codelink$logical[,"col"] <- data[, "Logical_col"]
@@ -413,6 +413,7 @@ reportCodelink <- function(object, chip, filename=NULL, title="Main title", prob
 	htmlpage(genelist=genes.list, filename=filename, table.head=head, othernames = other.list, title=title, repository = list("gb","gb","ll","ug"))
 }
 
+# this is not yet used because of portability issues in the C code.
 readCodelinkFiles <- function(files = list.files(pattern = "TXT"),
 	what = "Spot_mean", flag)
 {

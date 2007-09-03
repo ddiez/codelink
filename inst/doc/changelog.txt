@@ -628,3 +628,10 @@
   - ADDED this comments for the first time to the svn log.
   - ADDED summary method for Codelink objects. Actually it outputs a summary of 
   the flags.
+
+1.5.17
+  - FIXED improper use of '&' instead of '&&' inside 'if' statements (suggested 
+  by Seth).
+  - REMOVED C code for fast reading of codelink files. The function strsep() is 
+  not portable to windows hence the inclusion of this code must wait until a 
+  different approach is found.

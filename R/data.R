@@ -119,7 +119,7 @@ SNR <- function(Smean, Bmedian, Bstdev) {
 # rewrite of fc to be more intuitive:
 fc2Cond <- function(object, cond1=NULL, cond2=NULL, fc=1.0, verbose=FALSE) {
 	if(!is(object, "Codelink")) stop("Codelink object needed.")
-	if(!is(cond1, "numeric") & !is(cond2, "numeric")) {
+	if(!is(cond1, "numeric") && !is(cond2, "numeric")) {
 		#cat("Cond1:", cond1,"\n")
 		#cat("Cond2:", cond2,"\n")
 		cond1.inx <- which(object$sample==cond1)

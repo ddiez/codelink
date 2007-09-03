@@ -74,7 +74,7 @@ gessAnnotation <- function(x)
 	if(any(grep("UniSet.*II", x))) chip <- "20k"
 
 	# return name.
-	if(!is.null(org) & !is.null(chip))
+	if(!is.null(org) && !is.null(chip))
 		return(paste(org, chip, base, sep=""))
 	else
 		return(NULL)

@@ -1,4 +1,4 @@
-useDynLib(codelink)
+#useDynLib(codelink)
 import(methods)
 importFrom(limma, normalize.quantiles=normalizeQuantiles)
 importFrom(annotate, lookUp, htmlpage)

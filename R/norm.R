@@ -5,7 +5,7 @@ normalize <- function(object, method = "quantiles", log.it = TRUE,
 
 	if(!is(object,"Codelink")) stop("A Codelink object is needed.")
 	if(is.null(object$Ri)) stop("Background corrected intensities needed.")
-	if(log.it & object$method$log) stop("Intensities already log2.")
+	if(log.it && object$method$log) stop("Intensities already log2.")
 	
 	method <- match.arg(method, c("loess", "quantiles", "median"))
 
@@ -112,7 +112,7 @@ normalize.loess <- function (mat,
             cat(iter, change, "\n")
         oldfs <- fs
     }
-    if ((change > epsilon) & (maxit > 1)) 
+    if ((change > epsilon) && (maxit > 1)) 
         warning(paste("!! No convergence after", maxit, "iterations.\n"))
     if (log.it) {
         return(2^newData)

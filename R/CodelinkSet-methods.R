@@ -62,10 +62,10 @@ function(x, method = "quantile", log.it = TRUE)
 	newInt <- assayDataElement(x, "intensity")
 
 	# log.it?
-	if(log.it & !getInfo(x, "log"))
+	if(log.it && !getInfo(x, "log"))
 		newInt <- log2(newInt)
 	else
-		if(log.it & getInfo(x, "log"))
+		if(log.it && getInfo(x, "log"))
 			warning("already log2 data, skipping...")
 
 	# do normalization stuff.
