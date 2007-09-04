@@ -63,6 +63,9 @@
 \alias{eSet2Codelink}
 \alias{guessAnnotation}
 \alias{summary,Codelink-method}
+\alias{summaryFlag}
+\alias{summaryFlag,Codelink-method}
+\alias{summaryFlag,matrix-method}
 
 
 \title{Here goes every undocumented function.}

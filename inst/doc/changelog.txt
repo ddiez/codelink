@@ -631,7 +631,13 @@
 
 1.5.17
   - FIXED improper use of '&' instead of '&&' inside 'if' statements (suggested 
-  by Seth).
+  by Seth Falcon).
   - REMOVED C code for fast reading of codelink files. The function strsep() is 
   not portable to windows hence the inclusion of this code must wait until a 
   different approach is found.
+
+1.5.18
+  - FIXED flag application in readCodelink() so that it doesn't reset all 
+  values when setting one. Simplified flag based filter.
+  - ADDED summaryFlag() method for Codelink objects. Included in the vignette.
+  - FIXED some improper use of '|' instead of '||' too (forgot last time).

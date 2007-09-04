@@ -101,7 +101,8 @@ not recommended. To read some Codelink files you do:
 # NOT RUN #
 
 > library(codelink)
-> data <- readCodelink()
+> foo <- readCodelink()
+> summaryFlag(foo) # will show a summary of flag values.
 
 # NOT RUN #
 

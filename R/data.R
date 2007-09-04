@@ -7,10 +7,11 @@ mergeArray <- function(object, class, names=NULL, method="mean",
 	if(is.null(object$Ni) && is.null(object$Ri)) stop("Ni or Ri slots needed.")
 	if(is.null(names)) stop("Group names needed.")
 	if(log.it && object$method$log) stop("Data already log transformed.")
-	if(is.null(object$snr) | !merge.snr) doSNR <- FALSE else doSNR <- TRUE
+	if(is.null(object$snr) || !merge.snr) doSNR <- FALSE else doSNR <- TRUE
 
 	l <- levels(as.factor(class))
-	if(length(names)!=length(l)) stop("Number of classes and class names disagree.")
+	if(length(names)!=length(l))
+		stop("Number of classes and class names disagree.")
 
 	method = match.arg(method,c("mean"))
 	dimx <- dim(object)[1]
@@ -198,6 +199,13 @@ createWeights <- function(object, type=NULL) {
 
 setMethod("summary", "Codelink",
 function(object, ...)
+{
+	summaryFlag(object)
+})
+
+setGeneric("summaryFlag", function(object) standardGeneric("summaryFlag"))
+setMethod("summaryFlag", "Codelink",
+function(object)
 {
 	flags <- c("G", "L", "S", "C", "I", "M", "X")
 	res <- matrix(NA, length(flags), ncol(object),
