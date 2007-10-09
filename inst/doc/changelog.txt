@@ -641,3 +641,16 @@
   values when setting one. Simplified flag based filter.
   - ADDED summaryFlag() method for Codelink objects. Included in the vignette.
   - FIXED some improper use of '|' instead of '||' too (forgot last time).
+
+1.6.0
+  - Bioconductor 2.1 release.
+
+1.7.0
+  - Development branch created.
+
+1.7.1
+  - Added annotation() function to extract information from annotation when 
+  available. This is now guessed for new objects and stored in 
+  $method$annotation.
+  - Changed fields put on writeCluster() for the gene annotations, now it is 
+  ust the gene symbol.

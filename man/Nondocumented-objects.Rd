@@ -5,6 +5,8 @@
 \alias{CodelinkSet}
 \alias{CodelinkSet-class}
 
+\alias{annotation,Codelink-method}
+
 % generic.
 %\alias{arraySize}
 \alias{codCorrect}

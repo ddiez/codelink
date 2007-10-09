@@ -5,7 +5,7 @@ readCodelink2 <- function(...) {
 }
 
 # convert and old Codelink object to an CodelinkRawSet object.
-Codelink2eSet <- function(object, annotation=NULL) {
+Codelink2eSet <- function(object, annotation) {
 	if(class(object) != "Codelink") stop("Codelink-object needed.")
 
 	pD <- data.frame(sample=unique(object$sample))
@@ -19,10 +19,8 @@ Codelink2eSet <- function(object, annotation=NULL) {
 		row.names = c("probeName", "probeType", "logicalRow", "logicalCol", "meanSNR"))
 	Rep <- new("AnnotatedDataFrame", data = Rep, varMetadata = feMet)
 
-	if(is.null(annotation))
-		tmp <- gessAnnotation(object$product)
-		if(!is.null(tmp)) annotation <- tmp
-		else annotation <- ""
+	if(missing(annotation))
+		chip <- annotation(object)
 
 	int <- NULL
 	bkg <- NULL
@@ -35,7 +33,7 @@ Codelink2eSet <- function(object, annotation=NULL) {
 	#tmp <- new("CodelinkRawSet", phenoData = pD, intensity = int,
 	tmp <- new("CodelinkSet", phenoData = pD, intensity = int,
 		background = bkg, flag = object$flag, snr = object$snr,
-		annotation = annotation, featureData = Rep)
+		annotation = chip, featureData = Rep)
 	
 	featureNames(tmp) <- object$id
 	sampleNames(tmp) <- object$sample
@@ -56,26 +54,29 @@ eSet2Codelink <- function(object, annotation=NULL)
 	tmp
 }
 
-# gess the annotation package associated.
-gessAnnotation <- function(x)
+# guess the annotation package associated.
+setMethod("annotation", "Codelink",
+function(object)
 {
 	base <- "cod"
+	tmp <- object$product
 
 	# organism.
-	org <- NULL
-	if(any(grep("Rat", x))) org <- "r"
-	if(any(grep("Mouse", x))) org <- "m"
-	if(any(grep("Human", x))) org <- "h"
+	org <- ""
+	if(any(grep("Rat", tmp))) org <- "r"
+	if(any(grep("Mouse", tmp))) org <- "m"
+	if(any(grep("Human", tmp))) org <- "h"
 
 	# chip.
-	chip <- NULL
-	if(any(grep("Whole Genome", x))) chip <- "wg"
-	if(any(grep("UniSet.*I", x))) chip <- "10k"
-	if(any(grep("UniSet.*II", x))) chip <- "20k"
+	chip <- ""
+	if(any(grep("Whole Genome", tmp))) chip <- "wg"
+	if(any(grep("UniSet.*I", tmp))) chip <- "10k"
+	if(any(grep("UniSet.*II", tmp))) chip <- "20k"
 
 	# return name.
-	if(!is.null(org) && !is.null(chip))
-		return(paste(org, chip, base, sep=""))
-	else
-		return(NULL)
-}
+	if(org != "" && chip != "")
+		ann <- paste(org, chip, base, sep="")
+	else ann <- ""
+	
+	ann
+})

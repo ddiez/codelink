@@ -15,7 +15,7 @@ S3method(as.matrix, Codelink)
 S3method(dim, Codelink)
 
 exportClasses(Codelink)
-exportMethods("[", show, summary, summaryFlag)
+exportMethods("[", show, summary, summaryFlag, annotation)
 
 export(readCodelink, writeCodelink, reportCodelink,
 	plotMA, plotCorrelation, plotDensities, plotCV, imageCodelink,

@@ -43,12 +43,14 @@ writecluster <- function(file, mat, samples, probes, chip) {
 		stop(chip, " package not found")
 
 	symbol <- unlist(mget(probes, envir = get(paste(chip, "SYMBOL", sep = ""))))
-	desc <- unlist(mget(probes, envir = get(paste(chip, "GENENAME", sep = ""))))
+	#desc <- unlist(mget(probes, envir = get(paste(chip, "GENENAME", sep = ""))))
 
 	symbol[is.na(symbol)] <- ""
-	desc[is.na(desc)] <- ""
+	#desc[is.na(desc)] <- ""
+	symbol <- gsub("_predicted", "", symbol)
 	
-	info <- paste(probes, symbol, desc)
+	#info <- paste(probes, symbol, desc)
+	info <- symbol
 
 	header <- c("ORF", "NAME", samples)
 
