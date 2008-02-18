@@ -417,12 +417,15 @@ reportCodelink <- function(object, chip, filename=NULL, title="Main title", prob
 	genes.ug <- lookUp(genes, chip, "UNIGENE")
 	genes.sym <- lookUp(genes, chip, "SYMBOL")
 	genes.name <- lookUp(genes, chip, "GENENAME")
+
+	# cleaup names.
+	genes.sym[is.na(genes.sym)] <- ""
+	genes.name[is.na(genes.name)] <- ""
 	
 	genes.list <- list(genes, genes.acc, as.character(genes.eg), as.character(genes.ug))
-	head <- c("ID", "GENBANK", "LOCUSID", "UNIGENE", "SYMBOL", "NAME")
+	head <- c("Id", "Genbank", "Entrez ID", "Unigene", "Symbol", "Name")
 	other.list <- list(genes.sym, genes.name)
-	other.list <- lapply(other.list, function(x) gsub("NA", "", x))
-	
+
 	if(probe.type) {
 		head <- c(head, "TYPE")
 		other.list <- c(other.list,list(genes.type))
@@ -432,6 +435,8 @@ reportCodelink <- function(object, chip, filename=NULL, title="Main title", prob
 		other.list <- c(other.list, other)
 	}
 	htmlpage(genelist=genes.list, filename=filename, table.head=head, othernames = other.list, title=title, repository = list("gb","gb","ll","ug"))
+	#css <- "<style> body {font-family: Arial, Helvetiva, sans-serif;} table {font-size: 8pt; border: solid 1px black;} th{color: white; background: black;} td{border: 0; max-width: 300px;vertical-align: top;}</style>"
+	#cat(css, file=filename, append=TRUE)
 }
 
 # this is not yet used because of portability issues in the C code.

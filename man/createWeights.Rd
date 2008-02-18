@@ -2,6 +2,7 @@
 \alias{createWeights}
 \title{Create weight for Codelink chips}
 \description{
+  Create a weight matrix to be used in limma.
 }
 \usage{
 	createWeights(object, type=NULL)

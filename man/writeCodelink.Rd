@@ -2,6 +2,7 @@
 \alias{writeCodelink}
 \title{Write a Codelink object to file.}
 \description{
+ Export of the data from a codelink object to a text file.
 }
 \usage{
   writeCodelink(object, file, dec = ".", sep = "\t", flag = FALSE)

@@ -320,7 +320,7 @@ can be checked with the function \Rfunction{plotCV}.
 
 \begin{Sinput}
 
-> foo <- mergeArray(foo, group = c(1, 1, 2, 2),
+> foo <- mergeArray(foo, class = c(1, 1, 2, 2),
 + names = c("A", "B"))
 
 > plotCV(foo)
