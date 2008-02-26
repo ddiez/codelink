@@ -38,7 +38,7 @@ plain text exported data into R \cite{r} for the analysis of gene expression
 with any of the available tools in R+Bioconductor\cite{BIOC}.
 
 For storing the available data, a new class \Robject{Codelink} was designed.
-The \Robject{exprSet} class found in the \Rpackage{Biobase} package is not a 
+The \Robject{ExpressionSet} class found in the \Rpackage{Biobase} package is not a 
 convenient store class for Codelink data, because it doesn't allow probes with 
 duplicated names, as those names are stored as rownames in the expression 
 matrix.
