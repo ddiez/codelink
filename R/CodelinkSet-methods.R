@@ -102,7 +102,8 @@ function(x, bg.method = "half", norm.method = "quantile", log.it = TRUE)
 setMethod("exprs", "CodelinkSet",
 function(object)
 {
-	getInt(object)
+	#getInt(object)
+	assayDataElement(object, "exprs")
 })
 
 # getInt method.
@@ -110,7 +111,8 @@ setGeneric("getInt", function(object) standardGeneric("getInt"))
 setMethod("getInt", "CodelinkSet",
 function(object)
 {
-	assayDataElement(object, "intensity")
+	exprs(object)
+	#assayDataElement(object, "intensity")
 })
 
 # getBkg method.

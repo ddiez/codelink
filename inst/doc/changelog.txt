@@ -650,11 +650,15 @@
 
 1.7.1
 1.7.2
-- Added method annotation() to extract that information when available. The
-annotation information is now guessed for new objects and stored in
-$method$annotation.- Changed output format for writeCluster(), it is now use
-the gene symbol for annotation.
-- FIXED typo in codelink vignette: mergeArray() doesn't have a 'group'
-argument, changed to class.
-- FIXED warning about functions lacking description field in documentation.
-- From now on the changelog will be appended to the svn commit message.
+  - Added method annotation() to extract that information when available.  The 
+  annotation information is now guessed for new objects and stored in 
+  $method$annotation.- Changed output format for writeCluster(), it is now use 
+  the gene symbol for annotation.
+  - FIXED typo in codelink vignette: mergeArray() doesn't have a 'group' 
+  argument, changed to class.
+  - FIXED warning about functions lacking description field in documentation.
+  - From now on the changelog will be appended to the svn commit message.
+
+1.7.3
+  - Experimental class CodelinkSet is now derived from ExpressionSet rather 
+  than eSet, allowing some nice integration with other pakcages (like limma).

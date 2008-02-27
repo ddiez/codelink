@@ -4,7 +4,8 @@ importFrom(limma, normalize.quantiles=normalizeQuantiles)
 importFrom(annotate, lookUp, htmlpage)
 importFrom(genefilter, genefilter)
 
-importClassesFrom(Biobase, eSet, VersionedBiobase, Versioned)
+#importClassesFrom(Biobase, eSet, VersionedBiobase, Versioned)
+importClassesFrom(Biobase, eSet, ExpressionSet, VersionedBiobase, Versioned)
 
 exportClasses(CodelinkSet)
 exportMethods(codCorrect, codNormalize, codPreprocess, probeNames, probeTypes,

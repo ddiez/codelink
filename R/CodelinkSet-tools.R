@@ -5,7 +5,7 @@ readCodelink2 <- function(...) {
 }
 
 # convert and old Codelink object to an CodelinkRawSet object.
-Codelink2eSet <- function(object, annotation) {
+Codelink2eSet <- function(object, annotation = NULL) {
 	if(class(object) != "Codelink") stop("Codelink-object needed.")
 
 	pD <- data.frame(sample=unique(object$sample))
@@ -19,7 +19,7 @@ Codelink2eSet <- function(object, annotation) {
 		row.names = c("probeName", "probeType", "logicalRow", "logicalCol", "meanSNR"))
 	Rep <- new("AnnotatedDataFrame", data = Rep, varMetadata = feMet)
 
-	if(missing(annotation))
+	if(is.null(annotation))
 		chip <- annotation(object)
 
 	int <- NULL
@@ -31,7 +31,8 @@ Codelink2eSet <- function(object, annotation) {
 	else bkg <- int
 
 	#tmp <- new("CodelinkRawSet", phenoData = pD, intensity = int,
-	tmp <- new("CodelinkSet", phenoData = pD, intensity = int,
+	#tmp <- new("CodelinkSet", phenoData = pD, intensity = int,
+	tmp <- new("CodelinkSet", phenoData = pD,  exprs = int,
 		background = bkg, flag = object$flag, snr = object$snr,
 		annotation = chip, featureData = Rep)
 	

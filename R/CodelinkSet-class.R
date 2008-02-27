@@ -1,5 +1,6 @@
 # CodelinkRawSet-class.
-setClass("CodelinkSet", contains="eSet")
+#setClass("CodelinkSet", contains="eSet")
+setClass("CodelinkSet", contains="ExpressionSet")
 
 #
 setMethod("initialize", "CodelinkSet",
@@ -8,7 +9,8 @@ function(.Object,
 	#featureData = new("AnnotatedDataFrame"),
 	#experimentData = new("MIAME"),
 	#annotation = character(),
-	intensity = new("matrix"),
+	
+	#intensity = new("matrix"),
 	background = new("matrix"),
 	flag = new("matrix"),
 	snr = new("matrix"),
@@ -19,7 +21,8 @@ function(.Object,
 		#featureData = featureData,
         #experimentData = experimentData,
         #annotation = annotation,
-		intensity = intensity,
+
+		#intensity = intensity,
 		backrgound = background,
 		flag = flag,
 		snr = snr,
@@ -28,6 +31,6 @@ function(.Object,
 })
 
 setValidity("CodelinkSet", function(object) {
-	assayDataValidMembers(assayData(object), c("intensity", "background", 
-		"flag","snr"))
+	#assayDataValidMembers(assayData(object), c("intensity", "background", 
+	assayDataValidMembers(assayData(object), c("background", "flag", "snr"))
 })
