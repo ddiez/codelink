@@ -662,3 +662,10 @@
 1.7.3
   - Experimental class CodelinkSet is now derived from ExpressionSet rather 
   than eSet, allowing some nice integration with other pakcages (like limma).
+
+1.7.4
+  - Added method for ExpressionSet to writeCluster().
+  - Revert previous change from exprSet to ExpressionSet in the vignette and
+  mention current work in an ExpressionSet derived class.
+  - FIXED direct access to slots in codCorrect(), now it uses ancestor
+  methods (i.e. robust to API changes).

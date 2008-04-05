@@ -12,8 +12,10 @@ function(x, method = "half")
 	method <- match.arg(method, c("none"< "subtract", "half", "normexp"))
 
 	# take data.
-	int <- assayDataElement(x, "intensity")
-	bkgd <- assayDataElement(x, "background")
+	#int <- assayDataElement(x, "intensity")
+	#bkgd <- assayDataElement(x, "background")
+	int <- getInt(x)
+	bkgd <- getBkg(x)
 
 	# do correction stuff...
 	switch(method,
@@ -25,7 +27,8 @@ function(x, method = "half")
 
 	# reassign data.
 	#assayDataElement(x, "background") <- NULL
-	assayDataElement(x, "intensity") <- newInt
+	#assayDataElement(x, "intensity") <- newInt
+	assayDataElement(x, "exprs") <- newInt
 	
 	# info.
 	experimentData(x)@preprocessing[["background"]] <- method
@@ -59,7 +62,8 @@ function(x, method = "quantile", log.it = TRUE)
 	}
 	
 	# take data.
-	newInt <- assayDataElement(x, "intensity")
+	#newInt <- assayDataElement(x, "intensity")
+	newInt <- getInt(x)
 
 	# log.it?
 	if(log.it && !getInfo(x, "log"))
@@ -78,7 +82,8 @@ function(x, method = "quantile", log.it = TRUE)
 	)
 
 	# reassign data.
-	assayDataElement(x, "intensity") <- newInt
+	#assayDataElement(x, "intensity") <- newInt
+	assayDataElement(x, "exprs") <- newInt
 	
 	# info.
 	experimentData(x)@preprocessing[["normalization"]] <- method

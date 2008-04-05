@@ -18,7 +18,7 @@ S3method(dim, Codelink)
 exportClasses(Codelink)
 exportMethods("[", show, summary, summaryFlag, annotation)
 
-export(readCodelink, writeCodelink, reportCodelink,
+export(readCodelink, readCodelink2, writeCodelink, reportCodelink,
 	plotMA, plotCorrelation, plotDensities, plotCV, imageCodelink,
 	bkgdCorrect, normalize, mergeArray, createWeights, arrayNew,
 	selCV, cutCV, fc2Cond, na2false, logCodelink,

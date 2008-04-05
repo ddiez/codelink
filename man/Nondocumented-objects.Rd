@@ -25,20 +25,23 @@
 \alias{chipDevice}
 \alias{filterSNR}
 \alias{codUniverse}
+
 \alias{writeCluster}
+\alias{writeCluster,ExpressionSet-method}
+\alias{writeCluster,MArrayLM-method}
+\alias{writeCluster,Codelink-method}
+\alias{writeCluster,CodelinkSet-method}
 
 % matrix-methods.
 \alias{filterSNR,matrix-method}
 
 % MArrayLM-methods.
 \alias{codPlot,MArrayLM-method}
-\alias{writeCluster,MArrayLM-method}
 
 % Codelink-methods.
 \alias{codPlot,Codelink-method}
 \alias{filterSNR,Codelink-method}
 \alias{codUniverse,Codelink-method}
-\alias{writeCluster,Codelink-method}
 
 % CodelinkSet-methods.
 \alias{codCorrect,CodelinkSet-method}
@@ -56,7 +59,6 @@
 \alias{chipDevice,CodelinkSet-method}
 \alias{filterSNR,CodelinkSet-method}
 \alias{codUniverse,CodelinkSet-method}
-\alias{writeCluster,CodelinkSet-method}
 
 % non-generic functions.
 \alias{readCodelink2}

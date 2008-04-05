@@ -38,10 +38,15 @@ plain text exported data into R \cite{r} for the analysis of gene expression
 with any of the available tools in R+Bioconductor\cite{BIOC}.
 
 For storing the available data, a new class \Robject{Codelink} was designed.
-The \Robject{ExpressionSet} class found in the \Rpackage{Biobase} package is not a 
-convenient store class for Codelink data, because it doesn't allow probes with 
+The now defunt \Robject{exprsSet} in the \Rpackage{Biobase} package was not a 
+convenient store class for Codelink data, because it didn't allow probes with 
 duplicated names, as those names are stored as rownames in the expression 
 matrix.
+
+Currently there is experimental support for a \Robject{ExpressionSet} derived 
+class that can accomodate duplicated probe names in an 
+\Robject{AnnotatedDataFrame} whereas the feature ids would be used for row 
+names when available.
 
 \begin{table}[ht]
 \begin{center}
@@ -360,11 +365,21 @@ the software.
 \end{Sinput}
 
 \section{Future improvements}
-As the new classes in the Biobase package (\Robject{eSet}) allow more flexible 
-data structures, a reimplementation of the \Robject{Codelink-class} based on 
-\Robject{eSet-class} will be the next major feature added to this package. This 
-will allow a better integration with all the tools available through the 
-Bioconductor project.
+As the new classes in the Biobase package (\Robject{eSet} and 
+\Robject{ExpressionSet}) allow more flexible data structures, a 
+reimplementation of the \Robject{Codelink-class} based on 
+\Robject{ExpressionSet-class} will be the next major feature added to this 
+package. This will allow a better integration with other tools available 
+through the Bioconductor project.
+
+Right now, there is some experimental implementation of the new codebase. You 
+need to use the wrapper function \Rfunction{readCodelink2}.
+
+\begin{Sinput}
+
+> foo <- readCodelink2()
+
+\end{Sinput}
 
 
 \bibliographystyle{plain}

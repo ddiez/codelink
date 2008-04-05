@@ -38,6 +38,21 @@ function(x, file, chip, probes)
 	writecluster(file, mat, samples, probes, chip)
 })
 
+setMethod("writeCluster", "ExpressionSet",
+function(x, file, chip)
+{
+	mat <- exprs(x)
+	samples <- sampleNames(x)
+	probes <- featureNames(x)
+
+	if(missing(chip))
+		chip <- annotation(x)
+	if(chip == "")
+		stop("invalid chip name ''")
+	
+	writecluster(file, mat, samples, probes, chip)
+})
+
 writecluster <- function(file, mat, samples, probes, chip) {
 	if(!do.call("require", list(chip)))
 		stop(chip, " package not found")
