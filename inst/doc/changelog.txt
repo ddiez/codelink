@@ -669,3 +669,8 @@
   mention current work in an ExpressionSet derived class.
   - FIXED direct access to slots in codCorrect(), now it uses ancestor
   methods (i.e. robust to API changes).
+
+1.7.5
+  - added new function c2e to better convert Codelink-objects to CodelinkSet.
+  - c2e accepts a phenoData object (like those read by
+  read.AnnotatedDataFrame().

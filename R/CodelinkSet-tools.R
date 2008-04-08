@@ -1,7 +1,45 @@
 # temporary wrapper.
 readCodelink2 <- function(...) {
 	tmp <- readCodelink(...)
-	Codelink2eSet(tmp)
+	#Codelink2eSet(tmp)
+	c2e(tmp)
+}
+
+c2e <- function (object, annotation = NULL, phenodata = NULL, featuredata = NULL, intensity = "Smean") 
+{
+    if (class(object) != "Codelink") 
+        stop("Codelink-object needed.")
+
+    switch(intensity, 
+    	"Smean" = int <- object$Smean,
+		"Ri" = int <- object$Ri,
+    	"Ni" = int <- object$Ni,
+    )    
+    bkg <- object$Bmedian
+
+    if (is.null(phenodata)) {
+	    phenodata <- data.frame(sample = unique(object$sample))
+    	phenodata.varMet <- data.frame(labelDescription = "sample names", row.names = "sample")
+    	phenodata <- new("AnnotatedDataFrame", data = phenodata, varMetadata = phenodata.varMet)
+    }
+    
+    if (is.null(featuredata)) {
+    	featuredata <- data.frame(probeName = object$name, probeType = object$type, logicalRow = object$logical[, "row"], logicalCol = object$logical[, "col"], meanSNR = rowMeans(object$snr, na.rm = TRUE))
+    	featuredata.feMet <- data.frame(labelDescription = c("probe names", "probe types", "probe row position", "probe column position", "mean snr"), row.names = c("probeName", "probeType", "logicalRow",      "logicalCol", "meanSNR"))
+		featuredata <- new("AnnotatedDataFrame", data = featuredata, varMetadata = featuredata.feMet)
+
+    }
+    
+    if (is.null(annotation))
+    	chip <- annotation(object)
+    
+	tmp <- new("CodelinkSet", exprs = int, background = bkg, 
+        flag = object$flag, snr = object$snr, annotation = chip)
+    phenoData(tmp) <- phenodata
+    featureData(tmp) <- featuredata
+	experimentData(tmp)@preprocessing <- object$method
+	experimentData(tmp)@other <- list("product" = object$product)
+    tmp
 }
 
 # convert and old Codelink object to an CodelinkRawSet object.
