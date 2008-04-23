@@ -1,8 +1,8 @@
 # temporary wrapper.
-readCodelink2 <- function(...) {
+readCodelink2 <- function(..., phenodata = NULL, featuredata = NULL) {
 	tmp <- readCodelink(...)
 	#Codelink2eSet(tmp)
-	c2e(tmp)
+	c2e(tmp, phenodata = phenodata, featuredata = featuredata)
 }
 
 c2e <- function (object, annotation = NULL, phenodata = NULL, featuredata = NULL, intensity = "Smean") 
