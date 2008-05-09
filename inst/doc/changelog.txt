@@ -676,3 +676,13 @@
   read.AnnotatedDataFrame().
 1.7.6
   - added phenodata and feature data arguments to readCodelink2().
+
+1.8.0
+  - version for bioc-2.2.
+
+1.9.0
+  - version number for bioc-devel.
+
+1.9.1
+  - import 'annotation' and 'exprs' from Biobase to avoid warnings in R-2.8
+  (devel).
