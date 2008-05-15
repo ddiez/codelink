@@ -30,8 +30,6 @@
   \item{xlim}{range for the X axis.}
   \item{ylim}{range for the Y axis.}
 }
-\value{
-}
 \details{
 
   This function has suffered recent re-working, to increase the usability and 
@@ -61,11 +59,7 @@
   In addition, a subset of the spots can be plotted based on type information 
   when available. This allows, for example, to plot only DISCOVERY spots.
 }
-\note{
-}
 \author{Diego Diez}
-\seealso{
-}
 \examples{
 \dontrun{
     data(codelink.example)

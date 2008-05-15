@@ -13,10 +13,6 @@
   \item{...}{additional arguments added to generic as.matrix since R-2.5.x}
 }
 \value{A matrix with the intensity values.}
-\details{
-}
-\note{
-}
 \author{Diego Diez}
 \seealso{\code{\link{as.matrix}}}
 \examples{

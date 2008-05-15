@@ -12,16 +12,6 @@
   \item{Bmedian}{matrix of background median intensities.}
   \item{Bstdev}{matrix of background standard deviation.}
 }
-\value{
-}
-\details{
-}
-\note{
-}
 \author{Diego Diez}
-\seealso{
-}
-\examples{
-}
 \keyword{documentation}
 \keyword{utilities}

@@ -23,10 +23,6 @@ by Codelink Software or not) flags and information about probes.
   \item{fix}{logical, try to fix probe order consistency.}
 }
 \value{An object of class "Codelink".}
-\details{
-}
-\note{
-}
 \author{Diego Diez}
 \seealso{\code{\link{read.table}}}
 \examples{

@@ -19,13 +19,7 @@ tion about these genes: Unigene, Genbank, Entrez Gene, etc.
   \item{other.ord}{slot name in other to order genes by.}
 }
 \value{Nothing, only the HTML file generated.}
-\details{
-}
-\note{
-}
 \author{Diego Diez}
 \seealso{\code{\link[annotate]{htmlpage}}}
-\examples{
-}
 \keyword{documentation}
 \keyword{utilities}

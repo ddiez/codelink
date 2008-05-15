@@ -15,16 +15,6 @@
 	\item{title}{title of the plot.}
 	\item{legend.cex}{factor to apply to the fonts in the legend to fit.}
 }
-\value{
-}
-\details{
-}
-\note{
-}
 \author{Diego Diez}
-\seealso{
-}
-\examples{
-}
 \keyword{documentation}
 \keyword{utilities}

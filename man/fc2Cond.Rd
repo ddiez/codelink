@@ -23,12 +23,6 @@ is computed as:
 
    M = cond1 - cond2
 }
-\note{
-}
 \author{Diego Diez}
-\seealso{
-}
-\examples{
-}
 \keyword{documentation}
 \keyword{utilities}

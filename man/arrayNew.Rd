@@ -12,15 +12,7 @@
   \item{chip}{character; Codelink chip to be used in imageCodelink.}
   \item{f}{numerical; scaling factor.}
 }
-\value{
-}
-\details{
-}
-\note{
-}
 \author{Diego Diez}
-\seealso{
-}
 \examples{
 \dontrun{
     data(codelink.example)

@@ -11,15 +11,7 @@
 	\item{object}{an object of class "Codelink".}
 	\item{type}{weight assigned to each Probe\_type.}
 }
-\value{
-}
-\details{
-}
-\note{
-}
 \author{Diego Diez}
-\seealso{
-}
 \examples{
 \dontrun{
     data(codelink.example)

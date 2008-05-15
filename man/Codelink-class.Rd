@@ -30,7 +30,6 @@
 \note{More details are cotained in the vignette}
 
 \author{Diego Diez}
-\seealso{}
 
 \examples{
 \dontrun{

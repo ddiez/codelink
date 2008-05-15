@@ -26,11 +26,7 @@
           values below zero to 0.5.
   . normexp: apply normexp background adjustment from package limma.
 }
-\note{
-}
 \author{Diego Diez}
-\seealso{
-}
 \examples{
 \dontrun{
     data(codelink.example)

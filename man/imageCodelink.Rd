@@ -23,15 +23,7 @@ imageCodelink(object, array = 1, what = "bg",
   \item{log.it}{logical; if TRUE data is log2 transformed (if not yet).}
   \item{...}{additional arguments passed to image.}
 }
-\value{
-}
-\details{
-}
-\note{
-}
 \author{Diego Diez}
-\seealso{
-}
 \examples{
 \dontrun{
     data(codelink.example)

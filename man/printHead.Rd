@@ -10,16 +10,6 @@
 \arguments{
   \item{x}{an object of class "Codelink".}
 }
-\value{
-}
-\details{
-}
-\note{
-}
 \author{Diego Diez}
-\seealso{
-}
-\examples{
-}
 \keyword{documentation}
 \keyword{utilities}

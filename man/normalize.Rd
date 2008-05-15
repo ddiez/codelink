@@ -25,11 +25,7 @@
   weights. Quantile normalization uses the normalizeQuantiles() function in the 
   limma package.
 }
-\note{
-}
 \author{Diego Diez}
-\seealso{
-}
 \examples{
 \dontrun{
 	data(codelink.example)

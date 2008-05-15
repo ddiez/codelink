@@ -18,12 +18,6 @@
         \item{xlim}{range for the X axis.}
         \item{ylim}{range for the Y axis.}
 }
-\value{
-}
-\details{
-}
-\note{
-}
 \author{Diego Diez}
 \seealso{\code{\link{plot}}}
 \examples{

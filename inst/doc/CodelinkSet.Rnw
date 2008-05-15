@@ -1,0 +1,124 @@
+%\VignetteIndexEntry{CodelinkSet}
+%\VignetteKeywords{Preprocessing, Codelink}
+%\VignetteDepends{codelink}
+%\VignettePackage{codelink}
+
+\documentclass{article}
+\usepackage[latin1]{inputenc}
+\usepackage[english]{babel}
+
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+
+\begin{document}
+
+\title{CodelinkSet}
+
+\author{Diego Diez}
+
+\maketitle
+
+\section{Introduction}
+
+The \Robject{CodelinkSet} is an extension of the \Robject{ExpressionSet} class, that improves de user experience in terms of integration with other Bioconductor packages. Because this class is derived from \Robject{ExpressionSet}, most functions that work on \Robject{ExpressionSet} will work in \Robject{CodelinkSet} objects. Futhermore, extension of existing methods and functions is  easier.
+
+\section{Loading of data}
+
+There is a new function called \Rfunction{readCodelink2} will load the data in the old format and convert it into the \Robject{CodelinkSet} format. This function will replace in the future \Rfunction{readCodelink}. It is possible to include \Robject{phenoData} and \Robject{featureData} when calling \Rfunction{readCodelink2}. In addition, the correct annotation package is guessed from the first file and assigned to the \Robject{annotation} slot.
+
+<<readfile1, eval=FALSE>>=
+
+targets <- read.AnnotatedDataFrame("targets.txt")
+foo <- readCodelink2(phenodata = targets)
+
+@
+
+\subsection{Phenotypic data}
+
+The phenotypic data can be loaded from a file and assigned to the created object. This will allow storing all information in the same place, making easier to use it in the statistical analysis step. In addition, if the target argument in assigned, \Rfunction{readCodelink2} will load the corresponding target file, extract the file names from the FileNames column and load the data in the same order and attaching the \Robject{phenoData} object. This assumes the first column in the targets file contains the sample names. If no FileNames column is found, it will try to load the files using the sample names.
+
+<<readfile2, eval = FALSE>>=
+
+foo <- readCodelink2(targets = "targets.txt")
+
+@
+
+\subsection{Feature data}
+
+The \Robject{CodelinkSet} stores intensity data in the exprs slot, much the same as Affymetrix derived data. It also contains a slot background, to accomodate background intensities. The featureData object will contain further information like ProbeName, ProbeType, meanSNR (computed when loading data), Row and Col locations in the chip, etc. The FeatureID is used to name rows, although the ProbeName is the useful information when accesing annotation data.
+
+\subsection{Annotations}
+
+The \Robject{CodelinkSet} class supports by default new style (\Rpackage{AnnotationDbi} based) annotation packages, i.e. all annotations will contain the .db subfix. To change to the old style you can assign the annotation package by hand:
+
+<<annotations>>=
+
+library(codelink)
+data(codelink.exprset)
+annotation(codelink.exprset)
+annotation(codelink.exprset) <- "rwgcod"
+annotation(codelink.exprset)
+
+@
+
+NOTE: Old style annotation packages will be deprecated for BioC 2.3
+
+\section{The User Interface}
+
+The user interface has changed to be more consistent and easier to use. All user method for \Robject{CodelinkSet} object have the prefix "cod" followed by the corresponding method name. 
+
+\subsection{Data accession}
+
+\Rfunction{getInt}
+\Rfunction{getBkd}
+\Rfunction{getSNR}
+
+\Rfunction{featureNames}
+\Rfunction{probeNames}
+\Rfunction{sampleNames}
+
+\subsection{Preprocessing}
+\Rfunction{codCorrect} is used for background correction and \Rfunction{codNormalize} for normalization. A convenience function called \Rfunction{codPreprocess} is also available to combine in one step background correction and normalization. The devault values found in the older functions are preserved, i.e. \emph{half} for \Rfunction{codCorrect} and \emph{quantile} \Rfunction{codNormalize}
+
+<<preprocess>>=
+
+cset <- codPreprocess(codelink.exprset)
+
+@
+
+\subsection{Plots}
+\Rfunction{codPlotMA}, \Rfunction{codPlotDensities}, \Rfunction{codPlotCorrelation} and \Rfunction{codPlotImage} are the corresponding new functions. A convinience funcion \Rfunction{codPlot} is provided and the type of plot is choose with the parameter \emph{what}.
+
+<<plot, fig=TRUE>>=
+
+codPlot(cset, what = "density")
+codPlot(cset, what = "ma")
+codPlot(cset, what = "image")
+
+@
+
+\section{Analysis with limma}
+
+Analysis using \Rpackage{limma} is straightforward. The design matrix can be 
+specified using the \Robject{phenoData} information. In the fit step, the 
+\Robject{CodelinkSet} object can be passed directly to \Rfunction{lmFit}.  
+Making life easier for users of the Codelink platform.
+
+<<fit, eval = FALSE>>=
+
+design <- model.matrix(~ -1 + factor(cset$Treatment))
+fit <- lmFit(cset, design)
+
+@
+
+
+\section{Session Info}
+
+<<sessioninfo>>=
+
+sessionInfo()
+
+@
+
+\end{document}

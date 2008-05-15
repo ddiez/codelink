@@ -11,8 +11,6 @@
 	\item{object}{an object of class "Codelink".}
 	\item{subset}{subset of arrays to calculate cutoff with}
 }
-\value{
-}
 \details{
     First it computes the median of CV for each gene over all arrays. Then
   it computes the mean and sd of all medians. Finally:
@@ -20,11 +18,7 @@
     cutoff = mean + 3 * sd
 
 }
-\note{
-}
 \author{Diego Diez}
-\seealso{
-}
 \examples{
 \dontrun{
     # data: Normalized Codelink object merged.

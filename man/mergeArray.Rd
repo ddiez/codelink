@@ -19,13 +19,7 @@ ged samples.
   \item{merge.snr}{logical; a logical indicating if SNR values should be merged.}
 }
 \value{An object of class "Codelink".}
-\details{
-}
-\note{
-}
 \author{Diego Diez}
-\seealso{
-}
 \examples{
 \dontrun{
 	data(codelink.example)

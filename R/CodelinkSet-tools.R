@@ -1,5 +1,6 @@
 # temporary wrapper.
 readCodelink2 <- function(..., phenodata = NULL, featuredata = NULL) {
+	#colnames = list(Signal = "Spot_mean", Background = "Bkgd_median")) {
 	tmp <- readCodelink(...)
 	#Codelink2eSet(tmp)
 	c2e(tmp, phenodata = phenodata, featuredata = featuredata)
@@ -114,7 +115,7 @@ function(object)
 
 	# return name.
 	if(org != "" && chip != "")
-		ann <- paste(org, chip, base, sep="")
+		ann <- paste(org, chip, base, ".db", sep="")
 	else ann <- ""
 	
 	ann

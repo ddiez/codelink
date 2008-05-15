@@ -14,14 +14,6 @@
 \value{
 	A logical vector.
 }
-\details{
-}
-\note{
-}
 \author{Diego Diez}
-\seealso{
-}
-\examples{
-}
 \keyword{documentation}
 \keyword{utilities}

@@ -11,10 +11,6 @@ logCodelink(object)
   \item{object}{an object of class "Codelink" or a list of genes.}
 }
 \value{A Codelink object with logCodelink intensities.}
-\details{
-}
-\note{
-}
 \author{Diego Diez}
 \seealso{\code{\link{log2}}}
 \examples{

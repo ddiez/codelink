@@ -15,10 +15,7 @@ readHeaderXLS(file, dec=FALSE)
 \details{
 	This function is not meant to be used by normal users.
 }
-\note{
-}
 \author{Diego Diez}
-\seealso{}
 \examples{
 \dontrun{
     files <- list.files(pattern = "TXT")

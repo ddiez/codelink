@@ -16,15 +16,7 @@ plotDensities(object, subset=1:dim(object)[2], title=NULL,
   \item{legend.cex}{font factor use in legend to fit.}
   \item{what}{what data to plot, may be "bg", "smean", "snr", "ri" or "ni"}
 }
-\value{
-}
-\details{
-}
-\note{
-}
 \author{Diego Diez}
-\seealso{
-}
 \examples{
 \dontrun{
     data(codelink.example)

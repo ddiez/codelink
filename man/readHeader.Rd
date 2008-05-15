@@ -12,12 +12,7 @@ readHeader(file, dec=FALSE)
   \item{dec}{logical; If TRUE determine decimal point.}
 }
 \value{A list with header and other usefull information.}
-\details{
-}
-\note{
-}
 \author{Diego Diez}
-\seealso{}
 \examples{
 \dontrun{
     files <- list.files(pattern = "TXT")

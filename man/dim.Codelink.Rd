@@ -11,13 +11,7 @@
   \item{x}{an object of class "Codelink".}
 }
 \value{A numeric vector with the dimensions.}
-\details{
-}
-\note{
-}
 \author{Diego Diez}
-\seealso{
-}
 \examples{
 \dontrun{
 	data(codelink.example)

@@ -686,3 +686,7 @@
 1.9.1
   - import 'annotation' and 'exprs' from Biobase to avoid warnings in R-2.8
   (devel).
+
+1.9.2
+  - added vignette describing the CodelinkSet class.
+  - fixed notes about removing empty entries in .Rd files.

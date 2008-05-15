@@ -27,13 +27,7 @@
   \item{weights}{a vector of weights for the individual measurements.}
 }
 \value{A matrix of normalized values.}
-\details{
-}
-\note{
-}
 \author{Diego Diez}
-\seealso{
-}
 \examples{
 \dontrun{
 	mat <- matrix(sample(500), 100, 5)

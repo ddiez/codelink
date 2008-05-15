@@ -12,13 +12,6 @@
     \item{nlines}{number of lines to skip.}
 }
 \value{Decimal type.}
-\details{
-}
-\note{
-}
 \author{Diego Diez}
-\seealso{}
-\examples{
-}
 \keyword{documentation}
 \keyword{utilities}

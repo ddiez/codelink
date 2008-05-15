@@ -11,13 +11,7 @@
   \item{x}{a logical vector.}
 }
 \value{A logical vector without NAs.}
-\details{
-}
-\note{
-}
 \author{Diego Diez}
-\seealso{
-}
 \examples{
 \dontrun{
     a <- c(1, 2, 3, NA, 5)
