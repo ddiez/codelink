@@ -95,7 +95,7 @@ normalize.loess <- function (mat,
 				ww <- ww[index]
 
                 aux <- loess(yy ~ xx, span = span, degree = 1, 
-                  weights = ww, family = family.loess)
+                  weights = ww, family = family.loess, control = loess.control(surface = "direct"))
                 aux <- predict(aux, data.frame(xx = x))/J
 				# apply normalization to genes not NA.
                 means[sel, j] <- means[sel, j] + aux
@@ -118,5 +118,22 @@ normalize.loess <- function (mat,
         return(2^newData)
     }
     else return(newData)
+}
+
+normalize.loess2 <- function(mat, ...) {
+	J <- dim(mat)[2]
+    II <- dim(mat)[1]
+
+	means <- matrix(0, II, J)
+	for (j in 1:(J - 1)) {
+		for (k in (j + 1):J) {
+			M <- mat[, j] - mat[, k]
+			A <- (mat[, j] + mat[, k])/2
+			tmp <- loessFit(M, A, ...)
+			means[, j] <- means[, j] + tmp$fitted
+			means[, k] <- means[, k] - tmp$fitted
+		}
+	}
+	return(mat-means)
 }
 

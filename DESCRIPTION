@@ -1,6 +1,6 @@
 Package: codelink
-Version: 1.9.2
-Date: 2008/05/15
+Version: 1.9.3
+Date: 2008/07/09
 Title: Manipulation of Codelink Bioarrays data.
 Author: Diego Diez <diez@kuicr.kyoto-u.ac.jp>
 Maintainer: Diego Diez <diez@kuicr.kyoto-u.ac.jp>

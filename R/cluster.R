@@ -54,17 +54,13 @@ function(x, file, chip)
 })
 
 writecluster <- function(file, mat, samples, probes, chip) {
-	if(!do.call("require", list(chip)))
-		stop(chip, " package not found")
+	symbol.env <- getAnnMap("SYMBOL", chip)
+	symbol <- unlist(mget(probes, symbol.env))
 
-	symbol <- unlist(mget(probes, envir = get(paste(chip, "SYMBOL", sep = ""))))
-	#desc <- unlist(mget(probes, envir = get(paste(chip, "GENENAME", sep = ""))))
-
+	# make nice symbols?
 	symbol[is.na(symbol)] <- ""
-	#desc[is.na(desc)] <- ""
 	symbol <- gsub("_predicted", "", symbol)
 	
-	#info <- paste(probes, symbol, desc)
 	info <- symbol
 
 	header <- c("ORF", "NAME", samples)
