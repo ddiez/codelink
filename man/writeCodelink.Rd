@@ -1,11 +1,12 @@
 \name{writeCodelink}
 \alias{writeCodelink}
+\alias{writeCodelink,CodelinkSet-method}
 \title{Write a Codelink object to file.}
 \description{
  Export of the data from a codelink object to a text file.
 }
 \usage{
-  writeCodelink(object, file, dec = ".", sep = "\t", flag = FALSE)
+  writeCodelink(object, file, dec = ".", sep = "\t", flag = FALSE, chip)
 }
 \arguments{
   \item{object}{an object of class "Codelink".}
@@ -13,6 +14,7 @@
   \item{dec}{decimal character to use.}
   \item{sep}{delimiter character to use.}
   \item{flag}{should the Codelink flags be written.}
+  \item{chip}{chip package to use, normally guessed.}
 }
 \details{
 By default, intensities and SNR are wrote to the file. If set, the flag are 

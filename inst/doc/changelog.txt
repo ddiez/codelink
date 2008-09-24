@@ -694,3 +694,9 @@
 1.9.3
   - fixed high intensity probes turned NA by loess normalization.
   - code clean up in writeCluster().
+
+1.9.4
+  - small fixes to vignette.
+  - added small section for exporting data to vignette.
+  - writeCodelink() now outputs ACCESSION and ENTREZID values.
+  - added method writeCodelink() to CodelinkSet.

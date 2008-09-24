@@ -23,7 +23,7 @@ function(.Object,
         #annotation = annotation,
 
 		#intensity = intensity,
-		backrgound = background,
+		background = background,
 		flag = flag,
 		snr = snr,
 		...

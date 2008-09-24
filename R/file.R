@@ -368,29 +368,36 @@ readCodelink <- function(files = list.files(pattern = "TXT"),
 }
 # writeCodelink()
 # write Codelink object to file.
-writeCodelink <- function(object, file, dec = ".", sep = "\t", flag = FALSE) {
+writeCodelink <- function(object, file, dec = ".", sep = "\t", flag = FALSE, chip) {
 	if(!is(object, "Codelink")) stop("A Codelink object is needed.")
 
 	write(paste("# BkgdCorrection method", object$method$background, sep = sep), file = file)
 	write(paste("# Normalization method", object$method$normalization, sep = "\t"), file = file, append = TRUE)
 	write(paste("# Log transformed", object$method$log, sep = "\t"), file=file, append = TRUE)
 
+	if(missing(chip)) chip <- annotation(object)
+	if(chip == "") stop("chip name is needed.")	
+	probes <- object$name
+	probes.acc <- lookUp(probes, chip, "ACCNUM", load = TRUE)
+	probes.eg <- lookUp(probes, chip, "ENTREZID")
+
 	val <- NULL
 	if(!is.null(object$Smean)) val <- object$Smean
 	if(!is.null(object$Ri)) val <- object$Ri
 	if(!is.null(object$Ni)) val <- object$Ni
+
+	tmp <- cbind(object$name, unlist(probes.acc), unlist(probes.eg), val, object$snr)
+	head <- c("PROBE_NAME", "ACCESSION", "ENTREZID", paste("INTENSITY_", object$sample, sep = ""),
+            paste("SNR_", object$sample, sep = ""))
+
 	if(flag) {
-		tmp <- cbind(object$name, val, object$snr, object$flag)
-		head <- c("PROBE_NAME", paste("INTENSITY_", object$sample, sep = ""),
-			paste("SNR_", object$sample, sep = ""),
-			paste("FLAG_", object$sample, sep =""))
-	} else {
-		tmp <- cbind(object$name, val, object$snr)
-		head <- c("PROBE_NAME", paste("INTENSITY_", object$sample, sep = ""),
-			paste("SNR_", object$sample, sep = ""))
-	}
+		tmp <- cbind(tmp, object$flag)
+		head <- c(head, paste("FLAG_", object$sample, sep =""))
+	} 
+
+	rownames(tmp) <- 1:dim(object)[1]
 	tmp <- rbind(Index=head, tmp)
-	write.table(tmp, file = file, quote = FALSE, sep = sep, dec = dec, col.names = FALSE, append = TRUE)
+	write.table(tmp, file = file, quote = FALSE, sep = sep, dec = dec, col.names = FALSE)
 }
 
 # reportCodelink()

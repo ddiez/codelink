@@ -211,9 +211,9 @@ function(x, array, what = "ma", ...)
 			#if(missing(array)) array = NULL
 			#codPlotDensity(x, array, ...) },
 			codPlotDensity(x, ...) },
-		scatter = {
-			if(missing(array)) array = 1;
-			codPlotScatter(x, array, ...) },
+		#scatter = {
+			#if(missing(array)) array = 1;
+			#codPlotScatter(x, array, ...) },
 		image = { if(missing(array)) array = 1; codPlotImage(x, array, ...) }
 	)
 })
@@ -443,4 +443,28 @@ setMethod("chipDevice", "CodelinkSet",
 function(x, f = 3)
 {
 	arrayNew(f = f, chip = x@annotation)
+})
+
+setGeneric("writeCodelink", function(object, file, dec = ".", sep = "\t", flag = FALSE, chip) standardGeneric("writeCodelink"))
+setMethod("writeCodelink", "CodelinkSet",
+function(object, file, dec = ".", sep = "\t", flag = FALSE, chip)
+{
+    if(missing(chip)) chip <- annotation(object)
+    if(chip == "") stop("chip name is needed.")
+    probes <- probeNames(object)
+    probes.acc <- lookUp(probes, chip, "ACCNUM", load = TRUE)
+    probes.eg <- lookUp(probes, chip, "ENTREZID")
+
+	tmp <- cbind(probeNames(object), unlist(probes.acc), unlist(probes.eg), exprs(object), getSNR(object))	
+    head <- c("PROBE_NAME", "ACCESSION", "ENTREZID", paste("INTENSITY_", sampleNames(object), sep = ""),
+            paste("SNR_", sampleNames(object), sep = ""))
+    
+	if(flag) {
+        tmp <- cbind(tmp, getFlag(object))
+        head <- c(head, paste("FLAG_", sampleNames(object), sep = ""))
+    }
+    
+	rownames(tmp) <- featureNames(object)
+    tmp <- rbind(Index=head, tmp)
+    write.table(tmp, file = file, quote = FALSE, sep = sep, dec = dec, col.names = FALSE)
 })

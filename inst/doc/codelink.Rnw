@@ -14,9 +14,7 @@
 \begin{document}
 
 \title{Codelink}
-
-\author{Diego Díez Ruiz}
-
+\author{Diego Diez}
 \maketitle
 
 \section{Introduction}
@@ -297,6 +295,10 @@ identify spatial artifact that may be affecting the analysis.
 
 There are also some miscellaneous functions used in some analysis that could be
 useful for someone.
+
+\subsection{Export to file}
+
+The function \Rfunction{writeCodelink} exports a \Robject{Codelink} object to a file. The file will contain probe intensities and, if specified flag = TRUE, probe quality flags.
 
 \subsection{Using weights}
 
