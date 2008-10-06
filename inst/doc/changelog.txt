@@ -700,3 +700,9 @@
   - added small section for exporting data to vignette.
   - writeCodelink() now outputs ACCESSION and ENTREZID values.
   - added method writeCodelink() to CodelinkSet.
+
+1.9.5
+  - added writeCodelink() example to vignette.
+  - new wrapper function readCodelinkSet().
+  - fixed writecluster symbol retrieval problem (now using lookUp from
+  annotate package).

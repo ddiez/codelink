@@ -61,7 +61,7 @@
 \alias{codUniverse,CodelinkSet-method}
 
 % non-generic functions.
-\alias{readCodelink2}
+\alias{readCodelinkSet}
 \alias{readCodelinkFiles}
 \alias{Codelink2eSet}
 \alias{eSet2Codelink}

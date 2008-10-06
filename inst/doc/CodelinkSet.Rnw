@@ -25,22 +25,20 @@ The \Robject{CodelinkSet} is an extension of the \Robject{ExpressionSet} class, 
 
 \section{Loading of data}
 
-There is a new function called \Rfunction{readCodelink2} will load the data in the old format and convert it into the \Robject{CodelinkSet} format. This function will replace in the future \Rfunction{readCodelink}. It is possible to include \Robject{phenoData} and \Robject{featureData} when calling \Rfunction{readCodelink2}. In addition, the correct annotation package is guessed from the first file and assigned to the \Robject{annotation} slot.
+There is a new function called \Rfunction{readCodelinkSet} that will load the 
+data in the old format and convert it into the \Robject{CodelinkSet} format.  
+This function will replace in the future \Rfunction{readCodelink}. It is 
+possible to include \Robject{phenoData} and \Robject{featureData} when calling 
+\Rfunction{readCodelinkSet}. In addition, the correct annotation package is 
+guessed from the first file and assigned to the \Robject{annotation} slot.
+
+Instead of giving the list of files to read, it is possible to give it the 
+location of a targets file. This will be preferred and the information in the 
+targets file will be used to fill de phenoData slot.
 
 <<readfile1, eval=FALSE>>=
 
-targets <- read.AnnotatedDataFrame("targets.txt")
-foo <- readCodelink2(phenodata = targets)
-
-@
-
-\subsection{Phenotypic data}
-
-The phenotypic data can be loaded from a file and assigned to the created object. This will allow storing all information in the same place, making easier to use it in the statistical analysis step. In addition, if the target argument in assigned, \Rfunction{readCodelink2} will load the corresponding target file, extract the file names from the FileNames column and load the data in the same order and attaching the \Robject{phenoData} object. This assumes the first column in the targets file contains the sample names. If no FileNames column is found, it will try to load the files using the sample names.
-
-<<readfile2, eval = FALSE>>=
-
-foo <- readCodelink2(targets = "targets.txt")
+cset <- readCodelinkSet("targets.txt")
 
 @
 
@@ -109,6 +107,16 @@ Making life easier for users of the Codelink platform.
 
 design <- model.matrix(~ -1 + factor(cset$Treatment))
 fit <- lmFit(cset, design)
+
+@
+
+\section{Exporting data to a file}
+
+You may want to export your normalized data to use it with other analysis tools. The function \Rfunction{writeCodelink} allows to do that. By default the index, probe names, accession number, entrez gene identifiers, intensity and SNR values are output. If flag = TRUE, then the flags are also output.
+
+<<fit, eval = FALSE>>=
+
+writeCodelink(codelink.exprset, file = "intensities.txt")
 
 @
 

@@ -54,8 +54,7 @@ function(x, file, chip)
 })
 
 writecluster <- function(file, mat, samples, probes, chip) {
-	symbol.env <- getAnnMap("SYMBOL", chip)
-	symbol <- unlist(mget(probes, symbol.env))
+	symbol <- lookUp(probes, chip, "SYMBOL")
 
 	# make nice symbols?
 	symbol[is.na(symbol)] <- ""
