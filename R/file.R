@@ -331,7 +331,8 @@ readCodelink <- function(files = list.files(pattern = "TXT"),
 			if(file.type == "Codelink") {
 				codelink$name <- as.character(data[, "Probe_name"])
 				codelink$type <- as.character(data[, "Probe_type"])
-				codelink$id <- as.character(data[, "Feature_id"])
+				if(!fix)
+					codelink$id <- as.character(data[, "Feature_id"])
 				if(any(grep("Logical_row", head$columns)) &&
 					any(grep("Logical_col", head$column))) {
 					codelink$logical[,"row"] <- data[, "Logical_row"]

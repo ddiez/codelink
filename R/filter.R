@@ -22,6 +22,8 @@ function(x, cutoff = 1)
 setMethod("filterSNR", "matrix",
 function(x, cutoff = 1)
 {
+	if(!require(genefilter))
+		stop("package genefilter is needed and not installed")
 	f <- filtersnr(A = cutoff)
 	!genefilter(x, filterfun(f))
 })

@@ -1,11 +1,12 @@
 Package: codelink
-Version: 1.13.0
-Date: 2008/10/06
+Version: 1.13.1
+Date: 2009/04/30
 Title: Manipulation of Codelink Bioarrays data.
 Author: Diego Diez <diez@kuicr.kyoto-u.ac.jp>
 Maintainer: Diego Diez <diez@kuicr.kyoto-u.ac.jp>
-Depends: methods, Biobase, limma, annotate, genefilter
-Suggests:
+Depends: methods, Biobase, limma
+Imports: annotate
+Suggests: genefilter
 LazyLoad: yes
 Description: This packages allow reading into R of Codelink bioarray data 
  exported as text from the Codelink software. Also includes some functions 

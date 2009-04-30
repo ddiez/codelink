@@ -2,7 +2,6 @@
 import(methods)
 importFrom(limma, normalize.quantiles=normalizeQuantiles)
 importFrom(annotate, lookUp, htmlpage)
-importFrom(genefilter, genefilter)
 importFrom(Biobase, annotation, exprs)
 
 importClassesFrom(Biobase, eSet, ExpressionSet, VersionedBiobase, Versioned)
