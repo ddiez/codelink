@@ -1,10 +1,10 @@
 Package: codelink
-Version: 1.13.1
-Date: 2009/04/30
+Version: 1.13.2
+Date: 2009/06/17
 Title: Manipulation of Codelink Bioarrays data.
 Author: Diego Diez <diez@kuicr.kyoto-u.ac.jp>
 Maintainer: Diego Diez <diez@kuicr.kyoto-u.ac.jp>
-Depends: methods, Biobase, limma
+Depends: methods, Biobase (>= 2.5.3), limma
 Imports: annotate
 Suggests: genefilter
 LazyLoad: yes
