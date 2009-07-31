@@ -75,7 +75,7 @@ function(object) {
 			printHead(x)
 			cat("\n")
 		}
-}
+	}
 })
 
 # [ method.

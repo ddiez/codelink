@@ -1,0 +1,6 @@
+Package: codelink
+====================
+
+Version: 1.13.4
+
+o Fixed warning on R CMD check about mismatch between objects and documentation.

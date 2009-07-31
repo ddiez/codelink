@@ -706,3 +706,6 @@
   - new wrapper function readCodelinkSet().
   - fixed writecluster symbol retrieval problem (now using lookUp from
   annotate package).
+
+1.13.4
+  - Move changes to NEWS file.
