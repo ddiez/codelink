@@ -1,10 +1,6 @@
 \name{Nondocumented-objects}
 \alias{Nondocumented-objects}
 
-\alias{class::CodelinkSet}
-\alias{CodelinkSet}
-\alias{CodelinkSet-class}
-
 \alias{annotation,Codelink-method}
 
 % generic.

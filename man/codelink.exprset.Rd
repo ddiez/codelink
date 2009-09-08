@@ -8,7 +8,7 @@
 }
 \usage{data(codelink.example)}
 \format{
-	A \code{\link[codelink:CodelinkiSet-class]{Codelink}} object containing 
+	A \code{\link[codelink:CodelinkSet-class]{Codelink}} object containing 
 20469 probes and 4 samples.
 }
 \author{Diego Diez}

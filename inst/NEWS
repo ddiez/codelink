@@ -1,5 +1,9 @@
 Package: codelink
 ====================
+Version: 1.13.5
+
+o Fixed warnings about missing (or suspect) links in documentation. Added tem-
+  plate man page for CodelinkSet class.
 
 Version: 1.13.4
 

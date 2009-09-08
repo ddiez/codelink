@@ -27,10 +27,6 @@
   }
 }
 
-\section{Methods}{
-  \describe{
-  }
-}
 \note{More details are in the package vignette}
 
 \author{Diego Diez}
