@@ -9,7 +9,7 @@ function(x, method = "half")
 		return(x)
 	}
 	
-	method <- match.arg(method, c("none"< "subtract", "half", "normexp"))
+	method <- match.arg(method, c("none", "subtract", "half", "normexp"))
 
 	# take data.
 	#int <- assayDataElement(x, "intensity")

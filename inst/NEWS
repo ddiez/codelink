@@ -1,5 +1,10 @@
 Package: codelink
 ====================
+
+Version: 1.13.6
+
+o Fixed bug in codCorrect() that would prevent the methods "half" and "subtract" for being available. Thanks to Frédéric Boyer for reporting this.
+
 Version: 1.13.5
 
 o Fixed warnings about missing (or suspect) links in documentation. Added tem-
