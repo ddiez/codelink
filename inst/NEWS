@@ -1,6 +1,15 @@
 Package: codelink
 ====================
 
+Version 1.15.1
+
+o Added '...' to readCodelinkSet() so that it pass additional arguments (e.g. 'flag') to readCodelink(). Thank you to Luca Beltrame for the suggestion and patch.
+o Now when readCodelinkSet() reads a list of files and the phenoData is not supplied it will create a default one, instead of failing.
+
+Version: 1.15.0
+
+o Version number bumped for BioC devel branch.
+
 Version: 1.13.6
 
 o Fixed bug in codCorrect() that would prevent the methods "half" and "subtract" for being available. Thanks to Frédéric Boyer for reporting this.
