@@ -244,7 +244,7 @@ function(x, array = 1, array2, label = "type", cutoff = c(-1, 1),
 	X1 <- X[, array]
 	if(missing(array2)) {
 		# compute mean in non-log scale and restore it if needed.
-		X2 <- rowMeans(if(!islog) X else 2**X, na.rm = TRUE)
+		X2 <- rowMeans(if(!islog) X else 2^X, na.rm = TRUE)
 		if(islog) X2 <- log2(X2)
 	} else
 		X2 <- X[, array2]
@@ -467,4 +467,40 @@ function(object, file, dec = ".", sep = "\t", flag = FALSE, chip)
 	rownames(tmp) <- featureNames(object)
     tmp <- rbind(Index=head, tmp)
     write.table(tmp, file = file, quote = FALSE, sep = sep, dec = dec, col.names = FALSE)
+})
+
+setGeneric("averageProbes", function(object, parallel = FALSE)
+			standardGeneric("averageProbes"))
+setMethod("averageProbes", "CodelinkSet",
+function(object, parallel = FALSE)
+{
+	uprobes <- unique(probeNames(object))
+	mat <- exprs(object)
+	samples <- sampleNames(object)
+	
+	mylapply <- lapply
+	if (parallel) {
+		if (!require(multicore)) stop("package multicore is required for 'parallel = TRUE'")
+		mylapply <- mclapply
+	}
+	
+	tmp <- mylapply(uprobes, function(x) {
+		idx <- probeNames(object) == x
+		int.m <- colMeans(mat[idx,, drop = FALSE], na.rm = TRUE)
+		int.sd <- apply(mat[idx,, drop = FALSE], 2, function(x) sd(x, na.rm = TRUE))
+		c(which(idx)[1], int.m, int.sd)
+	})
+	
+	int.m <- matrix(unlist(tmp), ncol = ncol(object)*2 + 1, nrow = length(uprobes), byrow = TRUE)
+	uidx <- int.m[, 1]
+	int.m <- int.m[, -1]
+	sel <- c(rep(TRUE, ncol(object)), rep(FALSE, ncol(object)))
+	int.sd <- int.m[, !sel]
+	int.m <- int.m[, sel]
+	
+	fdata <- new("AnnotatedDataFrame",
+			data = pData(featureData(object))[uidx, c("probeName", "probeType")],
+			varMetadata = varMetadata(featureData(object))[c("probeName", "probeType"), , drop = FALSE])
+	featureNames(fdata) <- uprobes
+	new("CodelinkSetUnique", exprs = int.m, sd = int.sd, phenoData = phenoData(object), featureData = fdata, annotation = annotation(object))
 })

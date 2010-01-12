@@ -48,6 +48,7 @@
 \alias{getInfo,CodelinkSet-method}
 \alias{getSNR,CodelinkSet-method}
 \alias{probeNames,CodelinkSet-method}
+\alias{probeNames,CodelinkSetUnique-method}
 \alias{probeTypes,CodelinkSet-method}
 \alias{meanSNR,CodelinkSet-method}
 \alias{codPlot,CodelinkSet-method}

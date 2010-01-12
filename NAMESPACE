@@ -6,10 +6,10 @@ importFrom(Biobase, annotation, exprs)
 
 importClassesFrom(Biobase, eSet, ExpressionSet, VersionedBiobase, Versioned)
 
-exportClasses(CodelinkSet)
+exportClasses(CodelinkSet, CodelinkSetUnique)
 exportMethods(codCorrect, codNormalize, codPreprocess, probeNames, probeTypes,
 	getSNR,	getInt, getBkg, getInfo, meanSNR, codPlot, exprs, chipDevice,
-	filterSNR, codUniverse, writeCluster, writeCodelink)
+	filterSNR, codUniverse, writeCluster, writeCodelink, averageProbes)
 
 S3method(as.matrix, Codelink)
 S3method(dim, Codelink)

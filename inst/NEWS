@@ -1,6 +1,16 @@
 Package: codelink
 ====================
 
+Version 1.15.2
+
+o Added CodelinkSetUnique class to store objects with unique probes. These objects use as featureNames the probe ID, and
+  hence should be compatible with other packages that make use of featureNames() and the annotation packages.
+  
+o Added function averageProbes() that computes the average of duplicated probes in the array. Currently is does the mean(). The
+  standard deviation is computed too and stored in the slot "sd" (no accessor method at the moment). This computation requires
+  time and therefore a call to mclapply() in multicore package is implemented through the optional argument 'parallel' (FALSE by
+  default). Use of 'parallel = TRUE' is not recommended on GUI (like the Cocoa R.app) (see multicore package for issues with this). 
+
 Version 1.15.1
 
 o Added '...' to readCodelinkSet() so that it pass additional arguments (e.g. 'flag') to readCodelink(). Thank you to Luca Beltrame for the suggestion and patch.
