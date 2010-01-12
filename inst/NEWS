@@ -1,6 +1,10 @@
 Package: codelink
 ====================
 
+Version 1.15.3
+
+o Added missing file (averageProbes.Rd) to the svn.
+
 Version 1.15.2
 
 o Added CodelinkSetUnique class to store objects with unique probes. These objects use as featureNames the probe ID, and
