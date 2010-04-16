@@ -130,7 +130,7 @@ foo.avg <- averageProbes(codelink.exprset)
 
 @
 
-This computation takes a lot of time. It is possible to use a parallelized version (using the package \Rpackage{multicore}) by making 'parallel=TRUE' in \Rfunction{averageProbes}. See the help for \Rfunction{averageProbes} for more details on this approach.
+This computation takes a lot of time. It is possible to use a parallelized version (using the package \Rpackage{multicore}) by making 'parallel=TRUE' in \Rfunction{averageProbes}. See the help for \Rfunction{averageProbes} for more details on this approach. The package \Rpackage{multicore} needs to be loaded in advance by typing \Robject{library(multicore)}.
 
 
 \section{Session Info}

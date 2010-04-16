@@ -480,8 +480,12 @@ function(object, parallel = FALSE)
 	
 	mylapply <- lapply
 	if (parallel) {
-		if (!require(multicore)) stop("package multicore is required for 'parallel = TRUE'")
-		mylapply <- mclapply
+		if (is.loaded("mclapply", PACKAGE="multicore")) {
+			mylapply <- get('mclapply', envir=getNamespace('multicore'))
+		} else {
+			message("Parallel functionality is provided by package 'multicore', please load the package to use it.")
+			message("Package 'multicore' is not currently available in Windows machines.")
+		}
 	}
 	
 	tmp <- mylapply(uprobes, function(x) {

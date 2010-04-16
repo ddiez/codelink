@@ -1,6 +1,11 @@
 Package: codelink
 ====================
 
+Version 1.15.4
+
+o Fixed check fail in windows machine by putting "multicore" in Enhancements, and checking if function "mclapply" is loaded. Addapted documentation to 
+explain the new behavior.
+
 Version 1.15.3
 
 o Added missing file (averageProbes.Rd) to the svn.
