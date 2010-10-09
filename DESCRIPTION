@@ -7,7 +7,7 @@ Maintainer: Diego Diez <diez@kuicr.kyoto-u.ac.jp>
 Depends: methods, Biobase (>= 2.5.5), limma
 Imports: annotate
 Suggests: genefilter
-Enhancements: multicore
+Enhances: multicore
 LazyLoad: yes
 Description: This packages allow reading into R of Codelink bioarray data 
  exported as text from the Codelink software. Also includes some functions 
