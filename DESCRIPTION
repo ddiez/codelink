@@ -1,5 +1,5 @@
 Package: codelink
-Version: 1.19.0
+Version: 1.19.1
 Date: 2010/04/16
 Title: Manipulation of Codelink Bioarrays data.
 Author: Diego Diez <diez@kuicr.kyoto-u.ac.jp>
@@ -13,7 +13,7 @@ Description: This packages allow reading into R of Codelink bioarray data
  exported as text from the Codelink software. Also includes some functions 
  to ease the manipulation and pre-processing of data, such in background 
  correction and normalization. 
-License: GPL
+License: GPL-2
 Collate: Codelink-class.R file.R data.R norm.R plot.R CodelinkSet-class.R CodelinkSet-methods.R CodelinkSet-tools.R CodelinkSetUnique-class.R CodelinkSetUnique-methods.R filter.R cluster.R
 URL: http://www.kuicr.kyoto-u.ac.jp/~diez
 
