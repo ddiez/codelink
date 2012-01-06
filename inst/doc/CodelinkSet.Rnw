@@ -103,12 +103,17 @@ specified using the \Robject{phenoData} information. In the fit step, the
 \Robject{CodelinkSet} object can be passed directly to \Rfunction{lmFit}.  
 Making life easier for users of the Codelink platform.
 
-<<fit, eval = FALSE>>=
+\SweaveOpts{keep.source=TRUE}
+<<fit>>=
 
+# assign example experimental conditions:
+cset$Treatment = c("C", "C", "T", "T")
+# create and fit model:
 design <- model.matrix(~ -1 + factor(cset$Treatment))
 fit <- lmFit(cset, design)
 
 @
+\SweaveOpts{keep.source=FALSE}
 
 \section{Exporting data to a file}
 

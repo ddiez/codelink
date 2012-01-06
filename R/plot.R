@@ -204,8 +204,8 @@ plotMA <- function(object, array1 = 1, array2 = NULL, cutoff = c(-1, 1),
 
 # basic plotma function.
 plotma <- function(A, M, label = "type", cutoff = c(-1, 1), 
-	snr.cutoff = 1, legend.x, pch = ".", xlim, ylim, type, snr,
-	high.list, title, ...)
+	snr.cutoff = 1, legend.x, legend.cex = 1, pch = ".", xlim, ylim, type, snr,
+	high.list, title, loess = TRUE, xyline = FALSE, ...)
 {
 
 	label <- match.arg(label, c("type", "snr", "none"))
@@ -215,9 +215,20 @@ plotma <- function(A, M, label = "type", cutoff = c(-1, 1),
 	if(missing(ylim)) ylim <- range(M, na.rm = TRUE)
 
 	plot(0, col = "white", xlim = xlim, ylim = ylim, xlab = "A", ylab = "M")
-	abline(h = 0, col = "steelblue", lwd = 2)
-	if(!is.null(cutoff))
-		abline(h = cutoff, col = "gray", lty = "dotted")
+	
+	if(!is.null(cutoff)) {
+		if(loess) {
+			abline(h = 0, col = "grey", lwd = 2)
+			abline(h = cutoff, col = "gray", lty = "dotted")
+		}
+	
+		if (xyline) {
+			abline(a = 0, b = 1, col = "gray", lwd = 2)
+			abline(a = cutoff[1], b = 1, col = "gray", lty = "dotted")		
+			abline(a = cutoff[2], b = 1, col = "gray", lty = "dotted")
+		}
+	}
+	
 
 	# plot MA values.
 	switch(label,
@@ -256,20 +267,22 @@ plotma <- function(A, M, label = "type", cutoff = c(-1, 1),
 		none = points(A, M, pch = pch, ...)
 	)
 	
-	# lowess line block.
-	# remove NA.
-	sel <- which(!is.na(M))
-	M.l <- M[sel]
-	A.l <- A[sel]
-	# take sample.
-	subset = sample(1:length(M.l), min(c(5000, length(M.l))))
-	A.l <- A.l[subset]
-	M.l <- M.l[subset]
-	# order it and remove duplicates.
-	o <- order(A.l[subset])
-	o <- which(!duplicated(A.l))
-	# draw loess line.
-	lines(approx(lowess(A.l[o], M.l[o])), col = "green", lwd = 4)
+	if (loess) {
+		# lowess line block.
+		# remove NA.
+		sel <- which(!is.na(M))
+		M.l <- M[sel]
+		A.l <- A[sel]
+		# take sample.
+		subset = sample(1:length(M.l), min(c(5000, length(M.l))))
+		A.l <- A.l[subset]
+		M.l <- M.l[subset]
+		# order it and remove duplicates.
+		o <- order(A.l[subset])
+		o <- which(!duplicated(A.l))
+		# draw loess line.
+		lines(approx(lowess(A.l[o], M.l[o])), col = "green", lwd = 4)
+	}
 	
 	# highligh genes.
 	high.pch <- 21
@@ -290,8 +303,7 @@ plotma <- function(A, M, label = "type", cutoff = c(-1, 1),
 	}
 
 	if(label != "none")
-		legend(x = legend.x, legend = legend.text, fill = legend.fill,
-			bty = "n")
+		legend(x = legend.x, legend = legend.text, fill = legend.fill, cex = legend.cex, bty = "n")
 }
 
 ### plotMA()

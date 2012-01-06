@@ -206,15 +206,19 @@ function(x, array, what = "ma", ...)
 	what <- match.arg(what, c("ma", "density", "scatter", "image"))
 
 	switch(what,
-		ma = { if(missing(array)) array = 1; codPlotMA(x, array, ...) },
+		ma = {
+			if(missing(array)) array = 1;
+			codPlotMA(x, array, ...) },
 		density = {
 			#if(missing(array)) array = NULL
 			#codPlotDensity(x, array, ...) },
 			codPlotDensity(x, ...) },
-		#scatter = {
-			#if(missing(array)) array = 1;
-			#codPlotScatter(x, array, ...) },
-		image = { if(missing(array)) array = 1; codPlotImage(x, array, ...) }
+		scatter = {
+			if(missing(array)) array = 1;
+			codPlotScatter(x, array, ...) },
+		image = {
+			if(missing(array)) array = 1;
+			codPlotImage(x, array, ...) }
 	)
 })
 # codPlot(), MArrayLM-method.
@@ -339,6 +343,52 @@ function(x, array, lwd, ...)
 	
 	invisible(d)
 })
+
+setGeneric("codPlotScatter", function(x, array = 1, ...)
+			standardGeneric("codPlotScatter"))
+setMethod("codPlotScatter", "CodelinkSet",
+function(x, array = 1, array2, label = "type", cutoff = c(-1, 1),
+		snr.cutoff = 1,	legend.x, pch = ".", ...)
+{
+	#object, x=1, y=2, cutoff=FALSE, label="type", title=NULL, xlim=NULL, ylim=NULL
+	label <- match.arg(label, c("type", "snr", "none"))
+	type <- probeTypes(x)
+	snr <- meanSNR(x)
+	
+	# compute MA values.
+	X <- getInt(x)
+	islog <- getInfo(x, "log")
+	
+	X1 <- X[, array]
+	if(missing(array2)) {
+		# compute mean in non-log scale and restore it if needed.
+		X2 <- rowMeans(if(!islog) X else 2^X, na.rm = TRUE)
+		if(islog) X2 <- log2(X2)
+	} else
+		X2 <- X[, array2]
+	
+	if(!islog) {
+		X1 <- log2(X1)
+		X2 <- log2(X2)
+	}
+	
+	#M <- X2 - X1
+	#A <- (X1 + X2) / 2
+	A = X1
+	M = X2
+	
+	samples <- sampleNames(x)
+	if(missing(array2)) {
+		title <- paste("Median vs", samples[array])
+	} else {
+		title <- paste(samples[array2], "vs", samples[array])
+	}
+	
+	plotma(A, M, label = label,	cutoff = cutoff, snr.cutoff = snr.cutoff,
+			legend.x = legend.x, pch = pch, type = type, snr = snr, title = title, loess = FALSE, xyline = TRUE, 
+			...)
+})
+
 # codPlotImage-method.
 setGeneric("codPlotImage", function(x, array = 1, ...)
 	standardGeneric("codPlotImage"))
