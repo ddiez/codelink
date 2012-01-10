@@ -268,9 +268,9 @@ function(x, array = 1, array2, label = "type", cutoff = c(-1, 1),
 		title <- paste(samples[array2], "vs", samples[array])
 	}
 
-	plotma(A, M, label = label,	cutoff = cutoff, snr.cutoff = snr.cutoff,
+	plotxy(A, M, label = label,	cutoff = cutoff, snr.cutoff = snr.cutoff,
 		legend.x = legend.x, pch = pch, type = type, snr = snr, title = title, 
-		...)
+		xlab = "A", ylab = "M", ...)
 })
 # codPlotMA, MArrayLM-method.
 setMethod("codPlotMA", "MArrayLM",
@@ -299,7 +299,7 @@ function(x, array = 1, label = "type", cutoff = c(-1, 1),
 	
 	plotma(A, M, label = label,	cutoff = cutoff, snr.cutoff = snr.cutoff,
 		legend.x = legend.x, pch = pch, type = type, snr = snr, title = title, 
-		...)
+		xlab = "A", ylab = "M", ...)
 })
 
 # codPlotDensity-method.
@@ -354,39 +354,37 @@ function(x, array = 1, array2, label = "type", cutoff = c(-1, 1),
 	label <- match.arg(label, c("type", "snr", "none"))
 	type <- probeTypes(x)
 	snr <- meanSNR(x)
-	
-	# compute MA values.
+	samples <- sampleNames(x)
+
 	X <- getInt(x)
 	islog <- getInfo(x, "log")
 	
 	X1 <- X[, array]
+	xlab = samples[array]
+	ylab = "Median"
 	if(missing(array2)) {
 		# compute mean in non-log scale and restore it if needed.
 		X2 <- rowMeans(if(!islog) X else 2^X, na.rm = TRUE)
 		if(islog) X2 <- log2(X2)
-	} else
+	} else {
 		X2 <- X[, array2]
+		ylab = samples[array2] 
+	}
 	
 	if(!islog) {
 		X1 <- log2(X1)
 		X2 <- log2(X2)
 	}
 	
-	#M <- X2 - X1
-	#A <- (X1 + X2) / 2
-	A = X1
-	M = X2
-	
-	samples <- sampleNames(x)
 	if(missing(array2)) {
 		title <- paste("Median vs", samples[array])
 	} else {
 		title <- paste(samples[array2], "vs", samples[array])
 	}
 	
-	plotma(A, M, label = label,	cutoff = cutoff, snr.cutoff = snr.cutoff,
+	plotxy(X1, X2, label = label,	cutoff = cutoff, snr.cutoff = snr.cutoff,
 			legend.x = legend.x, pch = pch, type = type, snr = snr, title = title, loess = FALSE, xyline = TRUE, 
-			...)
+			xlab = xlab, ylab = ylab, ...)
 })
 
 # codPlotImage-method.

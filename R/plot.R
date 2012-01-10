@@ -202,19 +202,19 @@ plotMA <- function(object, array1 = 1, array2 = NULL, cutoff = c(-1, 1),
 		fill = legend.fill, bty = "n")
 }
 
-# basic plotma function.
-plotma <- function(A, M, label = "type", cutoff = c(-1, 1), 
+# basic plotxy function (used by codPlotMA and codPlotScatter)
+plotxy <- function(x, y, label = "type", cutoff = c(-1, 1), 
 	snr.cutoff = 1, legend.x, legend.cex = 1, pch = ".", xlim, ylim, type, snr,
-	high.list, title, loess = TRUE, xyline = FALSE, ...)
+	high.list, title, loess = TRUE, xyline = FALSE, xlab = "x", ylab = "y", ...)
 {
 
 	label <- match.arg(label, c("type", "snr", "none"))
 	
 	# basic plot.
-	if(missing(xlim)) xlim <- range(A, na.rm = TRUE)
-	if(missing(ylim)) ylim <- range(M, na.rm = TRUE)
+	if(missing(xlim)) xlim <- range(x, na.rm = TRUE)
+	if(missing(ylim)) ylim <- range(y, na.rm = TRUE)
 
-	plot(0, col = "white", xlim = xlim, ylim = ylim, xlab = "A", ylab = "M")
+	plot(0, col = "white", xlim = xlim, ylim = ylim, xlab = xlab, ylab = ylab)
 	
 	if(!is.null(cutoff)) {
 		if(loess) {
@@ -230,13 +230,13 @@ plotma <- function(A, M, label = "type", cutoff = c(-1, 1),
 	}
 	
 
-	# plot MA values.
+	# plot XY values.
 	switch(label,
 		type = {
 			#type <- probeTypes(x)
 			for(level in names(TYPE_COLOR)) {
 				sel <- type == level
-				points(A[sel], M[sel], col = TYPE_COLOR[level],
+				points(x[sel], y[sel], col = TYPE_COLOR[level],
 					pch = TYPE_PCH[[level]], bg = TYPE_BG[level], ...)
 			}
 			legend.text = names(TYPE_COLOR)
@@ -252,7 +252,7 @@ plotma <- function(A, M, label = "type", cutoff = c(-1, 1),
 
 			for(n in 1:(length(s) - 1)) {
 				sel <- snr >= s[n] & snr < s[n + 1]
-				points(A[sel], M[sel], col = col[n], pch = pch, ...)
+				points(x[sel], y[sel], col = col[n], pch = pch, ...)
 				legend.text <- c(legend.text,
 					paste(format(s[n], digits = 2, nsmall = 2), "<= SNR <",
 					format(s[n + 1], digits = 2, nsmall = 2)))
@@ -260,28 +260,28 @@ plotma <- function(A, M, label = "type", cutoff = c(-1, 1),
 			}
 
 			sel <- snr >= snr.cutoff
-			points(A[sel], M[sel], col = "black", pch = pch, ...)
+			points(x[sel], y[sel], col = "black", pch = pch, ...)
 			legend.text <- c(legend.text, paste("SNR >=", snr.cutoff))
 			legend.fill <- c(legend.fill, "black")
 		},
-		none = points(A, M, pch = pch, ...)
+		none = points(x, y, pch = pch, ...)
 	)
 	
 	if (loess) {
 		# lowess line block.
 		# remove NA.
-		sel <- which(!is.na(M))
-		M.l <- M[sel]
-		A.l <- A[sel]
+		sel <- which(!is.na(y))
+		y.l <- y[sel]
+		x.l <- x[sel]
 		# take sample.
-		subset = sample(1:length(M.l), min(c(5000, length(M.l))))
-		A.l <- A.l[subset]
-		M.l <- M.l[subset]
+		subset = sample(1:length(y.l), min(c(5000, length(y.l))))
+		x.l <- x.l[subset]
+		y.l <- y.l[subset]
 		# order it and remove duplicates.
-		o <- order(A.l[subset])
-		o <- which(!duplicated(A.l))
+		o <- order(x.l[subset])
+		o <- which(!duplicated(x.l))
 		# draw loess line.
-		lines(approx(lowess(A.l[o], M.l[o])), col = "green", lwd = 4)
+		lines(approx(lowess(x.l[o], y.l[o])), col = "green", lwd = 4)
 	}
 	
 	# highligh genes.
@@ -289,7 +289,7 @@ plotma <- function(A, M, label = "type", cutoff = c(-1, 1),
 	high.col <- "blue"
 	high.bg <- "cyan"
 	if(!missing(high.list))
-		points(A[high.list], M[high.list], col=high.col, pch=high.pch, bg=high.bg)
+		points(x[high.list], y[high.list], col=high.col, pch=high.pch, bg=high.bg)
 
 	# title.
 	if(!missing(title)) title(title)
