@@ -82,27 +82,27 @@ function(object) {
 setMethod("[", "Codelink",
 function(x, i, j, ..., drop=FALSE) {
 	if(!missing(i)) {
-		x$Smean <- x$Smean[i,]
-		x$Bmedian <- x$Bmedian[i,]
-		x$Bstdev <- x$Bstdev[i,]
-		x$snr <- x$snr[i,]
-		x$Ri <- x$Ri[i,]
-		x$Ni <- x$Ni[i,]
-		x$cv <- x$cv[i,]
-		x$flag <- x$flag[i,]
+		x$Smean <- x$Smean[i,, drop = FALSE]
+		x$Bmedian <- x$Bmedian[i,, drop = FALSE]
+		x$Bstdev <- x$Bstdev[i,, drop = FALSE]
+		x$snr <- x$snr[i,,drop = FALSE]
+		x$Ri <- x$Ri[i,,drop = FALSE]
+		x$Ni <- x$Ni[i,,drop = FALSE]
+		x$cv <- x$cv[i,,drop = FALSE]
+		x$flag <- x$flag[i,,drop = FALSE]
 		x$name <- x$name[i]
 		x$type <- x$type[i]
-		x$logical <- x$logical[i, ]
+		x$logical <- x$logical[i,,drop = FALSE]
 	}
 	if(!missing(j)) {
-		x$Smean <- x$Smean[,j]
-		x$Bmedian <- x$Bmedian[,j]
-		x$Bstdev <- x$Bstdev[,j]
-		x$snr <- x$snr[,j]
-		x$Ri <- x$Ri[,j]
-		x$Ni <- x$Ni[,j]
-		x$cv <- x$cv[,j]
-		x$flag <- x$flag[,j]
+		x$Smean <- x$Smean[,j, drop = FALSE]
+		x$Bmedian <- x$Bmedian[,j, drop = FALSE]
+		x$Bstdev <- x$Bstdev[,j, drop = FALSE]
+		x$snr <- x$snr[,j, drop = FALSE]
+		x$Ri <- x$Ri[,j, drop = FALSE]
+		x$Ni <- x$Ni[,j, drop = FALSE]
+		x$cv <- x$cv[,j, drop = FALSE]
+		x$flag <- x$flag[,j, drop = FALSE]
 		x$file <- x$file[j]
 		x$sample <- x$sample[j]
         }
@@ -127,6 +127,6 @@ as.matrix.Codelink <- function(x, ...) {
 
 ##
 # onLoad stuff for S4 classes in NAMESPACE.
-.onLoad <- function(lib, pkg) {
-	require(methods, quietly = TRUE) || stop("Package methods unavailable!")
-}
+#.onLoad <- function(lib, pkg) {
+#	require(methods, quietly = TRUE) || stop("Package methods unavailable!")
+#}

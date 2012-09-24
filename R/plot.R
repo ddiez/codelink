@@ -450,65 +450,139 @@ plotxy <- function(x, y, label = "type", cutoff = c(-1, 1),
 
 ## plotDensities()
 # Densities plot of gene intensities.
-plotDensities <- function(object, subset=1:dim(object)[2], title=NULL, legend.cex=1, what=NULL) {
-        if(!is(object,"Codelink")) stop("Codelink object needed.")
-	if(is.null(what)) {
-		if(!is.null(object$Smean)) {
-			val <- object$Smean
-			what <- "Smean"
-		}
-		if(!is.null(object$Ri)) {
-			val <- object$Ri
-			what <- "Ri"
-		}
-		if(!is.null(object$Ni)) {
-			val <- object$Ni
-			what <- "Ni"
-		}
-	} else {
-		what <- match.arg(what, c("bg","snr","smean","ri","ni"))
-		switch(what,
-			snr={
-				val <- object$snr
-				what <- "SNR"
-			},
-			bg={
-				val <- object$Bmedian
-				what <- "Bmedian"
-			},
-			smean={
-				val <- object$Smean
-				what <- "Smean"
-			},
-			ri={
-				val <- object$Ri
-				what <- "Ri"
-			},
-			ni={
-				val <- object$Ni
-				what <- "Ni"
-			}
-		)
+# plotDensities <- function(object, subset=1:dim(object)[2], title=NULL, legend.cex=1, what=NULL) {
+        # if(!is(object,"Codelink")) stop("Codelink object needed.")
+	# if(is.null(what)) {
+		# if(!is.null(object$Smean)) {
+			# val <- object$Smean
+			# what <- "Smean"
+		# }
+		# if(!is.null(object$Ri)) {
+			# val <- object$Ri
+			# what <- "Ri"
+		# }
+		# if(!is.null(object$Ni)) {
+			# val <- object$Ni
+			# what <- "Ni"
+		# }
+	# } else {
+		# what <- match.arg(what, c("bg","snr","smean","ri","ni"))
+		# switch(what,
+			# snr={
+				# val <- object$snr
+				# what <- "SNR"
+			# },
+			# bg={
+				# val <- object$Bmedian
+				# what <- "Bmedian"
+			# },
+			# smean={
+				# val <- object$Smean
+				# what <- "Smean"
+			# },
+			# ri={
+				# val <- object$Ri
+				# what <- "Ri"
+			# },
+			# ni={
+				# val <- object$Ni
+				# what <- "Ni"
+			# }
+		# )
+	# }
+	# if(what!="Ni") val <- log2(val)
+	# if(what=="Ni" && !object$method$log) val <- log2(val)
+	# colors <- rainbow(length(subset))
+	# y.max <- c()
+        # x.max <- c()
+        # for(n in subset) {
+                # y.max[n] <- max(density(val[,n], na.rm=TRUE)$y)
+                # x.max[n] <- max(density(val[,n], na.rm=TRUE)$x)
+        # }
+        # y.pos <- order(y.max, decreasing=TRUE, na.last=NA)
+        # for(n in y.pos) {
+                # k <- which(y.pos==n)
+                # if(n==y.pos[1]) plot(density(val[,n], na.rm=TRUE), col=colors[k], main="")
+                # else lines(density(val[,n], na.rm=TRUE), col=colors[k])
+        # }
+	# if(is.null(title)) title(paste("Density Plot of",what))
+	# else title(title)
+	# legend(x="topright", legend=object$sample[subset], cex=legend.cex, fill=colors, inset=0.05)
+# }
+
+plotDensities = function(object, what = NULL, title = NULL, col = NULL, legend.title = NULL, legend.cex=1, ...) 
+{
+if(!is(object,"Codelink")) stop("Codelink object needed.")
+
+	# choose what to plot.
+    if(is.null(what)) { # if what is null plot the most processed data available.
+        if(!is.null(object$Smean)) {
+            val <- object$Smean
+            what <- "Smean"
+        }
+        if(!is.null(object$Ri)) {
+            val <- object$Ri
+            what <- "Ri"
+        }
+        if(!is.null(object$Ni)) {
+            val <- object$Ni
+            what <- "Ni"
+        }
+    } else { # or let the user choose)
+        what <- match.arg(what, c("bg","snr","smean","ri","ni"))
+        switch(what,
+            snr={
+                val <- object$snr
+                what <- "SNR"
+            },
+            bg={
+                val <- object$Bmedian
+                what <- "Bmedian"
+            },
+            smean={
+                val <- object$Smean
+                what <- "Smean"
+            },
+            ri={
+                val <- object$Ri
+                what <- "Ri"
+            },
+            ni={
+                val <- object$Ni
+                what <- "Ni"
+            }
+        )
+    }
+    if(what!="Ni") val <- log2(val)
+    if(what=="Ni" && !object$method$log) val <- log2(val)
+
+    if(is.null(col))
+        col <- rainbow(ncol(val))
+
+	# compute densities (and limits).
+	xlim = c()
+    ylim = c()
+    d = list()
+    for(n in 1:ncol(val)) {
+    	d[[n]] = density(val[,n], na.rm=TRUE)
+    	xlim = c(xlim, d[[n]]$x)
+    	ylim = c(ylim, d[[n]]$y)
+   	}
+   	xlim = range(xlim, na.rm = TRUE)
+   	ylim = range(ylim, na.rm = TRUE)
+   	
+   	# plot densities.
+    for(n in 1:ncol(val)) {
+        if (n==1)
+        	plot(d[[n]], col=col[n], main="", xlim = xlim, ylim = ylim, ...)
+        else
+        	lines(d[[n]], col=col[n], ...)
 	}
-	if(what!="Ni") val <- log2(val)
-	if(what=="Ni" && !object$method$log) val <- log2(val)
-	colors <- rainbow(length(subset))
-	y.max <- c()
-        x.max <- c()
-        for(n in subset) {
-                y.max[n] <- max(density(val[,n], na.rm=TRUE)$y)
-                x.max[n] <- max(density(val[,n], na.rm=TRUE)$x)
-        }
-        y.pos <- order(y.max, decreasing=TRUE, na.last=NA)
-        for(n in y.pos) {
-                k <- which(y.pos==n)
-                if(n==y.pos[1]) plot(density(val[,n], na.rm=TRUE), col=colors[k], main="")
-                else lines(density(val[,n], na.rm=TRUE), col=colors[k])
-        }
-	if(is.null(title)) title(paste("Density Plot of",what))
-	else title(title)
-	legend(x="topright", legend=object$sample[subset], cex=legend.cex, fill=colors, inset=0.05)
+    if(is.null(title)) title(paste("Density Plot of",what))
+    else title(title)
+    legend(x="topright", legend=object$sample, cex=legend.cex, fill=col, title = legend.title)	
 }
+
 
 
 ## plotCorrelation()

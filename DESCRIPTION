@@ -1,13 +1,12 @@
 Package: codelink
-Version: 1.25.1
-Date: 2012/01/10
+Version: 1.25.2
+Date: 2012/09/24
 Title: Manipulation of Codelink Bioarrays data.
 Author: Diego Diez <diego10ruiz@gmail.com>
 Maintainer: Diego Diez <diego10ruiz@gmail.com>
-Depends: R (>= 2.10), BiocGenerics (>= 0.3.2), methods, Biobase (>= 2.17.8), limma
-Imports: BiocGenerics, annotate
-Suggests: genefilter
-Enhances: multicore
+Depends: R (>= 2.10), BiocGenerics (>= 0.3.2), methods, Biobase (>= 2.17.8), limma, annotate
+Imports: BiocGenerics
+Suggests: genefilter, parallel
 LazyLoad: yes
 Description: This packages allow reading into R of Codelink bioarray data 
  exported as text from the Codelink software. Also includes some functions 
@@ -16,5 +15,5 @@ Description: This packages allow reading into R of Codelink bioarray data
 License: GPL-2
 Collate: Codelink-class.R file.R data.R norm.R plot.R CodelinkSet-class.R CodelinkSet-methods.R CodelinkSet-tools.R CodelinkSetUnique-class.R CodelinkSetUnique-methods.R filter.R cluster.R
 URL: http://www.kuicr.kyoto-u.ac.jp/~diez
-
 biocViews: Microarray, OneChannel, DataImport, Preprocessing
+ByteCompile: yes

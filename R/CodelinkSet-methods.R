@@ -528,11 +528,11 @@ function(object, parallel = FALSE)
 	
 	mylapply <- lapply
 	if (parallel) {
-		if (is.loaded("mclapply", PACKAGE="multicore")) {
+		if (is.loaded("mclapply", PACKAGE="parallel")) {
 			mylapply <- get('mclapply', envir=getNamespace('multicore'))
 		} else {
-			message("Parallel functionality is provided by package 'multicore', please load the package to use it.")
-			message("Package 'multicore' is not currently available in Windows machines.")
+			message("Parallel functionality is provided by package 'parallel', please load the package to use it")
+			message("Package 'parallel' is available by default in R>= 2.14.0")
 		}
 	}
 	
