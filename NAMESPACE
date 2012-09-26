@@ -2,7 +2,7 @@
 import(methods)
 importFrom(BiocGenerics, annotation, "annotation<-")
 importFrom(limma, normalize.quantiles=normalizeQuantiles)
-#importFrom(annotate, lookUp, htmlpage)
+importFrom(annotate, lookUp, htmlpage)
 importFrom(Biobase, exprs)
 
 importClassesFrom(Biobase, eSet, ExpressionSet, VersionedBiobase, Versioned)
