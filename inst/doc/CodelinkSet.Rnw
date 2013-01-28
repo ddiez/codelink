@@ -119,7 +119,7 @@ fit <- lmFit(cset, design)
 
 You may want to export your normalized data to use it with other analysis tools. The function \Rfunction{writeCodelink} allows to do that. By default the index, probe names, accession number, entrez gene identifiers, intensity and SNR values are output. If flag = TRUE, then the flags are also output.
 
-<<fit, eval = FALSE>>=
+<<write, eval = FALSE>>=
 
 writeCodelink(codelink.exprset, file = "intensities.txt")
 
@@ -129,7 +129,7 @@ writeCodelink(codelink.exprset, file = "intensities.txt")
 
 \Robject{CodelinkSet} objects use the feature id of each probe to obtain unique identifiers. This feature id is related to the physical location of the probe in the array. This means that when we use \Rfunction{featureNames} in a \Robject{CodelinkSet} object we get these feature ids. To get the probe ids we need to use \Rfunction{probeNames} instead. This can be inconvenient when we want to use our data with other packages that use \Rfunction{featureNames} to obtain the probe names and feed this ids to the annotation package. Because the annotation packages use probe names, the probes wouldn't be found. To solve this problem a \Robject{CodelinkSet} with unique probe names as \Rfunction{featureNames} is needed. To construct such an object we can use the function \Rfunction{averageProbes}, that takes a \Robject{CodelinkSet} object and computes the \Rfunction{mean} of the intensities for replicated probes. The results are stored in a \Robject{CodelinkSetUnique} object.
 
-<<fit, eval = FALSE>>=
+<<average, eval = FALSE>>=
 
 foo.avg <- averageProbes(codelink.exprset)
 

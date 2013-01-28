@@ -9,7 +9,7 @@
 
 \newcommand{\Robject}[1]{{\texttt{#1}}}
 \newcommand{\Rfunction}[1]{{\texttt{#1}}}
-\newcommand{\Rpackage}[1]{{\textit{#1}}}
+\newcommand{\Rpackage}[1]{{\texttt{#1}}}
 
 \begin{document}
 
@@ -99,17 +99,13 @@ you put Raw\_intensity or Normalized\_intensity columns then you can also read
 it directly and avoid background correction and/or normalization but this is 
 not recommended. To read some Codelink files you do:
 
-\begin{Sinput}
-
+<<input, eval=FALSE>>=
 # NOT RUN #
-
-> library(codelink)
-> foo <- readCodelink()
-> summaryFlag(foo) # will show a summary of flag values.
-
+library(codelink)
+foo <- readCodelink()
+summaryFlag(foo) # will show a summary of flag values.
 # NOT RUN #
-
-\end{Sinput}
+@
 
 This suppose that your files have the extension ``TXT'' (uppercase)
 and that they are in your working directory. If this is not the case you can 
@@ -117,14 +113,10 @@ specify the files to be read with the 'file' argument. The function
 \Rfunction{readCodelink} returns and object of \Robject{Codelink} similar to 
 that:
 
-<<data>>=
-
-library(codelink)
-
+<<data, comment=NA>>=
 data(codelink.example)
 
 codelink.example
-
 @
 
 \begin{table}[ht]
@@ -169,13 +161,10 @@ argument is a list that can contain a valid flag identifier and a value for
 that flag.  For example, if you want to set all M flagged spots to 0.01 and let 
 other spot untouched you do:
 
-\begin{Sinput}
-# NOT RUN #
 
-> foo <- readCodelink(flag = list(M = 0.01) )
-
-# NOT RUN #
-\end{Sinput}
+<<input-flag, eval=FALSE>>=
+foo <- readCodelink(flag = list(M = 0.01) )
+@
 
 It is possible to find probes wit more that one flag assigned, i.e. CL for a 
 probe labeled as C and L, CLI for a probe labeled as C, L and I, and so on. A a 
@@ -190,11 +179,10 @@ several background correction methos interfaced. This is done by the function
 \Rfunction{bkgdCorrect}. To see the different options look at ?bkgdCorrect. For 
 instance, if you want to apply \emph{half} method you do:
 
-\begin{Sinput}
 
-> foo <- bkgdCorrect(foo, method = "half")
- 
-\end{Sinput}
+<<bkgcorrect, eval=FALSE>>=
+foo <- bkgdCorrect(foo, method = "half")
+@
 
 The default method used is \emph{half} and is based in the same method applied 
 in the \Rpackage{limma} \cite{limma} package to two channel microarrays. In 
@@ -217,11 +205,9 @@ that allow using weights and missing values. Finally, the \emph{median}
 normalization allows to normalize using a method analog to the default method 
 in the Codelink software. To normalize you usually do:
 
-\begin{Sinput}
-
-> foo <- normalize(foo, method = "quantiles")
-
-\end{Sinput}
+<<normalize, eval=FALSE>>=
+foo <- normalize(foo, method = "quantiles")
+@
 
 By default, \Rfunction{normalize} return log2 intensity values.  This could be
 controlled setting the parameter log.it to FALSE.
@@ -244,14 +230,6 @@ againts a pseudoarray constructed with the mean of the probe intensities along
 all available arrays. M and A values are computed following equations 
 \ref{eq:M} and \ref{eq:A}.
 
-\begin{center}
-
-<<plotMA, fig=TRUE>>=
-
-plotMA(codelink.example)
-
-@
-\end{center}
 
 \begin{equation}
 M=Array2-Array1
@@ -263,29 +241,27 @@ A=\frac{Array2+Array1}{2}
 \label{eq:A}
 \end{equation}
 
+<<plotMA>>=
+plotMA(codelink.example)
+@
+
 The function \Rfunction{plotDensities} plot the density of intensity values of
 all arrays. It can plot only a subset of arrays if the \emph{subset} argument 
 is supplied.
 
-\begin{center}
-<<plotDensity, fig=TRUE>>=
-
+<<plotDensity>>=
 plotDensities(codelink.example)
-
 @
-\end{center}
 
 When Logical\_row and Logical\_col columns are exported into they are stored 
 into the \emph{logical} slot. This information stores the physical location of 
 each probe in the array, and can be used to plot pseudo images of the array 
 intensities. To plot a pseudo image you should use:
 
-\begin{Sinput}
-
-> imageCodelink(foo)
-> imageCodelink(foo, what = "snr")
-
-\end{Sinput}
+<<image, eval=FALSE>>=
+imageCodelink(foo)
+imageCodelink(foo, what = "snr")
+@
 
 It is possible to plot the background intensities (default), the spot mean, 
 raw and normalized intensities and the SNR values. This images are useful to 
@@ -306,13 +282,11 @@ The \Rfunction{createWeights} function creates a matrix of weights based on
 probe type labels to be used, for example, when fitting a linear model with 
 \Rpackage{limma} \cite{limma}.
 
-<<createWeights>>=
-
+<<createWeights, comment=NA>>=
 w <- createWeights(codelink.example, type = list(FIDUCIAL = 0.01, NEGATIVE = 
 0.1))
 
 w[1:10,]
-
 @
 
 \subsection{Merging arrays}
@@ -325,14 +299,10 @@ using the \emph{names} argument. The function also returns the coefficient of
 variation in the \emph{cv} slot. The distribution of coefficients of variations 
 can be checked with the function \Rfunction{plotCV}.
 
-\begin{Sinput}
-
-> foo <- mergeArray(foo, class = c(1, 1, 2, 2),
-+ names = c("A", "B"))
-
-> plotCV(foo)
-
-\end{Sinput}
+<<merge, eval=FALSE>>=
+foo <- mergeArray(foo, class = c(1, 1, 2, 2), names = c("A", "B"))
+plotCV(foo)
+@
 
 \section{Problems reading data}
 Some updated version of the Codelink software changed the order in which probes 
@@ -360,11 +330,9 @@ solution again, is to try to export again the data with the updated version of
 the software.
 
 
-\begin{Sinput}
-
-> foo <- readCodelink(fix = TRUE)
-
-\end{Sinput}
+<<read-fix, eval=FALSE>>=
+foo <- readCodelink(fix = TRUE)
+@
 
 \section{Future improvements}
 As the new classes in the Biobase package (\Robject{eSet} and 
@@ -375,13 +343,11 @@ package. This will allow a better integration with other tools available
 through the Bioconductor project.
 
 Right now, there is some experimental implementation of the new codebase. You 
-need to use the wrapper function \Rfunction{readCodelink2}.
+need to use the wrapper function \Rfunction{readCodelinkSet}.
 
-\begin{Sinput}
-
-> foo <- readCodelink2()
-
-\end{Sinput}
+<<read-codelinkSet, eval=FALSE>>=
+foo <- readCodelinkSet()
+@
 
 
 \bibliographystyle{plain}
