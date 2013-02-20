@@ -72,7 +72,7 @@ normalize.loess <- function (mat,
 	if(is.null(weights))
     	w <- c(0, rep(1, length(subset)), 0)
 	else
-		w <- c(0, weights, 0)
+		w <- weights
     
 	while (iter < maxit) {
         iter <- iter + 1
@@ -84,7 +84,6 @@ normalize.loess <- function (mat,
 				
 				# select genes that are not set to NA
 				sel <- which(!is.na(as.character(y)))
-        message(length(sel))
 				y <- y[sel]
 				x <- x[sel]
 				ww <- w[sel]
@@ -92,16 +91,12 @@ normalize.loess <- function (mat,
 				index <- c(order(x)[1], subset, order(-x)[1])
                 xx <- x[index]
                 yy <- y[index]
-        message(length(index))
 				# reorder weights.
 				ww <- ww[index]
 
                 aux <- loess(yy ~ xx, span = span, degree = 1, 
                   weights = ww, family = family.loess, control = loess.control(surface = "direct"))
-                message("aux$n=", aux$n)
-                
                 aux <- predict(aux, data.frame(xx = x))/J
-                
 				# apply normalization to genes not NA.
                 means[sel, j] <- means[sel, j] + aux
                 means[sel, k] <- means[sel, k] - aux
