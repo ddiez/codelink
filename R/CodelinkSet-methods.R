@@ -49,11 +49,17 @@ function(x, what)
 })
 
 # codNormalize-method.
-setGeneric("codNormalize", function(x, method = "quantile", log.it = TRUE)
-	standardGeneric("codNormalize"))
+setGeneric("codNormalize", function(x, method = "quantile", log.it = TRUE, ...)	standardGeneric("codNormalize"))
 setMethod("codNormalize", "CodelinkSet",
-function(x, method = "quantile", log.it = TRUE)
+function(x, method="quantile", log.it=TRUE, weights=NULL, loess.method="fast")
 {
+	normalize(x,method=method,log.it=log.it,weights=weights,loess.method=loess.method)
+})
+
+setMethod("normalize", "CodelinkSet",
+function(object, method="quantile", log.it=TRUE, weights=NULL, loess.method="fast")
+{
+	x = object
 	method <- match.arg(method, c("median", "quantile", "loess"))
 
 	if(getInfo(x, "normalization") != "NONE") {
@@ -72,13 +78,20 @@ function(x, method = "quantile", log.it = TRUE)
 		if(log.it && getInfo(x, "log"))
 			warning("already log2 data, skipping...")
 
+	# check weights.
+	if(!is.null(weights))
+		if(is.matrix(weights))
+			weights=apply(weights,1,min)
+	
 	# do normalization stuff.
 	switch(method,
-		median = newInt <- normalize.median(newInt),
-		#quantile = newInt <- normalizeQuantiles(newInt),
-		quantile = newInt <- normalize.quantiles(newInt),
-		loess = newInt <- normalize.loess(newInt, log.it = FALSE,
-			verbose = FALSE)
+		#median = newInt <- normalize.median(newInt,weights=weights),
+		median = newInt <- normalizeMedianValues(newInt),
+		quantile = newInt <- normalizeQuantiles(newInt),
+		#quantile = newInt <- normalize.quantiles(newInt),
+		#loess = newInt <- normalize.loess(newInt, log.it = FALSE,
+		#	verbose = FALSE)
+		loess = newInt <- normalizeCyclicLoess(newInt, weights=weights, method = loess.method)	 
 	)
 
 	# reassign data.
@@ -143,6 +156,15 @@ function(object)
 {
 	assayDataElement(object, "flag")
 })
+
+# getFlag method.
+setGeneric("getWeight", function(object) standardGeneric("getWeight"))
+setMethod("getWeight", "CodelinkSet",
+function(object)
+{
+	assayDataElement(object, "weight")
+})
+
 
 # probeNames-method.
 setGeneric("probeNames", function(object) standardGeneric("probeNames"))

@@ -56,7 +56,7 @@ c2e <- function (object, annotation = NULL, phenodata = NULL, featuredata = NULL
     	chip <- annotation(object)
     
 	tmp <- new("CodelinkSet", exprs = int, background = bkg, 
-        flag = object$flag, snr = object$snr, annotation = chip)
+        flag = object$flag, weight=object$weight, snr = object$snr, annotation = chip)
     phenoData(tmp) <- phenodata
     featureData(tmp) <- featuredata
 	experimentData(tmp)@preprocessing <- object$method

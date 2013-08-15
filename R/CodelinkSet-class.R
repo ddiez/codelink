@@ -2,5 +2,5 @@
 setClass("CodelinkSet", contains="ExpressionSet")
 
 setValidity("CodelinkSet", function(object) {
-	assayDataValidMembers(assayData(object), c("background", "flag", "snr"))
+	assayDataValidMembers(assayData(object), c("background", "flag", "weight", "snr"))
 })

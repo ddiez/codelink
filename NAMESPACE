@@ -1,7 +1,7 @@
 #useDynLib(codelink)
 import(methods)
-importFrom(BiocGenerics, annotation, "annotation<-")
-importFrom(limma, normalize.quantiles=normalizeQuantiles)
+importFrom(BiocGenerics, annotation, "annotation<-", "normalize")
+importFrom(limma, normalizeCyclicLoess)
 importFrom(annotate, lookUp, htmlpage)
 importFrom(Biobase, exprs)
 
@@ -9,7 +9,7 @@ importClassesFrom(Biobase, eSet, ExpressionSet, VersionedBiobase, Versioned)
 
 exportClasses(CodelinkSet, CodelinkSetUnique)
 exportMethods(codCorrect, codNormalize, codPreprocess, probeNames, probeTypes,
-	getSNR,	getInt, getBkg, getInfo, meanSNR, codPlot, exprs, chipDevice,
+	getSNR,	getInt, getBkg, getInfo, getWeight, meanSNR, codPlot, exprs, chipDevice,
 	filterSNR, codUniverse, writeCluster, writeCodelink, averageProbes)
 
 S3method(as.matrix, Codelink)

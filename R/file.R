@@ -77,11 +77,12 @@ checkColumns <- function(x, y)
 }
 # readCodelink()
 # read of codelink data.
-readCodelink <- function(files = list.files(pattern = "TXT"),
-	sample.name = NULL, flag, dec = NULL, type = "Spot", preserve = FALSE,
-	verbose = 2, file.type = "Codelink", check = TRUE, fix = FALSE)
+readCodelink <- function(files=list.files(pattern = "TXT"), sample.name=NULL, flag, flag.weights, dec=NULL, type="Spot", preserve=FALSE,	verbose=2, file.type="Codelink", check=TRUE, fix=FALSE, old=TRUE)
 {
 	if(length(files) == 0) stop("no Codelink files found.")
+	if(old)
+		warning("readCodelink() called with 'old=TRUE' (currently the default). This follows the previous behavior, i.e. assign NAs to intensities based on flags). The default behavior will be change to old=FALSE in the next release.")
+	
 	nslides <- length(files)
 
 	type <- match.arg(type,c("Spot", "Raw", "Norm"))
@@ -104,6 +105,24 @@ readCodelink <- function(files = list.files(pattern = "TXT"),
 		}
 	}
 	
+	flag.ww = c(
+		"G"=1,
+		"L"=1,
+		"S"=1,
+		"C"=0,
+		"I"=0,
+		"M"=0,
+		"X"=1
+		)
+	if(!missing(flag.weights)) {
+		for(k in names(flag.weights)) {
+			if(any(names(flag.ww) == k))
+				flag.ww[[k]]=flag.weights[[k]]
+			else
+				warning("unsupported weight flag", k, " (ignored...)")
+		}
+	}
+	
 	# read Header.
 	#head <- readHeader(files[1])
 
@@ -111,7 +130,6 @@ readCodelink <- function(files = list.files(pattern = "TXT"),
 	for(n in 1:nslides) {
 		if(verbose > 0 && n > 1) cat(paste("** reading file", n, "of",
 			nslides, ":", files[n], "\n"))
-		
 		if(is.null(dec)) head <- readHeader(files[n], dec = TRUE)
 		else head <- readHeader(files[n])
 
@@ -229,7 +247,7 @@ readCodelink <- function(files = list.files(pattern = "TXT"),
 			#cat(paste("      X:",length(flag.x),"\n"))
 		#}
 
-		# assignn intensity values.
+		# assign intensity values.
 		switch(type,
 			Spot = {
 				codelink$Smean[,n] <- data[, "Spot_mean"]
@@ -345,12 +363,18 @@ readCodelink <- function(files = list.files(pattern = "TXT"),
 		}
 	}
 	# fix flags.
-	cat("** applying flags ...")
-	for(k in names(flag.cc)) {
-		sel <- grep(k, codelink$flag)
-		codelink$Smean[sel] <- flag.cc[[k]]
-		codelink$Bmedian[sel] <- flag.cc[[k]]
+	if(old) {
+		cat("** applying flags ...")
+		for(k in names(flag.cc)) {
+			sel <- grep(k, codelink$flag)
+			codelink$Smean[sel] <- flag.cc[[k]]
+			codelink$Bmedian[sel] <- flag.cc[[k]]
+		}
+		cat("OK\n")
 	}
+	
+	cat("** computing weights ...")
+	codelink$weight=assignWeights(codelink$flag,flag.ww)
 	cat("OK\n")
 	
 	# compute SNR.
@@ -401,6 +425,16 @@ writeCodelink <- function(object, file, dec = ".", sep = "\t", flag = FALSE, chi
 	write.table(tmp, file = file, quote = FALSE, sep = sep, dec = dec, col.names = FALSE)
 }
 
+assignWeights=function(x,flag.w) {
+	w = matrix(1, nrow = nrow(x), ncol = ncol(x))
+	for(k in names(flag.w)) {
+		sel=grep(k,x)
+		# keep the lowest weight.
+		w[sel][w[sel]>flag.w[k]]=flag.w[k]
+	}
+	w
+}
+
 # reportCodelink()
 # report output to HTML.
 reportCodelink <- function(object, chip, filename=NULL, title="Main title", probe.type=FALSE, other=NULL, other.ord=NULL) {
@@ -448,81 +482,81 @@ reportCodelink <- function(object, chip, filename=NULL, title="Main title", prob
 }
 
 # this is not yet used because of portability issues in the C code.
-readCodelinkFiles <- function(files = list.files(pattern = "TXT"),
-	what = "Spot_mean", flag)
-{
-	what <- match.arg(what, c("Spot_mean", "Raw_intensity", "Norm_intensity"))
-	tmp <- .Call("R_read_codelink", files, what, PACKAGE="codelink")
-
-	flags <- c("G", "L", "S", "C", "I", "M", "X")
-	flag.cc <- list(M=NA, C=NA, I=NA)
-	if(!missing(flag)) {
-		for(k in names(flag)) {
-
-			if(any(k %in% flags))
-				flag.cc[[k]] <- flag[[k]]
-			else
-				warning("unknown flag ", k, " skipping.\n")
-		}
-	}
-
-	nfiles <- ncol(tmp$intensity)
-	nprobes <- nrow(tmp$intensity)
-	dims <- list(1:nprobes, 1:nfiles)
-
-	cod <- new("Codelink")
-	cod$product <- tmp$product
-	cod$file <- tmp$file
-	cod$sample <- tmp$sample
-	switch(tmp$what,
-		Spot_mean = {
-			cod$method$background = "NONE"
-			cod$method$normalization = "NONE"
-			cod$method$merge = "NONE"
-			cod$method$log = FALSE
-		},
-		Raw_intensity = {
-			cod$method$background = "Codelink subtract"
-			cod$method$normalization = "NONE"
-			cod$method$merge = "NONE"
-			cod$method$log = FALSE
-		},
-		Norm_intensity = {
-			cod$method$background = "Codelink subtract"
-			cod$method$normalization = "Codelink median"
-			cod$method$merge = "NONE"
-			cod$method$log = FALSE
-		}
-	)
-	cod$name <- tmp$name
-	cod$type <- tmp$type
-	cod$id <- tmp$id
-	cod$logical <- cbind(row = tmp$row, col = tmp$col)
-	cod$flag <- tmp$flag
-	cod$Smean <- tmp$intensity
-	cod$Bmedian <- tmp$background
-	cod$Bstdev <- tmp$bstdev
-	
-	# fix flags.
-	cat("** applying flags ...")
-	for(k in names(flag.cc)) {
-		sel <- grep(k, cod$flag)
-		cod$Smean[sel] <- flag.cc[[k]]
-		cod$Bmedian[sel] <- flag.cc[[k]]
-	}
-	cat("OK\n")
-	
-	# compute snr.
-	cat("** computing SNR ...")
-	cod$snr <- SNR(tmp$intensity, tmp$background, tmp$bstdev)
-	cat("OK\n")
-
-	# fix dimnames.
-	dimnames(cod$flag) <- dims
-	dimnames(cod$snr) <- dims
-	dimnames(cod$Smean) <- dims
-	dimnames(cod$Bmedian) <- dims
-	dimnames(cod$Bstdev) <- dims
-
-	cod
-}
+# readCodelinkFiles <- function(files = list.files(pattern = "TXT"),
+# 	what = "Spot_mean", flag)
+# {
+# 	what <- match.arg(what, c("Spot_mean", "Raw_intensity", "Norm_intensity"))
+# 	tmp <- .Call("R_read_codelink", files, what, PACKAGE="codelink")
+# 
+# 	flags <- c("G", "L", "S", "C", "I", "M", "X")
+# 	flag.cc <- list(M=NA, C=NA, I=NA)
+# 	if(!missing(flag)) {
+# 		for(k in names(flag)) {
+# 
+# 			if(any(k %in% flags))
+# 				flag.cc[[k]] <- flag[[k]]
+# 			else
+# 				warning("unknown flag ", k, " skipping.\n")
+# 		}
+# 	}
+# 
+# 	nfiles <- ncol(tmp$intensity)
+# 	nprobes <- nrow(tmp$intensity)
+# 	dims <- list(1:nprobes, 1:nfiles)
+# 
+# 	cod <- new("Codelink")
+# 	cod$product <- tmp$product
+# 	cod$file <- tmp$file
+# 	cod$sample <- tmp$sample
+# 	switch(tmp$what,
+# 		Spot_mean = {
+# 			cod$method$background = "NONE"
+# 			cod$method$normalization = "NONE"
+# 			cod$method$merge = "NONE"
+# 			cod$method$log = FALSE
+# 		},
+# 		Raw_intensity = {
+# 			cod$method$background = "Codelink subtract"
+# 			cod$method$normalization = "NONE"
+# 			cod$method$merge = "NONE"
+# 			cod$method$log = FALSE
+# 		},
+# 		Norm_intensity = {
+# 			cod$method$background = "Codelink subtract"
+# 			cod$method$normalization = "Codelink median"
+# 			cod$method$merge = "NONE"
+# 			cod$method$log = FALSE
+# 		}
+# 	)
+# 	cod$name <- tmp$name
+# 	cod$type <- tmp$type
+# 	cod$id <- tmp$id
+# 	cod$logical <- cbind(row = tmp$row, col = tmp$col)
+# 	cod$flag <- tmp$flag
+# 	cod$Smean <- tmp$intensity
+# 	cod$Bmedian <- tmp$background
+# 	cod$Bstdev <- tmp$bstdev
+# 	
+# 	# fix flags.
+# 	cat("** applying flags ...")
+# 	for(k in names(flag.cc)) {
+# 		sel <- grep(k, cod$flag)
+# 		cod$Smean[sel] <- flag.cc[[k]]
+# 		cod$Bmedian[sel] <- flag.cc[[k]]
+# 	}
+# 	cat("OK\n")
+# 	
+# 	# compute snr.
+# 	cat("** computing SNR ...")
+# 	cod$snr <- SNR(tmp$intensity, tmp$background, tmp$bstdev)
+# 	cat("OK\n")
+# 
+# 	# fix dimnames.
+# 	dimnames(cod$flag) <- dims
+# 	dimnames(cod$snr) <- dims
+# 	dimnames(cod$Smean) <- dims
+# 	dimnames(cod$Bmedian) <- dims
+# 	dimnames(cod$Bstdev) <- dims
+# 
+# 	cod
+#}

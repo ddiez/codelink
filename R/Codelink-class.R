@@ -124,9 +124,3 @@ as.matrix.Codelink <- function(x, ...) {
 	if(!is.null(x$Ri)) return(x$Ri)
 	if(!is.null(x$Ni)) return(x$Ni)
 }
-
-##
-# onLoad stuff for S4 classes in NAMESPACE.
-#.onLoad <- function(lib, pkg) {
-#	require(methods, quietly = TRUE) || stop("Package methods unavailable!")
-#}
