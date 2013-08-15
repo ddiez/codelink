@@ -1,6 +1,17 @@
 Package: codelink
 ====================
 
+Version 1.29.2
+
+o Added generic method normalize() for Codelink and CodelinkSet classes.
+
+o Added support for flag-based weights. Intensities are assigned NA based
+on flags if old=TRUE in readCodelink() (default). This will be changed
+in the next release.
+
+o normalizeCyclicLoess() and normalizeQuantiles() from limma package are
+used now for normalization.
+
 Version 1.23.2
 
 o Improvements on how codPlotScatter() manages labels. Renamed generic scatter plot function plotma() to plotxy(), which better reflects the current status.
@@ -43,7 +54,7 @@ o Version number bumped for BioC devel branch.
 
 Version: 1.13.6
 
-o Fixed bug in codCorrect() that would prevent the methods "half" and "subtract" for being available. Thanks to Frédéric Boyer for reporting this.
+o Fixed bug in codCorrect() that would prevent the methods "half" and "subtract" for being available. Thanks to Fr?d?ric Boyer for reporting this.
 
 Version: 1.13.5
 
