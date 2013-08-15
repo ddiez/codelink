@@ -13,7 +13,7 @@
 
 \begin{document}
 
-\title{Codelink}
+\title{Codelink Legacy: the old Codelink class}
 \author{Diego Diez}
 \maketitle
 
