@@ -18,7 +18,7 @@
 
 <<include=FALSE>>=
 library(codelink)
-opts_chunk$set(concordance=TRUE)
+opts_chunk$set(fig.align = 'center', concordance=TRUE)
 @
 
 
@@ -146,7 +146,7 @@ A=\frac{Array2+Array1}{2}
 \label{eq:A}
 \end{equation}
 
-<<fig.cap="MA plot.",fig.height=5,fig.width=5,fig.align='center'>>=
+<<fig.cap="MA plot.">>=
 codPlot(codset)
 @
 
@@ -154,7 +154,7 @@ The function \Rfunction{plotDensities} plot the density of intensity values of
 all arrays. It can plot only a subset of arrays if the \emph{subset} argument 
 is supplied.
 
-<<fig.cap="Density plot.",fig.height=5,fig.width=5,fig.align='center'>>=
+<<fig.cap="Density plot.">>=
 codPlot(codset, what="density")
 @
 
