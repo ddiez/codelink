@@ -1,0 +1,189 @@
+%\VignetteEngine{knitr}
+%\VignetteIndexEntry{codelink}
+%\VignetteKeywords{Preprocessing, Codelink}
+%\VignetteDepends{codelink}
+%\VignettePackage{codelink}
+
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{geometry}
+\geometry{verbose,tmargin=3cm,bmargin=3cm,lmargin=3cm,rmargin=3cm}
+
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\texttt{#1}}}
+
+\begin{document}
+
+<<include=FALSE>>=
+library(codelink)
+opts_chunk$set(concordance=TRUE)
+@
+
+
+\title{Introduction to the Codelink package}
+\author{Diego Diez}
+\maketitle
+
+\section{Introduction}
+
+This package implements methods to facilitate the preprocessing and analysis of Codelink microarrays. Codelink is a platform for the analysis of gene expression that uses 30 base long oligonucleotides. Codelink is currently owned by Applied Microarrays, Inc. (previously was GE Healthcare and Amersham). There is a proprietary software for reading scanned images, doing spot intensity quantification and some diagnostics. The software assigns quality flags (see Table~\ref{tab:Flag}) to each spot on the basis of a signal to noise ratio (SNR) computation (Eq: \ref{eq:SNR}) and other morphological characteristics as irregular shape of the spots, saturation of the signal or manufacturer spots removed. By default, the software performs background correction (subtract) followed by median normalization. The results can be exported in several formats as XML, Excel, plain text, etc.
+
+Currently two different approaches are maintained. The first uses a specially designed class \Robject{Codelink}. The second uses the new \Robject{CodelinkSet} class, which inherits from the \Robject{ExpressionSet} class in Biobase. Although the use of \Robject{CodelinkSet} is recommended, the \Robject{Codelink} infrastructure is maintained for backbard compatibility. In this document the \Robject{CodelinkSet} methods will be presented. Information about the old infrastructure can be found in the legacy vignette (Codelink\_Legacy.pdf)
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|c|l|}
+\hline \em Flag & \em Description \\
+\hline
+G & Good signal (SNR >= 1)\\
+L & Limit signal (SNR < 1)\\
+I & Irregular shape \\
+S & Saturated signal \\
+M & MSR spot \\
+C & Background contaminated\\
+X & User excluded spots\\
+\hline
+\end{tabular}
+\caption{Quality Flag description. SNR: Signal to Noise Ratio.}
+\label{tab:Flag}
+\end{center}
+\end{table}
+
+\begin{equation}
+SNR=\frac{Smean}{(Bmedian + 1.5 * Bstdev)}
+\label{eq:SNR}
+\end{equation}
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|r|l|}
+\hline \em Probe type & \em Description \\
+\hline
+DISCOVERY & Gene expression testing probes \\
+POSITIVE & Positive control probes \\
+NEGATIVE & Negative control probes \\
+FIDUCIAL & Grid alignment probes \\
+OTHER & Other controls and housekeeping gene probes \\
+\hline
+\end{tabular}
+\caption{Probe types for Codelink arrays.}
+\label{tab:Type}
+\end{center}
+\end{table}
+
+\section{Reading data}
+
+Currently only data exported as plain text from Codelink software is supported. Unfortunately the Codelink exported text format can have arbitrary columns and  header fields so depending of what has been exported reading it into a \Robject{Codelink} object may be more or less complicated. As a rule of thumb it is recommended to include in the exported files at least Spot\_mean and Bkgd\_median values so that background correction and normalization can be performed. In addition, Bkgd\_stdev will be needed to compute the SNR. If Raw\_intensity or Normalized\_intensity columns are present then it is possible to avoid background correction and/or normalization, and use the ones performed by the Codelink software. Feature\_id column will be use to assign unique identifiers to each spot, so that CodelinkSet object can be read appropriately. To read codelink data:
+
+<<eval=FALSE>>=
+# NOT RUN #
+library(codelink)
+# to read data as CodelinkSet object:
+f = list.files(pattern="TXT")
+codset = readCodelinkSet(filename=f)
+codset
+# NOT RUN #
+@
+
+This assumes that the files have the extension "TXT" (uppercase) and are in the working directory.
+
+<<>>=
+data(codelink.exprset)
+codelink.exprset
+@
+\section{Background correction}
+
+If you have Spot\_mean values Bkgd\_median values the you can apply one of the 
+several background correction methos interfaced. This is done by the function 
+\Rfunction{codCorrect}. To see the different options look at ?codCorrect. For 
+instance, if you want to apply \emph{half} method you do:
+
+
+<<>>=
+codset = codCorrect(codelink.exprset, method = "half")
+@
+
+The default background correction method used is \emph{half} and is based in the same method applied in the \Rpackage{limma} \cite{limma} package to two channel microarrays. In this method, the median background intensity (Bmedian) is subtracted from mean spot intensity (Smean) and any value smaller that 0.5 is shift to 0.5 to ensure no negative numbers are obtained that would prevent to transform the data into log scale. Other available methods are \emph{none} that let the spot intensities untouched, \emph{subtract} that is analog to the default method used in the Codelink software and \emph{normexp} and interface to the method available in the \Rpackage{limma} package.
+
+\section{Normalization}
+
+Normalization of the background corrected intensities is done by the wrapper 
+function \Rfunction{normalize} (or codNormalize()). The default method is \emph{quantile} normalization that in fact call \Rfunction{normalizeQuantiles()} from \Rpackage{limma} package (allowing for NAs). There is also the possibility to use normalizeCyclicLoess() from \Rpackage{limma} \cite{limma} package that allow using weights. Finally, the \emph{median} normalization allows to normalize using a method analog to the default method in the Codelink software. By default, \Rfunction{normalize} returns log2 intensity values.  This can be controlled setting the parameter log.it to FALSE.
+
+
+<<>>=
+codset = codNormalize(codset, method = "quantile")
+@
+
+\section{Plotting}
+
+There are some diagnostic plots available for the \Robject{Codelink} object.  
+These are functions for producing MA plots (\Rfunction{plotMA}), scatterplots 
+(\Rfunction{plotCorrelation}) and density plots (\Rfunction{plotDensities}).  
+All functions use the available intensity value (i.e.  Smean, Ri or Ni) to make 
+the plot.
+
+The functions \Rfunction{plotMA} and \Rfunction{plotCorrelation} can highlight 
+points based on the Spot Type, which is the default behavior or using the SNR 
+values.  The mode is controlled with argument \emph{label}.  
+\Rfunction{plotCorrelation} requires arguments \emph{array1} and \emph{array2} 
+to be set in order to select which arrays are going to be plotted. For 
+\Rfunction{plotMA} if only \emph{array1} is specified, the values are plotted 
+againts a pseudoarray constructed with the mean of the probe intensities along 
+all available arrays. M and A values are computed following equations 
+\ref{eq:M} and \ref{eq:A}.
+
+
+\begin{equation}
+M=Array2-Array1
+\label{eq:M}
+\end{equation}
+
+\begin{equation}
+A=\frac{Array2+Array1}{2}
+\label{eq:A}
+\end{equation}
+
+<<fig.cap="MA plot.",fig.height=5,fig.width=5,fig.align='center'>>=
+codPlot(codset)
+@
+
+The function \Rfunction{plotDensities} plot the density of intensity values of
+all arrays. It can plot only a subset of arrays if the \emph{subset} argument 
+is supplied.
+
+<<fig.cap="Density plot.",fig.height=5,fig.width=5,fig.align='center'>>=
+codPlot(codset, what="density")
+@
+
+When Logical\_row and Logical\_col columns are exported into they are stored 
+into the \emph{logical} slot. This information stores the physical location of 
+each probe in the array, and can be used to plot pseudo images of the array 
+intensities. To plot a pseudo image you should use:
+
+<<eval=FALSE>>=
+codPlot(codset, what="image")
+@
+
+It is possible to plot the background intensities (default), the spot mean, 
+raw and normalized intensities and the SNR values. This images are useful to 
+identify spatial artifact that may be affecting the analysis.
+
+\subsection{Fitting linear models}
+
+A typical analysis include the testing for differentially expressed probes between two populations. This can be performed using many different R/Bioconductor packages, but the limma package is one of the most popular options. Limma can readily use CodelinkSet objects, and can take advantage of weights generated during data reading.
+
+<<eval=FALSE>>=
+fit = lmFit(codset, design=c(1,1,2,2), weights=getWeight(codset))
+fit2 = eBayes(fit)
+topTable(fit2)
+@
+
+
+\bibliographystyle{plain}
+\bibliography{codelink}
+
+
+\end{document}
