@@ -182,20 +182,26 @@ na2false <- function(x) {
 }
 ## createWeights()
 # Create weights based on Probe_type
-createWeights <- function(object, type=NULL) {
-	w <- array(1, dim(object))
-	discovery <- object$type=="DISCOVERY"
-	fiducial <- object$type=="FIDUCIAL"
-	positive <- object$type=="POSITIVE"
-	negative <- object$type=="NEGATIVE"
-	other <- object$type=="OTHER"
-	if(!is.null(type$DISCOVERY)) w[discovery,] <- type$DISCOVERY
-	if(!is.null(type$FIDUCIAL)) w[fiducial,] <- type$FIDUCIAL
-	if(!is.null(type$POSITIVE)) w[positive,] <- type$POSITIVE
-	if(!is.null(type$NEGATIVE)) w[negative,] <- type$NEGATIVE
-	if(!is.null(type$OTHER)) w[other,] <- type$OTHER
-	return(w)
-}
+# createWeights <- function(object, type.weights=NULL) {
+# 	if(is.null(type))
+# 		type.weights = c("DISCOVERY"=1,"FIDUCIAL"=0,"POSITIVE"=0,"NEGATIVE"=0, "OTHER"=0)
+# 	
+# 	tw = type.weights
+# 	
+# 	w <- array(1, dim(object))
+# 	discovery <- object$type=="DISCOVERY"
+# 	fiducial <- object$type=="FIDUCIAL"
+# 	positive <- object$type=="POSITIVE"
+# 	negative <- object$type=="NEGATIVE"
+# 	other <- object$type=="OTHER"
+# 	if(!is.null(type$DISCOVERY)) w[discovery,] <- tw$DISCOVERY
+# 	if(!is.null(type$FIDUCIAL)) w[fiducial,] <- tw$FIDUCIAL
+# 	if(!is.null(type$POSITIVE)) w[positive,] <- tw$POSITIVE
+# 	if(!is.null(type$NEGATIVE)) w[negative,] <- tw$NEGATIVE
+# 	if(!is.null(type$OTHER)) w[other,] <- tw$OTHER
+# 	w
+# }
+
 
 setMethod("summary", "Codelink",
 function(object, ...)

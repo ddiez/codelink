@@ -77,7 +77,7 @@ checkColumns <- function(x, y)
 }
 # readCodelink()
 # read of codelink data.
-readCodelink <- function(files=list.files(pattern = "TXT"), sample.name=NULL, flag, flag.weights, dec=NULL, type="Spot", preserve=FALSE,	verbose=2, file.type="Codelink", check=TRUE, fix=FALSE, old=TRUE)
+readCodelink <- function(files=list.files(pattern = "TXT"), sample.name=NULL, flag, flag.weights, type.weights, dec=NULL, type="Spot", preserve=FALSE,	verbose=2, file.type="Codelink", check=TRUE, fix=FALSE, old=TRUE)
 {
 	if(length(files) == 0) stop("no Codelink files found.")
 	if(old)
@@ -112,7 +112,7 @@ readCodelink <- function(files=list.files(pattern = "TXT"), sample.name=NULL, fl
 		"C"=0,
 		"I"=0,
 		"M"=0,
-		"X"=1
+		"X"=0
 		)
 	if(!missing(flag.weights)) {
 		for(k in names(flag.weights)) {
@@ -120,6 +120,23 @@ readCodelink <- function(files=list.files(pattern = "TXT"), sample.name=NULL, fl
 				flag.ww[[k]]=flag.weights[[k]]
 			else
 				warning("unsupported weight flag", k, " (ignored...)")
+		}
+	}
+	
+	type.ww = c(
+		"DISCOVERY"=1,
+		"FIDUCIAL"=0,
+		"POSITIVE"=0,
+		"NEGATIVE"=0,
+		"OTHER"=0
+		)
+	
+	if(!missing(type.weights)) {
+		for(k in names(type.weights)) {
+			if(any(names(type.ww) == k))
+				type.ww[[k]]=type.weights[[k]]
+			else
+				warning("unsupported weight type", k, " (ignored...)")
 		}
 	}
 	
@@ -374,7 +391,8 @@ readCodelink <- function(files=list.files(pattern = "TXT"), sample.name=NULL, fl
 	}
 	
 	cat("** computing weights ...")
-	codelink$weight=assignWeights(codelink$flag,flag.ww)
+	codelink$weight=assignTypeWeights(codelink, type.weights=type.ww)
+	codelink$weight=assignFlagWeights(codelink, flag.weights=flag.ww, w=codelink$weight)
 	cat("OK\n")
 	
 	# compute SNR.
@@ -425,15 +443,47 @@ writeCodelink <- function(object, file, dec = ".", sep = "\t", flag = FALSE, chi
 	write.table(tmp, file = file, quote = FALSE, sep = sep, dec = dec, col.names = FALSE)
 }
 
-assignWeights=function(x,flag.w) {
-	w = matrix(1, nrow = nrow(x), ncol = ncol(x))
-	for(k in names(flag.w)) {
-		sel=grep(k,x)
+# assignWeights=function(x,flag.w) {
+# 	w = matrix(1, nrow = nrow(x), ncol = ncol(x))
+# 	for(k in names(flag.w)) {
+# 		sel=grep(k,x)
+# 		# keep the lowest weight.
+# 		w[sel][w[sel]>flag.w[k]]=flag.w[k]
+# 	}
+# 	w
+# }
+
+createWeights = function(object,type.weights=NULL,flag.weights=NULL) {
+	w=assignTypeWeights(object,type.weights)
+	assignFlagWeights(object,flag.weights,w=w)
+}
+
+assignFlagWeights=function(object,flag.weights=NULL,w) {
+	if(missing(w))
+		w = array(1,dim(object))
+	if(is.null(flag.weights))
+		flag.weights = c("G"=1,"L"=1,"S"=1,"C"=0,"I"=0,"M"=0,"X"=0)
+	for(k in names(flag.weights)) {
+		sel=grep(k,object$flag)
 		# keep the lowest weight.
-		w[sel][w[sel]>flag.w[k]]=flag.w[k]
+		w[sel][w[sel]>flag.weights[k]]=flag.weights[k]
 	}
 	w
 }
+
+assignTypeWeights=function(object,type.weights=NULL,w) {
+	if(missing(w))
+		w = array(1,dim(object))
+	if(is.null(type.weights))
+		type.weights = c("DISCOVERY"=1,"FIDUCIAL"=0,"POSITIVE"=0,"NEGATIVE"=0, "OTHER"=0)
+	for(k in names(type.weights)) {
+		sel=grep(k,object$type)
+		# keep the lowest weight.
+		w[sel,][w[sel,]>type.weights[k]]=type.weights[k]
+	}
+	w
+}
+
 
 # reportCodelink()
 # report output to HTML.
