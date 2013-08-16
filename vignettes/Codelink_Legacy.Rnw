@@ -4,7 +4,7 @@
 %\VignettePackage{codelink}
 
 \documentclass{article}
-\usepackage[latin1]{inputenc}
+\usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 
 \newcommand{\Robject}[1]{{\texttt{#1}}}
