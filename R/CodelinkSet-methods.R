@@ -86,7 +86,6 @@ function(object, method="quantile", log.it=TRUE, weights=NULL, loess.method="fas
 	)
 
 	# reassign data.
-	#assayDataElement(x, "intensity") <- newInt
 	assayDataElement(x, "exprs") <- newInt
 	
 	# info.
