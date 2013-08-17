@@ -30,7 +30,8 @@ setMethod("normalize", "Codelink", function(object, method="quantiles", log.it=T
 				 },
 				 median = {
 				 	# no weights used right now.
-				 	object$Ni <- normalize.median(object$Ni,weights=weights)
+				 	#object$Ni <- normalize.median(object$Ni,weights=weights)
+				 	object$Ni <- normalizeMedianValues(object$Ni)
 				 	object$method$normalization <- "median"
 				 }
 	)
@@ -42,20 +43,20 @@ setMethod("normalize", "Codelink", function(object, method="quantiles", log.it=T
 
 # normalize.median()
 # based on limma implementation.
-normalize.median <- function(x, weights = NULL) {
-	l <- dim(x)[2]
-	
-	if(is.null(weights)) {
-		for(j in 1:l)
-			x[, j] <- x[, j] - median(x[, j], na.rm = TRUE)
-	} else {
-		for(j in 1:l)
-			x[, j] <- x[, j] - weighted.median(x[, j], weights[, j],
-				na.rm = TRUE)
-	}
-
-	x
-}
+# normalize.median <- function(x, weights = NULL) {
+# 	l <- dim(x)[2]
+# 	
+# 	if(is.null(weights)) {
+# 		for(j in 1:l)
+# 			x[, j] <- x[, j] - median(x[, j], na.rm = TRUE)
+# 	} else {
+# 		for(j in 1:l)
+# 			x[, j] <- x[, j] - weighted.median(x[, j], weights[, j],
+# 				na.rm = TRUE)
+# 	}
+# 
+# 	x
+# }
 
 
 # normalize.loess()
