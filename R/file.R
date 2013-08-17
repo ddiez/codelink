@@ -77,11 +77,13 @@ checkColumns <- function(x, y)
 }
 # readCodelink()
 # read of codelink data.
-readCodelink <- function(files=list.files(pattern = "TXT"), sample.name=NULL, flag, flag.weights, type.weights, dec=NULL, type="Spot", preserve=FALSE,	verbose=2, file.type="Codelink", check=TRUE, fix=FALSE, old=TRUE)
+readCodelink <- function(files=list.files(pattern = "TXT"), sample.name=NULL, flag, flag.weights, type.weights, dec=NULL, type="Spot", preserve=FALSE,	verbose=2, file.type="Codelink", check=TRUE, fix=FALSE, old=FALSE)
 {
 	if(length(files) == 0) stop("no Codelink files found.")
+	if(!old)
+		warning("readCodelink()/readCodelinkSet() does not convert intensities in NA based on flags anymore. Instead, use createWeights() to give different weight to spots during normalization and linear modeling. To obtain the old behavior call readCodelink()/readCodelinkSet() with 'old=TRUE'.")
 	if(old)
-		warning("readCodelink() called with 'old=TRUE' (currently the default). This follows the previous behavior, i.e. assign NAs to intensities based on flags). The default behavior will be change to old=FALSE in the next release.")
+		warning("calling readCodelink()/readCodelinkSet() witl 'old=TRUE'")
 	
 	nslides <- length(files)
 
@@ -379,6 +381,9 @@ readCodelink <- function(files=list.files(pattern = "TXT"), sample.name=NULL, fl
 			}
 		}
 	}
+	
+	codelink=new("Codelink", codelink)
+	
 	# fix flags.
 	if(old) {
 		cat("** applying flags ...")
@@ -389,7 +394,7 @@ readCodelink <- function(files=list.files(pattern = "TXT"), sample.name=NULL, fl
 		}
 		cat("OK\n")
 	}
-	
+		
 	cat("** computing weights ...")
 	codelink$weight=assignTypeWeights(codelink, type.weights=type.ww)
 	codelink$weight=assignFlagWeights(codelink, flag.weights=flag.ww, w=codelink$weight)
@@ -407,7 +412,7 @@ readCodelink <- function(files=list.files(pattern = "TXT"), sample.name=NULL, fl
 	codelink$file <- files
 	codelink$product <- product
 
-	new("Codelink", codelink)
+	codelink
 }
 # writeCodelink()
 # write Codelink object to file.
