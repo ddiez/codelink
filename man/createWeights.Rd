@@ -14,10 +14,8 @@
 }
 \author{Diego Diez}
 \examples{
-\dontrun{
-    data(codelink.example)
-    w <- createWeights(codelink.example)
-}
+    data(codelink.exprset)
+    w <- createWeights(codelink.exprset)
 }
 \keyword{documentation}
 \keyword{utilities}

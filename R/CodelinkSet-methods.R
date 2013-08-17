@@ -40,11 +40,11 @@ function(x, what)
 })
 
 # codNormalize-method.
-setGeneric("codNormalize", function(x, method = "quantile", log.it = TRUE, ...)	standardGeneric("codNormalize"))
+setGeneric("codNormalize", function(object, method = "quantile", log.it = TRUE, ...)	standardGeneric("codNormalize"))
 setMethod("codNormalize", "CodelinkSet",
-function(x, method="quantile", log.it=TRUE, weights=NULL, loess.method="fast")
-{
-	normalize(x,method=method,log.it=log.it,weights=weights,loess.method=loess.method)
+function(object, method="quantile", log.it=TRUE, weights=NULL, loess.method="fast")
+{	
+	normalize(object,method=method,log.it=log.it,weights=weights,loess.method=loess.method)
 })
 
 setMethod("normalize", "CodelinkSet",

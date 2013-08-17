@@ -28,10 +28,23 @@ additional arguments passed to the appropriate functions.
 }
 }
 \details{
-ma - MA plot.
-density - density plot.
-scatter - scatter correlation plot.
-image - array pseudo images.
+
+Plot types:
+
+\describe{
+    \item{\code{scatter}}{
+    	Scatter plot of the selected array intensities vs. the median array, or a second array if specified.
+    }
+    \item{\code{ma}}{
+    	MA plot of the selected array intensities vs. the median array, or a second array if specified. In the x-axis the value of A (mean abundance; A = Array1 + Array2) is plotted. In the y-axis the value of M (difference; M = Array1 - Array2) is plotted.
+    }
+    \item{\code{density}}{
+    	The distribution of intensities for each array in the dataset is plotted as a kernel density.
+    }
+    \item{\code{image}}{
+    	If the logical position of the probes in the array are available, this plot produces a pseudoimage of the array. The values of the "intensity", "bg" or "snr" can be selected with the 'signal' parameter (default signal="bg"). Color range can be controled with 'high' and 'low' parameters.
+    }
+	}
 }
 \author{
 Diego Diez
