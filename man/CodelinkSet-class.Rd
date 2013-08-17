@@ -16,6 +16,8 @@
 \alias{getSNR,CodelinkSet-method}
 \alias{getFlag,CodelinkSet-method}
 \alias{getWeight,CodelinkSet-method}
+\alias{exprs,CodelinkSet-method}
+
 
 \alias{probeNames}
 \alias{probeNames,CodelinkSet-method}

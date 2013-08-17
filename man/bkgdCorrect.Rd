@@ -1,19 +1,23 @@
 \name{bkgdCorrect}
 \alias{bkgdCorrect}
+\alias{codCorrect}
+\alias{codCorrect,CodelinkSet-method}
+
 \title{Background correction of intensity values.}
 \description{
-	Takes a Codelink object with Spot mean and Bkgd median values
-	and corrects applying one of the methods available.
+Takes a CodelinkSet or Codelink object with Spot mean and Bkgd median values and performes background correction using one of the methods available.
 }
 \usage{
-  bkgdCorrect(object, method = "half", preserve = FALSE, verbose = FALSE,
-    offset = 0)
+\method{bkgdCorrect}{Codelink}(object, method = "half", preserve = FALSE, verbose = FALSE, offset = 0)
+
+\S4method{codCorrect}{CodelinkSet}(object, method = "half", normexp.method="saddle", offset=0)
 }
 \arguments{
-  \item{object}{character; an object of class "Codelink".}
-  \item{method}{character; the correction method to use, one of "none", "subtract", "half" and "normexp".}
+  \item{object}{an object of class CodelinkSet or Codelink.}
+  \item{method}{the correction method to use, one of "none", "subtract", "half" and "normexp".}
   \item{preserve}{logical; if Smean and Bmedian slots should be preserved.}
   \item{verbose}{logical; if TRUE print some information with method normexp.}
+  \item{normexp.method}{method used with normexp correction.}
   \item{offset}{numeric; value to add to intensities.}
 }
 \value{An object of class Codelink with corrected intensity values, that is
@@ -28,10 +32,8 @@
 }
 \author{Diego Diez}
 \examples{
-\dontrun{
-    data(codelink.example)
-    codelink.example <- bkgdCorrect(codelink.example, method = "half")
-}
+    data(codelink.exprset)
+    codelink.exprset <- bkgdCorrect(codelink.exprset, method = "half")
 }
 \keyword{documentation}
 \keyword{utilities}

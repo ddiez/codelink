@@ -1,6 +1,6 @@
 \name{codPlot}
 \alias{codPlot}
-\alias{codPlot,CodelinkSet}
+\alias{codPlot,CodelinkSet-method}
 \alias{codPlot,MArrayLM-method}
 
 \title{

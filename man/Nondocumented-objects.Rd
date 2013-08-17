@@ -4,7 +4,6 @@
 \alias{annotation,Codelink-method}
 
 % generic.
-%\alias{arraySize}
 \alias{meanSNR}
 \alias{chipDevice}
 \alias{filterSNR}
@@ -19,20 +18,12 @@
 % matrix-methods.
 \alias{filterSNR,matrix-method}
 
-% MArrayLM-methods.
-
-
 % Codelink-methods.
-\alias{codPlot,Codelink-method}
 \alias{filterSNR,Codelink-method}
 \alias{codUniverse,Codelink-method}
 
 % CodelinkSet-methods.
-\alias{codCorrect,CodelinkSet-method}
-\alias{codPreprocess,CodelinkSet-method}
 \alias{meanSNR,CodelinkSet-method}
-\alias{codPlot,CodelinkSet-method}
-\alias{exprs,CodelinkSet-method}
 \alias{chipDevice,CodelinkSet-method}
 \alias{filterSNR,CodelinkSet-method}
 \alias{codUniverse,CodelinkSet-method}

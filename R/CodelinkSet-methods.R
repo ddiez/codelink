@@ -1,8 +1,9 @@
 # codCorrect-method.
-setGeneric("codCorrect", function(x, method = "half", normexp.method="saddle", offset=0)	standardGeneric("codCorrect"))
+setGeneric("codCorrect", function(object, method = "half", normexp.method="saddle", offset=0)	standardGeneric("codCorrect"))
 setMethod("codCorrect", "CodelinkSet",
-function(x, method = "half", normexp.method="saddle", offset=0)
+function(object, method = "half", normexp.method="saddle", offset=0)
 {
+	x = object
 	if(getInfo(x, "background") != "NONE") {
 		warning("data already corrected, skipped.")
 		return(x)
