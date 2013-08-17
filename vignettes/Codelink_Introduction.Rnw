@@ -1,7 +1,7 @@
-%\VignetteEngine{knitr}
 %\VignetteIndexEntry{codelink}
 %\VignetteKeywords{Preprocessing, Codelink}
 %\VignetteDepends{codelink}
+%\VignetteDepends{knitr}
 %\VignettePackage{codelink}
 
 \documentclass{article}
@@ -16,8 +16,9 @@
 
 \begin{document}
 
-<<include=FALSE>>=
+<<include=FALSE,cache=FALSE>>=
 library(codelink)
+library(knitr)
 opts_chunk$set(fig.align = 'center', concordance=TRUE)
 @
 
@@ -149,10 +150,5 @@ fit = lmFit(codset, design=c(1,1,2,2), weights=getWeight(codset))
 fit2 = eBayes(fit)
 topTable(fit2)
 @
-
-
-\bibliographystyle{plain}
-\bibliography{codelink}
-
 
 \end{document}

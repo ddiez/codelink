@@ -1,7 +1,7 @@
-%\VignetteEngine{knitr}
 %\VignetteIndexEntry{codelink}
 %\VignetteKeywords{Preprocessing, Codelink}
 %\VignetteDepends{codelink}
+%\VignetteDepends{knitr}
 %\VignettePackage{codelink}
 
 \documentclass{article}
@@ -17,11 +17,11 @@
 \begin{document}
 
 
-<<include=FALSE>>=
+<<include=FALSE,cache=FALSE>>=
 library(codelink)
+library(knitr)
 opts_chunk$set(fig.align = 'center', concordance=TRUE)
 @
-
 
 \title{Codelink Legacy: the old Codelink class}
 \author{Diego Diez}
