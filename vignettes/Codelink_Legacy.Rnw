@@ -1,3 +1,4 @@
+%\VignetteEngine{knitr}
 %\VignetteIndexEntry{codelink}
 %\VignetteKeywords{Preprocessing, Codelink}
 %\VignetteDepends{codelink}
@@ -6,12 +7,21 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
+\usepackage{geometry}
+\geometry{verbose,tmargin=3cm,bmargin=3cm,lmargin=3cm,rmargin=3cm}
 
 \newcommand{\Robject}[1]{{\texttt{#1}}}
 \newcommand{\Rfunction}[1]{{\texttt{#1}}}
 \newcommand{\Rpackage}[1]{{\texttt{#1}}}
 
 \begin{document}
+
+
+<<include=FALSE>>=
+library(codelink)
+opts_chunk$set(fig.align = 'center', concordance=TRUE)
+@
+
 
 \title{Codelink Legacy: the old Codelink class}
 \author{Diego Diez}
@@ -279,12 +289,10 @@ The function \Rfunction{writeCodelink} exports a \Robject{Codelink} object to a 
 \subsection{Using weights}
 
 The \Rfunction{createWeights} function creates a matrix of weights based on 
-probe type labels to be used, for example, when fitting a linear model with 
-\Rpackage{limma} \cite{limma}.
+probe type and flag labels. This can be used during normalization (CyclicLoess) and when fitting a linear model with \Rpackage{limma}.
 
 <<createWeights, comment=NA>>=
-w <- createWeights(codelink.example, type = list(FIDUCIAL = 0.01, NEGATIVE = 
-0.1))
+w <- createWeights(codelink.example)
 
 w[1:10,]
 @
