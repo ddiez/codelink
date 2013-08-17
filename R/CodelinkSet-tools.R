@@ -6,26 +6,33 @@ readCodelink2 <- function(..., phenodata = NULL, featuredata = NULL) {
 	c2e(tmp, phenodata = phenodata, featuredata = featuredata)
 }
 
-readCodelinkSet <- function(targets, filename, columns = list(Signal = "Spot_mean", Background = "Bkgd_median"), phenoData, ...) {
-	if(missing(filename) && missing(targets)) stop("argument 'targets' or 'filename' must be specified.")
-    if (missing(targets)) {
-        filename <- as.character(filename)
-		if(missing(phenoData)) pdata <- NULL
-		else pdata <- phenoData
-    } else {
-        pdata <- read.AnnotatedDataFrame(targets)
-		if(! any(grep("FileName", varLabels(pdata)))) {
-            filename <- sampleNames(pdata)
-        } else {
-            filename <- pData(pdata)[, "FileName"]
-        }
-    }
-    if (is.null(filename)) stop("invalid filenames.")
-	
+# readCodelinkSet <- function(targets, filename, columns = list(Signal = "Spot_mean", Background = "Bkgd_median"), phenoData, ...) {
+# 	if(missing(filename) && missing(targets)) stop("argument 'targets' or 'filename' must be specified.")
+#     if (missing(targets)) {
+#         filename <- as.character(filename)
+# 		if(missing(phenoData)) pdata <- NULL
+# 		else pdata <- phenoData
+#     } else {
+#         pdata <- read.AnnotatedDataFrame(targets)
+# 		if(! any(grep("FileName", varLabels(pdata)))) {
+#             filename <- sampleNames(pdata)
+#         } else {
+#             filename <- pData(pdata)[, "FileName"]
+#         }
+#     }
+#     if (is.null(filename)) stop("invalid filenames.")
+# 	
+# 	tmp <- readCodelink(files = filename, ...)
+# 	
+# 	c2e(tmp, phenodata = pdata, featuredata = NULL)
+# }
+
+readCodelinkSet <- function(filename, columns = list(Signal = "Spot_mean", Background = "Bkgd_median"), phenoData=NULL, ...) {
+	if(missing(filename)) stop("argument 'filename' must be specified.")
 	tmp <- readCodelink(files = filename, ...)
-	
-	c2e(tmp, phenodata = pdata, featuredata = NULL)
+	c2e(tmp, phenodata = pdata)
 }
+
 
 c2e <- function (object, annotation = NULL, phenodata = NULL, featuredata = NULL, intensity = "Smean") 
 {
