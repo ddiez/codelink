@@ -1,19 +1,25 @@
 \name{readCodelink}
 \alias{readCodelink}
+\alias{readCodelinkSet}
 \title{Read Codelink Bioarrays Data}
 \description{
   Read data exported as text by Codelink Software. It reads values (normalized
 by Codelink Software or not) flags and information about probes.
 }
 \usage{
-    readCodelink(files=list.files(pattern="TXT"), sample.name=NULL,
-	flag, dec=NULL, type="Spot",	preserve=FALSE,	verbose=2,
-	file.type="Codelink", check=TRUE, fix=FALSE)
+readCodelink(files = list.files(pattern = "TXT"), sample.name =
+                 NULL, flag, flag.weights, type.weights, dec = NULL,
+                 type = "Spot", preserve = FALSE, verbose = 2,
+                 file.type = "Codelink", check = TRUE, fix = FALSE, old
+                 = FALSE)
+readCodelinkSet(filename, columns = list(Signal = "Spot_mean", Background = "Bkgd_median"), phenoData = NULL, \dots)
 }
 \arguments{
   \item{files}{list of files to read.}
   \item{sample.name}{vector of same length as files with sample names.}
   \item{flag}{list with values to assign based on Flag quality values.}
+  \item{flag.weights}{weights assigned to each probe flag.}
+  \item{type.weights}{weights assigned to each probe type.}
   \item{dec}{character indicating the decimal character used in the files.}
   \item{type}{character indicating which base value to read from files.}
   \item{preserve}{logical, if TRUE Bkgd\_stdev slot is not removed (if present).}
@@ -21,10 +27,15 @@ by Codelink Software or not) flags and information about probes.
   \item{file.type}{exported file type, currently Codelink or XLS file formats supported.}
   \item{check}{logical, check for probe order consistency.}
   \item{fix}{logical, try to fix probe order consistency.}
+  \item{old}{logical, whether NA is assigned to intensities based on flags.}
+  
+  \item{filename}{list of files.}
+  \item{columns}{what columns to use for signal and background intensities.}
+  \item{phenoData}{phenoData object with sample information.}
+  \item{\dots}{further arguments to be passed.}
 }
-\value{An object of class "Codelink".}
+\value{readCodelink returns an object of class "Codelink", whereas readCodelinkSet() returns a CodelinkSet object.}
 \author{Diego Diez}
-\seealso{\code{\link{read.table}}}
 \examples{
 \dontrun{
     # reading default extension (TXT).
@@ -36,6 +47,14 @@ by Codelink Software or not) flags and information about probes.
 
     # example.
     data(codelink.example)
+    
+    # read a targets file with phenotypic information
+    # including sample names, file names and sample groups.
+    pdata = read.AnnotationDataFrame("targets.txt")
+    codset = readCodelinkSet(pdata$FileNames, phenoData=pdata)
+    
+    # example
+    data(codelink.exprset)
 }
 }
 \keyword{documentation}

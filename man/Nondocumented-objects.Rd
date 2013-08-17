@@ -5,19 +5,7 @@
 
 % generic.
 %\alias{arraySize}
-\alias{codCorrect}
-\alias{codNormalize}
-\alias{codPreprocess}
-\alias{getBkg}
-\alias{getInt}
-\alias{getInfo}
-\alias{getSNR}
-\alias{getType}
-\alias{probeNames}
-\alias{probeTypes}
 \alias{meanSNR}
-\alias{codPlot}
-\alias{normalize.median}
 \alias{chipDevice}
 \alias{filterSNR}
 \alias{codUniverse}
@@ -32,7 +20,7 @@
 \alias{filterSNR,matrix-method}
 
 % MArrayLM-methods.
-\alias{codPlot,MArrayLM-method}
+
 
 % Codelink-methods.
 \alias{codPlot,Codelink-method}
@@ -41,15 +29,7 @@
 
 % CodelinkSet-methods.
 \alias{codCorrect,CodelinkSet-method}
-\alias{codNormalize,CodelinkSet-method}
 \alias{codPreprocess,CodelinkSet-method}
-\alias{getBkg,CodelinkSet-method}
-\alias{getInt,CodelinkSet-method}
-\alias{getInfo,CodelinkSet-method}
-\alias{getSNR,CodelinkSet-method}
-\alias{probeNames,CodelinkSet-method}
-\alias{probeNames,CodelinkSetUnique-method}
-\alias{probeTypes,CodelinkSet-method}
 \alias{meanSNR,CodelinkSet-method}
 \alias{codPlot,CodelinkSet-method}
 \alias{exprs,CodelinkSet-method}
@@ -58,8 +38,6 @@
 \alias{codUniverse,CodelinkSet-method}
 
 % non-generic functions.
-\alias{readCodelinkSet}
-\alias{readCodelinkFiles}
 \alias{Codelink2eSet}
 \alias{eSet2Codelink}
 \alias{guessAnnotation}
