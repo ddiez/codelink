@@ -1,7 +1,7 @@
 #useDynLib(codelink)
 import(methods)
+
 importFrom(BiocGenerics, annotation, "annotation<-", "normalize")
-importFrom(limma, normalizeCyclicLoess)
 importFrom(annotate, lookUp, htmlpage)
 importFrom(Biobase, exprs)
 
