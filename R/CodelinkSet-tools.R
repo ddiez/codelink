@@ -30,7 +30,7 @@ readCodelink2 <- function(..., phenodata = NULL, featuredata = NULL) {
 readCodelinkSet <- function(filename, columns = list(Signal = "Spot_mean", Background = "Bkgd_median"), phenoData=NULL, ...) {
 	if(missing(filename)) stop("argument 'filename' must be specified.")
 	tmp <- readCodelink(files = filename, ...)
-	c2e(tmp, phenodata = pdata)
+	c2e(tmp, phenodata = phenoData)
 }
 
 
