@@ -199,23 +199,14 @@ function(object)
 
 # experimental codPlot-method.
 # this intends to be a general interface for all plotting utilities.
-setGeneric("codPlot", function(x, array, what = "ma", ...)
+setGeneric("codPlot", function(object, array, what = "ma", ...)
 	standardGeneric("codPlot"))
-
-# codPlot, Codelink-method.
-# WARNING: WILL BE DEPRECATED.
-setMethod("codPlot", "Codelink",
-function(x, array, what = "ma", ...)
-{
-	warning("Use of Codelink objects with the CodelinkSet interface is slow and will be deprecated in the next release.")
-	x <- Codelink2eSet(x)
-	codPlot(x, array = array, what = what, ...)
-})
 
 # codPlot, CodelinkSet-method.
 setMethod("codPlot", "CodelinkSet",
-function(x, array, what = "ma", ...)
+function(object, array, what = "ma", ...)
 {
+	x = object
 	what <- match.arg(what, c("ma", "density", "scatter", "image"))
 
 	switch(what,
@@ -236,10 +227,10 @@ function(x, array, what = "ma", ...)
 })
 # codPlot(), MArrayLM-method.
 setMethod("codPlot", "MArrayLM",
-function(x, array, what = "ma", ...)
+function(object, array, what = "ma", ...)
 {
 	if(missing(array)) array = 1
-	codPlotMA(x, array = array, ...)
+	codPlotMA(object, array = array, ...)
 })
 
 # codPlotMA, generic.

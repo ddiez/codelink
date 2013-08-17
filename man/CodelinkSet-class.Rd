@@ -2,8 +2,8 @@
 \alias{class::CodelinkSet}
 \alias{CodelinkSet}
 \alias{CodelinkSet-class}
-\alias{codCorrect}
 \alias{codPreprocess}
+\alias{codPreprocess,CodelinkSet-method}
 \alias{getBkg}
 \alias{getInt}
 \alias{getInfo}

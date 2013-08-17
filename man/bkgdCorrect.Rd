@@ -8,7 +8,7 @@
 Takes a CodelinkSet or Codelink object with Spot mean and Bkgd median values and performes background correction using one of the methods available.
 }
 \usage{
-\method{bkgdCorrect}{Codelink}(object, method = "half", preserve = FALSE, verbose = FALSE, offset = 0)
+bkgdCorrect(object, method = "half", preserve = FALSE, verbose = FALSE, offset = 0)
 
 \S4method{codCorrect}{CodelinkSet}(object, method = "half", normexp.method="saddle", offset=0)
 }
@@ -33,7 +33,7 @@ Takes a CodelinkSet or Codelink object with Spot mean and Bkgd median values and
 \author{Diego Diez}
 \examples{
     data(codelink.exprset)
-    codelink.exprset <- bkgdCorrect(codelink.exprset, method = "half")
+    codelink.exprset <- codCorrect(codelink.exprset, method = "half")
 }
 \keyword{documentation}
 \keyword{utilities}
