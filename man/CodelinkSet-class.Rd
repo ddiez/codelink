@@ -2,23 +2,56 @@
 \alias{class::CodelinkSet}
 \alias{CodelinkSet}
 \alias{CodelinkSet-class}
+\alias{codCorrect}
+\alias{codPreprocess}
+\alias{getBkg}
+\alias{getInt}
+\alias{getInfo}
+\alias{getSNR}
+\alias{getFlag}
+\alias{getWeight}
+\alias{getBkg,CodelinkSet-method}
+\alias{getInt,CodelinkSet-method}
+\alias{getInfo,CodelinkSet-method}
+\alias{getSNR,CodelinkSet-method}
+\alias{getFlag,CodelinkSet-method}
+\alias{getWeight,CodelinkSet-method}
+
+\alias{probeNames}
+\alias{probeNames,CodelinkSet-method}
+\alias{probeNames,CodelinkSetUnique-method}
+\alias{probeTypes}
+\alias{probeTypes,CodelinkSet-method}
+
 \docType{class}
 
 \title{Class CodelinkSet}
 \description{This is the storage class for Codelink data}
 \section{Objects from the Class}{
-  Object are created after reading text codelink files with readCodelink2()}
+  Object are created after reading text codelink files with readCodelinkSet()}
 
 \section{Description}{
-	CodelinkSet objects are derived from ExpressionSet and therefore inherits all the methods.}
+	CodelinkSet objects are derived from ExpressionSet and therefore inherits all their methods. Additional methods are defined to extract information:
 
-\note{More details are in the package vignette}
+}
+
+\section{Extends}{
+   Directly extends class \code{\link{ExpressionSet}}.
+}
+
+\section{Methods}{
+Class-specific methods:
+
+	\describe{
+    \item{\code{getWeight}}{Get the matrix of weights.}
+	}
+}
 
 \author{Diego Diez}
 
 \examples{
 \dontrun{
-    data(codelink.exprs)
+    data(codelink.exprset)
 }
 }
 \keyword{classes}
