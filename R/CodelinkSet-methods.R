@@ -1,8 +1,7 @@
 # codCorrect-method.
-setGeneric("codCorrect", function(x, method = "half")
-	standardGeneric("codCorrect"))
+setGeneric("codCorrect", function(x, method = "half", normexp.method="saddle", offset=0)	standardGeneric("codCorrect"))
 setMethod("codCorrect", "CodelinkSet",
-function(x, method = "half")
+function(x, method = "half", normexp.method="saddle", offset=0)
 {
 	if(getInfo(x, "background") != "NONE") {
 		warning("data already corrected, skipped.")
@@ -17,17 +16,9 @@ function(x, method = "half")
 	int <- getInt(x)
 	bkgd <- getBkg(x)
 
-	# do correction stuff...
-	switch(method,
-		none = newInt <- int,
-		subtract = newInt <- int - bkgd,
-		half = newInt <- pmax(int - bkgd, 0.5),
-		normexp = newInt <- bgcorrect.normexp(int, bkgd)
-	)
+	# correct intensities.
+	newInt=backgroundCorrect.matrix(int, bkgd, method=method, normexp.method=normexp.method,offset=offset)
 
-	# reassign data.
-	#assayDataElement(x, "background") <- NULL
-	#assayDataElement(x, "intensity") <- newInt
 	assayDataElement(x, "exprs") <- newInt
 	
 	# info.
