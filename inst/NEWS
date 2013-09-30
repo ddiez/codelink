@@ -1,22 +1,20 @@
 Package: codelink
 ====================
 
-Version 1.29.2
+Version 1.30.0
+
+o Vignettes rewritten. Emphasis is put on the CodelinkSet classes. Documentation on the CodelinkSet interface has been largely included.
 
 o Added generic method normalize() for Codelink and CodelinkSet classes.
 
 o Added support for flag-based weights. Intensities are assigned NA based
-on flags if old=TRUE in readCodelink() (default). This will be changed
-in the next release.
+on flags if old=TRUE in readCodelinkSet() (default old=FALSE).
 
-o normalizeCyclicLoess() and normalizeQuantiles() from limma package are
-used now for normalization.
+o Background correction and normalization methods are borrowed from the limma package.
 
-Version 1.23.2
+Version 1.24.0
 
 o Improvements on how codPlotScatter() manages labels. Renamed generic scatter plot function plotma() to plotxy(), which better reflects the current status.
-
-Version 1.23.1
 
 o Implemented missing function codPlotScatter() for CodelinkSet objects (accessible via codPlot(..., what = "scatter")). The implementation reuses the plotma()
   function used by codPlotMA(). By default the first array is plotted against the median. Thanks to William Michels for reporting this and testing the CodelinkSet
@@ -24,16 +22,12 @@ o Implemented missing function codPlotScatter() for CodelinkSet objects (accessi
 
 o Minor improvements to linear model section in CodelinkSet-vignette. Now the code is evaluated.
 
-Version 1.15.4
+Version 1.16.0
 
 o Fixed check fail in windows machine by putting "multicore" in Enhancements, and checking if function "mclapply" is loaded. Addapted documentation to 
 explain the new behavior.
 
-Version 1.15.3
-
 o Added missing file (averageProbes.Rd) to the svn.
-
-Version 1.15.2
 
 o Added CodelinkSetUnique class to store objects with unique probes. These objects use as featureNames the probe ID, and
   hence should be compatible with other packages that make use of featureNames() and the annotation packages.
@@ -43,24 +37,16 @@ o Added function averageProbes() that computes the average of duplicated probes 
   time and therefore a call to mclapply() in multicore package is implemented through the optional argument 'parallel' (FALSE by
   default). Use of 'parallel = TRUE' is not recommended on GUI (like the Cocoa R.app) (see multicore package for issues with this). 
 
-Version 1.15.1
-
 o Added '...' to readCodelinkSet() so that it pass additional arguments (e.g. 'flag') to readCodelink(). Thank you to Luca Beltrame for the suggestion and patch.
 o Now when readCodelinkSet() reads a list of files and the phenoData is not supplied it will create a default one, instead of failing.
 
-Version: 1.15.0
-
 o Version number bumped for BioC devel branch.
 
-Version: 1.13.6
+Version: 1.14.0
 
 o Fixed bug in codCorrect() that would prevent the methods "half" and "subtract" for being available. Thanks to Fr?d?ric Boyer for reporting this.
 
-Version: 1.13.5
-
 o Fixed warnings about missing (or suspect) links in documentation. Added tem-
   plate man page for CodelinkSet class.
-
-Version: 1.13.4
 
 o Fixed warning on R CMD check about mismatch between objects and documentation.
