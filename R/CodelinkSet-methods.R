@@ -149,23 +149,24 @@ function(object)
 })
 
 # getWeight method.
-setMethod("weights", "CodelinkSet",
-function(object)
- {
-	assayDataElement(object, "weight")
-})
+#setMethod("weights", "CodelinkSet",
+#function(object)
+# {
+#	assayDataElement(object, "weight")
+#})
 # alias.
 setGeneric("getWeight", function(object) standardGeneric("getWeight"))
 setMethod("getWeight", "CodelinkSet",
 function(object)
 {
-	weights(object)
+	#weights(object)
+	assayDataElement(object, "weight")
 })
 
 # assignWeight method.
-setGeneric("weights<-", function(object, value) standardGeneric("weights<-"))
-setReplaceMethod("weights", signature(object="CodelinkSet",value="matrix"),
-function(object, value) assayDataElementReplace(object, "weight", value))
+#setGeneric("weights<-", function(object, value) standardGeneric("weights<-"))
+#setReplaceMethod("weights", signature(object="CodelinkSet",value="matrix"),
+#function(object, value) assayDataElementReplace(object, "weight", value))
 
 # probeNames-method.
 setGeneric("probeNames", function(object) standardGeneric("probeNames"))
