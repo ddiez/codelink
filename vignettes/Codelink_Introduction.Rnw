@@ -19,7 +19,10 @@
 <<include=FALSE,cache=FALSE>>=
 library(codelink)
 library(knitr)
-opts_chunk$set(fig.align = 'center', concordance=TRUE)
+opts_chunk$set(fig.align = 'center', concordance=TRUE,width=50,fig.show="hold", tidy = TRUE, comment = "", highlight = FALSE, prompt = TRUE)
+knit_hooks$set(no.mar = function(before, options, envir) {
+    if (before) par(mar = rep(0,4))  # no margins.
+})
 @
 
 
@@ -29,21 +32,23 @@ opts_chunk$set(fig.align = 'center', concordance=TRUE)
 
 \section{Introduction}
 
-This package implements methods to facilitate the preprocessing and analysis of Codelink microarrays. Codelink is a platform for the analysis of gene expression that uses 30 base long oligonucleotides. Codelink is currently owned by Applied Microarrays, Inc. (previously was GE Healthcare and Amersham). There is a proprietary software for reading scanned images, doing spot intensity quantification and some diagnostics. A Codelink microarray consists of a number of species-specific probes to measure gene expression, as well as some other control probes. Accordinly each probe type is labeled appropriately (see Table~\ref{tab:Type}). The Codelink software assigns quality flags to each spot (see Table~\ref{tab:Flag}) on the basis of a signal to noise ratio (SNR) computation (Eq: \ref{eq:SNR}) and other morphological characteristics as irregular shape of the spots, saturation of the signal or manufacturer spots removed. By default, the software performs background correction (subtract) followed by median normalization. The results can be exported in several formats as XML, Excel, plain text, etc.
+This package implements methods to facilitate the preprocessing and analysis of Codelink microarrays. Codelink is a microarray platform for the analysis of gene expression that uses 30 base long oligonucleotides. Codelink is currently owned by Applied Microarrays, Inc. (previously was GE Healthcare and before that Amersham). There is a proprietary software for reading scanned images, perform spot intensity quantification and diagnostics. A Codelink microarray consists of a number of species-specific probes to measure gene expression, as well as some other control probes (see Table~\ref{tab:Type}). The Codelink software assigns quality flags to each spot (see Table~\ref{tab:Flag}) on the basis of a signal to noise ratio (SNR) computation (Eq: \ref{eq:SNR}) and other morphological characteristics as irregular shape of the spots, saturation of the signal or manufacturer spots removed. By default, the software performs background correction (subtract) followed by median normalization. The results can be exported in several formats as XML, Excel, plain text, etc.
 
-Currently two different approaches are supported to store Codelink data in R. The first uses a class (\Robject{Codelink}), which was the first one available. The second uses the new \Robject{CodelinkSet} class, which inherits from the \Robject{ExpressionSet} class in Biobase. Although the use of \Robject{CodelinkSet} is recommended, the \Robject{Codelink} infrastructure is maintained for backbard compatibility. In this document the workflow using \Robject{CodelinkSet} methods will be presented. Information about the old infrastructure can be found in the vignette (Codelink\_Legacy.pdf)
+The codelink package enables loading \emph{Codelink} data into R, and stores it as a CodelinkSet object. The \texttt{CodelinkSet-class} inherits from \texttt{ExpressionSet} all methods, and enables straightforward interfacing with other Bioconductor structures, and packages.
+
+NOTE: the old \Robject{Codelink-class} infrastructure is maintained for backbard compatibility, and information about its use can be found in the vignette Codelink\_Legacy.pdf.
 
 
 \begin{table}[ht]
 \begin{center}
-\begin{tabular}{|r|l|}
-\hline \em Probe type & \em Description \\
+\begin{tabular}{r|l|c}
+\hline \em Probe type & \em Description & \em Default weight\\
 \hline
-DISCOVERY & Measure gene expression \\
-POSITIVE & Positive control \\
-NEGATIVE & Negative control \\
-FIDUCIAL & Grid alignment \\
-OTHER & Other controls and housekeeping genes \\
+DISCOVERY & Measure gene expression & 1\\
+POSITIVE & Positive control & 0\\
+NEGATIVE & Negative control & 0\\
+FIDUCIAL & Grid alignment & 0\\
+OTHER & Other controls and housekeeping genes & 0\\
 \hline
 \end{tabular}
 \caption{Probe types for Codelink arrays.}
@@ -53,16 +58,16 @@ OTHER & Other controls and housekeeping genes \\
 
 \begin{table}[ht]
 \begin{center}
-\begin{tabular}{|c|l|}
-\hline \em Flag & \em Description \\
+\begin{tabular}{c|l|c|c}
+\hline \em Flag & \em Description & \em Default value set & \em Default weight\\
 \hline
-G & Good signal (SNR $\geq$ 1)\\
-L & Limit signal (SNR $<$ 1)\\
-I & Irregular shape \\
-S & Saturated signal \\
-M & MSR spot \\
-C & Background contaminated\\
-X & User excluded spots\\
+G & Good signal (SNR $\geq$ 1) & & 1\\
+L & Limit signal (SNR $<$ 1) & & 1\\
+S & Saturated signal & & 1\\
+I & Irregular shape & & 0\\
+M & MSR spot (-9999) & NA & 0\\
+C & Background contaminated & & 0\\
+X & User excluded spots & & 0\\
 \hline
 \end{tabular}
 \caption{Quality Flag description. SNR: Signal to Noise Ratio.}
@@ -79,7 +84,7 @@ SNR=\frac{Smean}{(Bmedian + 1.5 * Bstdev)}
 
 \section{Reading data}
 
-Only data exported as plain text from Codelink software is supported. Unfortunately the Codelink exported text format can have arbitrary columns and  header fields so depending of what has been exported reading it into a \Robject{CodelinkSet} object may be more or less complicated. As a rule of thumb it is recommended to include in the exported files at least Spot\_mean and Bkgd\_median values so that background correction and normalization can be performed in R. In addition, Bkgd\_stdev will be needed to compute the SNR. If Raw\_intensity or Normalized\_intensity columns are present then it is possible to avoid background correction and/or normalization, and use the ones performed by the Codelink software. The Feature\_id column will be use to assign unique identifiers to each spot, so that CodelinkSet object can be read appropriately. To read codelink data:
+Only Codelink data exported as plain text from the Codelink software is supported. Unfortunately the Codelink exported text format can have arbitrary columns and  header fields so depending of what has been exported, reading it into a \Robject{CodelinkSet} object may be more or less complicated. As a rule of thumb it is recommended to include in the exported files at least Spot\_mean and Bkgd\_median values so that background correction and normalization can be performed within R. In addition, Bkgd\_stdev will be needed to compute the SNR. If Raw\_intensity or Normalized\_intensity columns are present then it is possible to avoid background correction and/or normalization, and use the ones performed by the Codelink software. The Feature\_id column will be use to assign unique identifiers to each spot, so that CodelinkSet object can be read appropriately (or else will try to guess those). To read codelink data:
 
 <<eval=FALSE>>=
 # NOT RUN #
@@ -90,7 +95,7 @@ codset = readCodelinkSet(filename=f)
 # NOT RUN #
 @
 
-This assumes that the files have the extension "TXT" (uppercase) and are in the working directory. You can prepare a targets file with each file's name and additional phenotype information, then pass this information to readCodelinkSet() so that it is stored in the CodelinkSet object.
+This assumes that the files have the extension "TXT" (uppercase) and are in the working directory. You can prepare a targets file with each file's name and additional phenotypic information, then pass this information to readCodelinkSet() so that it is stored in the CodelinkSet object.
 
 <<eval=FALSE>>=
 # NOT RUN #
@@ -101,54 +106,107 @@ codset=readCodelinkSet(filename=pdata$FileName, phenoData=pdata)
 
 <<>>=
 # sample dataset.
-data(codelink.exprset)
-codelink.exprset
+data(codset)
+codset
 @
+
+\subsection{Flags and weights}
+Traditionally the codelink package has used flag information to assign NAs to values. This behavior has been changed since the version released with Bioconductor 2.13 (October, 2013). To reproduce the old behavior call \texttt{readCodelinkSet()} with argument \texttt{old=TRUE}.
+
+In the current implementation, only probes flagged as MSR spots (flag 'M'- which have an intensity value assigned of -9999), will be automatically converted to NA. This value cannot be adjusted since the value of the probes itself does not represent any measure of signal.
+
+In addition to this, probe weights will be computed by default, based on the conversion table shown in tables \ref{tab:Type} and \ref{tab:Flag}. The weight computation follows this process. First, weights are assigned based on type, with DISCOVERY probes being assigned \texttt{weight=1} and other probes \texttt{weight=0}. Then, weights are adjusted based on flags. The worst weight (type or flag weights when multiple) is assigned to each probe. The weights assigned can be controled by the \texttt{type.weights} and \texttt{flag.weights} argument to \texttt{readCodelinkSet()}. It is possible also to reassign weights after reading with the function \texttt{assignWeights()}. Weights can be used during preprocessing (background correction and normalization) and linear modeling.
+
+\subsection{Accessing data}
+
+Data stored in a CodelinkSet object can be accessed using several accessor functions:
+<<>>=
+# get signal intensities.
+head(exprs(codset))
+
+# an alias to exprs()
+head(getInt(codset))
+
+# get background intensities.
+head(getBkg(codset))
+
+# get SNR values.
+head(getSNR(codset))
+
+# get flags.
+head(getFlag(codset))
+
+# get weights.
+head(getWeight(codset))
+
+# get phenoData:
+head(pData(codset))
+
+@
+
 \section{Background correction}
 
-If Spot\_mean and Bkgd\_median values are available then it is possible to perform background correction in R. Background correction is borrowed from the limma package. Methods "none", "subtract", "half" and "normexp" are available. The default is set to half, because it is very fast. However, more sensitive (although time consuming) methods like normexp are recommended. Also, it is possible to assign an offset to avoid low intensity probes to have high M variances.
+If Spot\_mean and Bkgd\_median values are available then background correction can be performed with \texttt{codCorrect()}. Background correction methods are borrowed from the limma package, including methods \emph{none}, \emph{subtract}, \emph{half} and \emph{normexp}. The default is set to \emph{half}, because it is very fast. However, more sensitive (although slower) methods like \emph{normexp} are recommended. It is possible to assign an offset to avoid low intensity probes to have high M variances.
 
 <<>>=
-codset = codCorrect(codelink.exprset, method = "half", offset = 0)
+codset = codCorrect(codset, method = "half", offset = 0)
 @
 
 \section{Normalization}
 
 Normalization of the background corrected intensities is done by the wrapper 
-function \Rfunction{normalize} (or codNormalize()). Here again, normalization is borrowed from the limma package. Methods "median", "quantile" (the default) and "loess" are available. Loess performs CyclicLoess normalziation and accepts weights.
+function \Rfunction{normalize} (or the alias \texttt{codNormalize()}). Here again, normalization is borrowed from the limma package. Methods \emph{median}, \emph{quantile} (the default) and \emph{loess} are available. 
 
 <<>>=
 codset = codNormalize(codset, method = "quantile")
 @
 
-\section{Diagnostic plots}
+Method \emph{loess} performs CyclicLoess normalzation and accepts weights. Weights are used in a per-probe fashion (that is, one weight for one probe, not different weights for each sample). When weights are used for normalzation the minimum of all the weights for each probe along all the samples will be used. This is to ensure that for each array there is an equal contribution of each probe in the normalization process.
 
-There are some plot facilities to help diagnose the effect of background correction and normalization, as well as identify putative faulty arrays. The most commonly used functions are MA plots, density plots and array images. All these functions can be accessed through the function codPlot(). The parameter "what" specifies the type of plot: "ma" (default), "density", "scatter" and "image" are valid choices.
-
-
-<<fig.cap="MA plot.">>=
-codPlot(codset)
+<<eval=FALSE>>=
+# NOT RUN
+codset = codNormalize(codset, method = "loess", weights=getWeight(codset), loess.method="fast")
+# NOT RUN
 @
 
-<<fig.cap="Density plot.">>=
+\section{Diagnostic plots}
+
+There are some plot facilities to help diagnose the effect of background correction and normalization, as well as identify putative faulty arrays. The most commonly used functions are MA plots, density plots and array images. All these functions can be accessed through the function codPlot(). The parameter \texttt{what} specifies the type of plot: \emph{ma} (default), \emph{density}, \emph{scatter} and \emph{image} are valid choices. Figures 1 and 2 below show examples of these plotting functions.
+
+
+<<fig.cap="MA plot (left) and density plot (right).",fig.height=4,fig.width=4,out.width='.49\\linewidth'>>=
+codPlot(codset) # by default MA plot.
 codPlot(codset, what="density")
 @
 
-When Logical\_row and Logical\_col columns are present in the original data files, this information is used to track the physical location of each probe in the array to plot a pseudo image. It is possible to plot the background intensities (default), the spot mean, raw and normalized intensities and the SNR values. This images are useful to identify spatial artifact that may be affecting the analysis.
 
-<<eval,fig.height=1,fig.width=3>>=
+When the columns \emph{Logical\_row} and \emph{Logical\_col} are present in the original data files, this information is used to assign the physical location of each probe in the array to plot a pseudo image. It is possible to plot the background intensities (default), the spot mean, raw and normalized intensities and the SNR values. This images are useful to identify spatial artifact that may be affecting the analysis.
+
+<<fig.cap="Pseudo image plot of an array",fig.height=1,fig.width=3>>=
 codPlot(codset, what="image")
 @
 
 
-\subsection{Fitting linear models}
+\section{Fitting linear models}
 
-A typical analysis include the testing for differentially expressed probes between two populations. This can be performed using many different R/Bioconductor packages, but the limma package is one of the most popular options. Limma can readily use CodelinkSet objects, and can take advantage of weights generated during data reading.
+A typical analysis include the testing for differentially expressed probes between two populations. This can be performed using a variety of different R/Bioconductor packages, but the \texttt{limma} package is one of the most popular options. Limma can readily use \texttt{CodelinkSet} objects, and can take advantage of weights generated during data reading. In this case, weights will be use probe-wise (i.e. different weights for the same probe in different samples will be considered).
 
-<<eval=FALSE>>=
+<<>>=
 fit = lmFit(codset, design=c(1,1,2,2), weights=getWeight(codset))
 fit2 = eBayes(fit)
 topTable(fit2)
+@
+
+\section{Citation}
+
+<<>>=
+citation(package="codelink")
+@
+
+\section{Session info}
+
+<<>>=
+sessionInfo()
 @
 
 \end{document}
