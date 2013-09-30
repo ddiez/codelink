@@ -148,14 +148,24 @@ function(object)
 	assayDataElement(object, "flag")
 })
 
-# getFlag method.
+# getWeight method.
+setMethod("weights", "CodelinkSet",
+function(object)
+ {
+	assayDataElement(object, "weight")
+})
+# alias.
 setGeneric("getWeight", function(object) standardGeneric("getWeight"))
 setMethod("getWeight", "CodelinkSet",
 function(object)
 {
-	assayDataElement(object, "weight")
+	weights(object)
 })
 
+# assignWeight method.
+setGeneric("weights<-", function(object, value) standardGeneric("weights<-"))
+setReplaceMethod("weights", signature(object="CodelinkSet",value="matrix"),
+function(object, value) assayDataElementReplace(object, "weight", value))
 
 # probeNames-method.
 setGeneric("probeNames", function(object) standardGeneric("probeNames"))
