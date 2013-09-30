@@ -3,14 +3,13 @@ Package: codelink
 
 Version 1.30.0
 
-o Vignettes rewritten. Emphasis is put on the CodelinkSet classes. Documentation on the CodelinkSet interface has been largely included.
+o Vignettes rewritten. Now the default supported class is CodelinkSet. Documentation on the CodelinkSet interface has been largely revised. Documentation to the old Codelink class has moved to the Codelink_Legacy vignette.
 
 o Added generic method normalize() for Codelink and CodelinkSet classes.
 
-o Added support for flag-based weights. Intensities are assigned NA based
-on flags if old=TRUE in readCodelinkSet() (default old=FALSE).
+o Added support for type- and flag-based weights. Now only intensities for MSR spots (M flag) are assigned NA. The old behavior can be reproduced using old=TRUE in the call to readCodelinkSet() (default old=FALSE).
 
-o Background correction and normalization methods are borrowed from the limma package.
+o Background correction and normalization methods are now borrowed from the limma package.
 
 Version 1.24.0
 
