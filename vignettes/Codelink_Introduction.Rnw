@@ -115,17 +115,20 @@ Traditionally the codelink package has used flag information to assign NAs to va
 
 In the current implementation, only probes flagged as MSR spots (flag 'M'- which have an intensity value assigned of -9999), will be automatically converted to NA. This value cannot be adjusted since the value of the probes itself does not represent any measure of signal.
 
-In addition to this, probe weights will be computed by default, based on the conversion table shown in tables \ref{tab:Type} and \ref{tab:Flag}. The weight computation follows this process. First, weights are assigned based on type, with DISCOVERY probes being assigned \texttt{weight=1} and other probes \texttt{weight=0}. Then, weights are adjusted based on flags. The worst weight (type or flag weights when multiple) is assigned to each probe. The weights assigned can be controled by the \texttt{type.weights} and \texttt{flag.weights} argument to \texttt{readCodelinkSet()}. It is possible also to reassign weights after reading with the function \texttt{assignWeights()}. Weights can be used during preprocessing (background correction and normalization) and linear modeling.
+In addition to this, probe weights will be computed by default, based on the conversion table shown in tables \ref{tab:Type} and \ref{tab:Flag}. The weight computation follows this process. First, weights are assigned based on type, with DISCOVERY probes being assigned \texttt{weight=1} and other probes \texttt{weight=0}. Then, weights are adjusted based on flags. The worst weight (type or flag weights when multiple) is assigned to each probe. The weights assigned can be controled by the \texttt{type.weights} and \texttt{flag.weights} argument to \texttt{readCodelinkSet()}. It is possible also to reassign weights after reading with the function \texttt{createWeights()}. Weights can be used during preprocessing (background correction and normalization) and linear modeling.
+
+<<>>=
+w = createWeights(codset)
+## NOTE: a proper replacement function will be provided later:
+assayDataElement(codset,"weight")=w
+@
 
 \subsection{Accessing data}
 
 Data stored in a CodelinkSet object can be accessed using several accessor functions:
 <<>>=
-# get signal intensities.
+# get signal intensities. alias: getInt()
 head(exprs(codset))
-
-# an alias to exprs()
-head(getInt(codset))
 
 # get background intensities.
 head(getBkg(codset))
