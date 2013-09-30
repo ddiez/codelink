@@ -53,7 +53,7 @@ Class-specific methods:
 
 \examples{
 \dontrun{
-    data(codelink.exprset)
+    data(codset)
 }
 }
 \keyword{classes}

@@ -14,8 +14,8 @@
 }
 \author{Diego Diez}
 \examples{
-    data(codelink.exprset)
-    w <- createWeights(codelink.exprset)
+    data(codset)
+    w <- createWeights(codset)
 }
 \keyword{documentation}
 \keyword{utilities}

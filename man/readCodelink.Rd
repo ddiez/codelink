@@ -38,23 +38,16 @@ readCodelinkSet(filename, columns = list(Signal = "Spot_mean", Background = "Bkg
 \author{Diego Diez}
 \examples{
 \dontrun{
-    # reading default extension (TXT).
-    data <- readCodelink()
+	# specify a different one.
+    f <- list.files(pattern = "TXT")
+    codset <- readCodelinkSet(filename = f)
 
-    # specify a different one.
-    files <- list.files(pattern = "txt")
-    data <- readCodelink(files = files)
-
-    # example.
-    data(codelink.example)
-    
-    # read a targets file with phenotypic information
+	# read a targets file with phenotypic information
     # including sample names, file names and sample groups.
     pdata = read.AnnotationDataFrame("targets.txt")
     codset = readCodelinkSet(pdata$FileNames, phenoData=pdata)
     
-    # example
-    data(codelink.exprset)
+    data(codset)
 }
 }
 \keyword{documentation}

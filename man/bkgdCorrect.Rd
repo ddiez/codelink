@@ -32,8 +32,8 @@ bkgdCorrect(object, method = "half", preserve = FALSE, verbose = FALSE, offset =
 }
 \author{Diego Diez}
 \examples{
-    data(codelink.exprset)
-    codelink.exprset <- codCorrect(codelink.exprset, method = "half")
+    data(codset)
+    codset <- codCorrect(codset, method = "half")
 }
 \keyword{documentation}
 \keyword{utilities}

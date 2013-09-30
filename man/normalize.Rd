@@ -34,13 +34,11 @@
 }
 \author{Diego Diez}
 \examples{
-	data(codelink.exprset)
+	data(codset)
 	# Background correction.
-	codelink.exprset <- codCorrect(codelink.exprset,
-        method = "half")
+	codset <- codCorrect(codset, method = "half")
 	# Normalization.
-	codelink.exprset <- normalize(codelink.exprset,
-        method = "quantile")
+	codset <- normalize(codset, method = "quantile")
 }
 \keyword{documentation}
 \keyword{utilities}

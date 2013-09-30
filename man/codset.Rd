@@ -1,6 +1,6 @@
-\name{codelink.exprset}
+\name{codset}
 \docType{data}
-\alias{codelink.exprset}
+\alias{codset}
 \title{Dataset of class 'CodelinkSet'}
 \description{
   Dataset from a h20kcod (Codelink Human UniSet I 20k) array containing 4
