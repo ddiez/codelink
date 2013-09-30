@@ -81,9 +81,9 @@ readCodelink <- function(files=list.files(pattern = "TXT"), sample.name=NULL, fl
 {
 	if(length(files) == 0) stop("no Codelink files found.")
 	if(!old)
-		warning("readCodelink()/readCodelinkSet() does not convert intensities in NA based on flags anymore. Instead, use createWeights() to give different weight to spots during normalization and linear modeling. To obtain the old behavior call readCodelink()/readCodelinkSet() with 'old=TRUE'.")
+		message("readCodelink()/readCodelinkSet() does not convert intensities in NA based on flags anymore, except for spots flagged as 'M' (MSR spot). Instead, use createWeights() assign weights to spots during normalization and linear modeling. To obtain the old behavior call readCodelink()/readCodelinkSet() with 'old=TRUE'.")
 	if(old)
-		warning("calling readCodelink()/readCodelinkSet() witl 'old=TRUE'")
+		message("calling readCodelink()/readCodelinkSet() with 'old=TRUE'")
 	
 	nslides <- length(files)
 
@@ -96,6 +96,7 @@ readCodelink <- function(files=list.files(pattern = "TXT"), sample.name=NULL, fl
 		stop("sample.name must have equal length as files.")
 	
 	flags <- c("G", "L", "S", "C", "I", "M", "X")
+	flag.cc.new <- list(M = NA) # only MSR spots are assigned NA.
 	flag.cc <- list(M = NA, C = NA, I = NA)
 	if(!missing(flag)) {
 		for(k in names(flag)) {
@@ -393,11 +394,18 @@ readCodelink <- function(files=list.files(pattern = "TXT"), sample.name=NULL, fl
 			codelink$Bmedian[sel] <- flag.cc[[k]]
 		}
 		cat("OK\n")
+	} else {
+		cat("** applying flags to MSR spots ...")
+		for(k in names(flag.cc)) {
+			sel <- grep(k, codelink$flag)
+			codelink$Smean[sel] <- flag.cc.new[[k]]
+			codelink$Bmedian[sel] <- flag.cc.new[[k]]
+		}
+		cat("OK\n")
 	}
 		
 	cat("** computing weights ...")
-	codelink$weight=assignTypeWeights(codelink, type.weights=type.ww)
-	codelink$weight=assignFlagWeights(codelink, flag.weights=flag.ww, w=codelink$weight)
+	codelink$weight=createWeights(codelink,type.weights=type.ww,flag.weights=flag.ww)
 	cat("OK\n")
 	
 	# compute SNR.
@@ -458,14 +466,22 @@ writeCodelink <- function(object, file, dec = ".", sep = "\t", flag = FALSE, chi
 # 	w
 # }
 
+# "assignWeights<-"=function(object, weight) {
+# 	assayDataElement(x, "weight")=weight
+# }
+# setGeneric("assignWeights")
+
 createWeights = function(object,type.weights=NULL,flag.weights=NULL) {
-	w=assignTypeWeights(object,type.weights)
-	assignFlagWeights(object,flag.weights,w=w)
+	w=createTypeWeights(object,type.weights)
+	createFlagWeights(object,flag.weights,w=w)
 }
 
-assignFlagWeights=function(object,flag.weights=NULL,w) {
-	if(missing(w))
+createFlagWeights=function(object,flag.weights=NULL,w) {
+	if(missing(w)) {
 		w = array(1,dim(object))
+		colnames(w)=sampleNames(object)
+		rownames(w)=featureNames(object)	
+	}
 	if(is.null(flag.weights))
 		flag.weights = c("G"=1,"L"=1,"S"=1,"C"=0,"I"=0,"M"=0,"X"=0)
 	for(k in names(flag.weights)) {
@@ -476,9 +492,12 @@ assignFlagWeights=function(object,flag.weights=NULL,w) {
 	w
 }
 
-assignTypeWeights=function(object,type.weights=NULL,w) {
-	if(missing(w))
+createTypeWeights=function(object,type.weights=NULL,w) {
+	if(missing(w)) {
 		w = array(1,dim(object))
+		colnames(w)=sampleNames(object)
+		rownames(w)=featureNames(object)	
+	}
 	if(is.null(type.weights))
 		type.weights = c("DISCOVERY"=1,"FIDUCIAL"=0,"POSITIVE"=0,"NEGATIVE"=0, "OTHER"=0)
 	for(k in names(type.weights)) {
