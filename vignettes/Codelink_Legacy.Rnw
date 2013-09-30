@@ -286,16 +286,6 @@ useful for someone.
 
 The function \Rfunction{writeCodelink} exports a \Robject{Codelink} object to a file. The file will contain probe intensities and, if specified flag = TRUE, probe quality flags.
 
-\subsection{Using weights}
-
-The \Rfunction{createWeights} function creates a matrix of weights based on 
-probe type and flag labels. This can be used during normalization (CyclicLoess) and when fitting a linear model with \Rpackage{limma}.
-
-<<createWeights, comment=NA>>=
-w <- createWeights(codelink.example)
-
-w[1:10,]
-@
 
 \subsection{Merging arrays}
 
