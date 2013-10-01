@@ -3,13 +3,13 @@ Package: codelink
 
 Version 1.30.0
 
-o Vignettes rewritten. Now the default supported class is CodelinkSet. Documentation on the CodelinkSet interface has been largely revised. Documentation to the old Codelink class has moved to the Codelink_Legacy vignette.
+o The most visible change is that the CodelinkSet interface has been adopted as the official supported system. Documentation of these topic has been improved, and a new vignette describing the CodelinkSet system is available (Codelink_Introduction). Documentation to the old Codelink class has moved to the Codelink_Legacy vignette.
+
+o Before, readCodelink() would assign NA values to spots flagged as M (MSR spot), I (Irregular) and C (Contaminated). This could cause in large datasets that many spots would have at least one sample with NA at random, reducing drastically the number of de facto spots/probes used during normalization. Many thanks to Emmanuelle Dantony for spotting this problem and subsequent feedback.
+ 
+ Because of this and other problems implementing and appropriate method to deal with this, automatic assigment of NA values is not performed anymore. The only exception are M flagged spots, which have intensity values of -9999, and hence do not represent any measure of intensity. Also, background and normalization methods are applied calling the appropriate functions in the limma package. Support for type- and flag-based weights has been included, and weights are automatically created by readCodelinkSet(). Weights can be used to modulate the contribution of some probes to normalization and during linear modeling more efficiently. Examples on how to use these approaches are documented in the vignette Codelink_Introduction.
 
 o Added generic method normalize() for Codelink and CodelinkSet classes.
-
-o Added support for type- and flag-based weights. Now only intensities for MSR spots (M flag) are assigned NA. The old behavior can be reproduced using old=TRUE in the call to readCodelinkSet() (default old=FALSE).
-
-o Background correction and normalization methods are now borrowed from the limma package.
 
 Version 1.24.0
 
