@@ -1,5 +1,7 @@
 \name{createWeights}
 \alias{createWeights}
+\alias{createWeights,CodelinkSet-method}
+\alias{createWeights,Codelink-method}
 \title{Create weight for Codelink chips}
 \description{
   Create a weight matrix based on probe type and flags.

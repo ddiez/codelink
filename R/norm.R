@@ -3,7 +3,9 @@
 #normalize <- function(object, method = "quantiles", log.it = TRUE,
 #	preserve = FALSE, weights = NULL, verbose = FALSE) {
 setMethod("normalize", "Codelink", function(object, method="quantiles", log.it=TRUE, preserve=FALSE, weights=NULL, loess.method="fast") {
-#normalize = function(object, method="quantiles", log.it=TRUE, preserve=FALSE, weights=NULL, loess.method="fast") {	
+#normalize = function(object, method="quantiles", log.it=TRUE, preserve=FALSE, weights=NULL, loess.method="fast") {
+	.Deprecated(msg="The Codelink interface is deprecated. Read Codelink data with 'readCodelinkSet' instead. More details in the vignette and documentation.")
+	
 	if(!is(object,"Codelink")) stop("A Codelink object is needed.")
 	if(is.null(object$Ri)) stop("Background corrected intensities needed.")
 	if(log.it && object$method$log) stop("Intensities already log2.")

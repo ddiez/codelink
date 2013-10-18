@@ -47,7 +47,7 @@ c2e <- function (object, annotation = NULL, phenodata = NULL, featuredata = NULL
     bkg <- object$Bmedian
 
     if (is.null(phenodata)) {
-	    phenodata <- data.frame(sample = unique(object$sample))
+	    phenodata <- data.frame(sample = object$sample)
     	phenodata.varMet <- data.frame(labelDescription = "sample names", row.names = "sample")
     	phenodata <- new("AnnotatedDataFrame", data = phenodata, varMetadata = phenodata.varMet)
     }

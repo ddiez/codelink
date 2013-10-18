@@ -51,33 +51,40 @@ mergeArray <- function(object, class, names=NULL, method="mean",
 # Correct Spot intensity by background.
 bkgdCorrect <- function(object, method = "half", preserve = FALSE,
                         verbose = FALSE, offset = 0) {
+	.Deprecated(msg="The Codelink interface is deprecated. Read Codelink data with 'readCodelinkSet' instead. More details in the vignette and documentation.")
+	
 	if(!is(object,"Codelink")) stop("Codelink object needed.")
 	method <- match.arg(method, c("none", "subtract", "half", "normexp"))
-	switch(method,
-		none = {
-			object$Ri <- object$Smean
-			object$method$background <- "NONE"
-		},
-		subtract = {
-			object$Ri <- object$Smean - object$Bmedian
-			object$method$background <- "subtract"
-		},
-		half = {
-			object$Ri <- pmax(object$Smean - object$Bmedian, 0.5)
-			object$method$background <- "half"
-		},
-		normexp = {
-			object$Ri <- object$Smean
-			for (j in 1:ncol(object$Smean)) {
-			    x <- object$Smean[, j] - object$Bmedian[, j]
-			    out <- normexp.fit(x)
-			    object$Ri[, j] <- normexp.signal(out$par, x)
-			    if (verbose)
-					cat(" + Corrected array", j, "\n")
-			}
-			object$method$background <- "normexp"
-		}
-	)
+	
+	newInt=backgroundCorrect.matrix(object$Smean, object$Bmedian, method=method, offset=offset)
+	object$Ri=newInt
+	object$method$background=method
+	
+	#switch(method,
+	#	none = {
+	#		#object$Ri <- object$Smean
+	#		object$method$background <- "NONE"
+	#	},
+	#	subtract = {
+	#		#object$Ri <- object$Smean - object$Bmedian
+	#		object$method$background <- "subtract"
+	#	},
+	#	half = {
+	#		#object$Ri <- pmax(object$Smean - object$Bmedian, 0.5)
+	#		object$method$background <- "half"
+	#	},
+	#	normexp = {
+	#		object$Ri <- object$Smean
+	#		for (j in 1:ncol(object$Smean)) {
+	#		    x <- object$Smean[, j] - object$Bmedian[, j]
+	#		    out <- normexp.fit(x)
+	#		    object$Ri[, j] <- normexp.signal(out$par, x)
+	#		    if (verbose)
+	#				cat(" + Corrected array", j, "\n")
+	#		}
+	#		object$method$background <- "normexp"
+	#	}
+	#)
 	if(!preserve) object$Smean <- NULL
 	if(!preserve) object$Bmedian <- NULL
 	if(offset) object$Ri <- object$Ri + offset
