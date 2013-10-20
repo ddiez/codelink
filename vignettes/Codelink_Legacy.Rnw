@@ -1,3 +1,4 @@
+%\VignetteEngine{knitr}
 %\VignetteIndexEntry{codelink}
 %\VignetteKeywords{Preprocessing, Codelink}
 %\VignetteDepends{codelink}
