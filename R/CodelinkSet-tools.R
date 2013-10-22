@@ -1,10 +1,10 @@
 # temporary wrapper.
-readCodelink2 <- function(..., phenodata = NULL, featuredata = NULL) {
-	#colnames = list(Signal = "Spot_mean", Background = "Bkgd_median")) {
-	tmp <- readCodelink(...)
-	#Codelink2eSet(tmp)
-	c2e(tmp, phenodata = phenodata, featuredata = featuredata)
-}
+#readCodelink2 <- function(..., phenodata = NULL, featuredata = NULL) {
+#	#colnames = list(Signal = "Spot_mean", Background = "Bkgd_median")) {
+#	tmp <- readCodelink(...)
+#	#Codelink2eSet(tmp)
+#	c2e(tmp, phenodata = phenodata, featuredata = featuredata)
+#}
 
 # readCodelinkSet <- function(targets, filename, columns = list(Signal = "Spot_mean", Background = "Bkgd_median"), phenoData, ...) {
 # 	if(missing(filename) && missing(targets)) stop("argument 'targets' or 'filename' must be specified.")
@@ -29,12 +29,13 @@ readCodelink2 <- function(..., phenodata = NULL, featuredata = NULL) {
 
 readCodelinkSet <- function(filename, columns = list(Signal = "Spot_mean", Background = "Bkgd_median"), phenoData=NULL, ...) {
 	if(missing(filename)) stop("argument 'filename' must be specified.")
-	tmp <- readCodelink(files = filename, ...)
-	c2e(tmp, phenodata = phenoData)
+	#tmp <- readCodelink(files = filename, ...)
+	tmp = .readCodelinkRaw(files = filename, ...)
+	Codelink2CodelinkSet(tmp, phenodata = phenoData)
 }
 
 
-c2e <- function (object, annotation = NULL, phenodata = NULL, featuredata = NULL, intensity = "Smean") 
+Codelink2CodelinkSet <- function (object, annotation = NULL, phenodata = NULL, featuredata = NULL, intensity = "Smean") 
 {
     if (class(object) != "Codelink") 
         stop("Codelink-object needed.")

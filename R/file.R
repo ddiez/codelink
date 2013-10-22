@@ -77,9 +77,12 @@ checkColumns <- function(x, y)
 }
 # readCodelink()
 # read of codelink data.
-readCodelink <- function(files=list.files(pattern = "TXT"), sample.name=NULL, flag, flag.weights, type.weights, dec=NULL, type="Spot", preserve=FALSE,	verbose=2, file.type="Codelink", check=TRUE, fix=FALSE, old=FALSE)
-{
+readCodelink = function(files=list.files(pattern = "TXT"), sample.name=NULL, flag, flag.weights, type.weights, dec=NULL, type="Spot", preserve=FALSE,	verbose=2, file.type="Codelink", check=TRUE, fix=FALSE, old=FALSE) {
 	.Deprecated(msg="The Codelink interface is deprecated. Read Codelink data with 'readCodelinkSet' instead. More details in the vignette and documentation.")
+	.readCodelinkRaw(files=files, sample.name=sample.name, flag=flag, flag.weights=flag.weights, type.weights=type.weights, dec=dec, type=type, preserve=preserve,	verbose=verbose, file.type=file.type, check=check, fix=fix, old=old)
+}
+.readCodelinkRaw <- function(files=list.files(pattern = "TXT"), sample.name=NULL, flag, flag.weights, type.weights, dec=NULL, type="Spot", preserve=FALSE,	verbose=2, file.type="Codelink", check=TRUE, fix=FALSE, old=FALSE)
+{	
 	if(length(files) == 0) stop("no Codelink files found.")
 	if(!old)
 		warning("'readCodelink' and 'readCodelinkSet' do not convert intensities to NA based on flags anymore, except for spots flagged as 'M' (MSR spot). Instead, createWeights() is used to assign weights. These weights can be used during normalization and linear modeling. To obtain the old behavior use parameter 'old=TRUE' (weights will be created anyway).")

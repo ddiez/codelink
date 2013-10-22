@@ -23,4 +23,4 @@ export(readCodelink, writeCodelink, reportCodelink,
 	plotMA, plotCorrelation, plotDensities, plotCV, imageCodelink,
 	bkgdCorrect, normalize, mergeArray, createWeights, arrayNew,
 	selCV, cutCV, fc2Cond, na2false, logCodelink,
-	readCodelinkSet)
+	readCodelinkSet,Codelink2CodelinkSet)

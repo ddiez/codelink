@@ -227,13 +227,13 @@ function(object, array, what = "ma", ...)
 		density = {
 			#if(missing(array)) array = NULL
 			#codPlotDensity(x, array, ...) },
-			codPlotDensity(x, ...) },
+			codPlotDensity(x, array=array, ...) },
 		scatter = {
 			if(missing(array)) array = 1;
-			codPlotScatter(x, array, ...) },
+			codPlotScatter(x, array=array, ...) },
 		image = {
 			if(missing(array)) array = 1;
-			codPlotImage(x, array, ...) }
+			codPlotImage(x, array=array, ...) }
 	)
 })
 # codPlot(), MArrayLM-method.
@@ -338,7 +338,8 @@ function(x, array, lwd, ...)
 	xlim <- c()
 	ylim <- c()
 	for(n in 1:narray) {
-		d[[n]] <- density(X[, n], na.rm = TRUE)
+		k=array[n]
+		d[[n]] <- density(X[, k], na.rm = TRUE)
 		xlim <- c(xlim, d[[n]]$x)
 		ylim <- c(ylim, d[[n]]$y)
 	}
@@ -354,7 +355,7 @@ function(x, array, lwd, ...)
 	for(n in 1:narray)
 		lines(d[[n]], col = col[n], lwd = lwd, ...)
 	
-	legend("topright", legend = sampleNames(x), fill = col, bty = "n")
+	legend("topright", legend = sampleNames(x[,array]), fill = col, bty = "n")
 	
 	invisible(d)
 })
