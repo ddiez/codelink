@@ -63,6 +63,9 @@ Codelink2CodelinkSet <- function (object, annotation = NULL, phenodata = NULL, f
     if (is.null(annotation))
     	chip <- annotation(object)
     
+    if(is.null(object$weight))
+    	object$weight=createWeights(object)
+    
 	tmp <- new("CodelinkSet", exprs = int, background = bkg, 
         flag = object$flag, weight=object$weight, snr = object$snr, annotation = chip)
     phenoData(tmp) <- phenodata

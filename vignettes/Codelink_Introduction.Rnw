@@ -111,6 +111,15 @@ data(codset)
 codset
 @
 
+To convert old Codelink objects into the new CodelinkSet the handy function Codelink2CodelinkSet() can be used:
+
+<<>>=
+data(codelink.example)
+print(is(codelink.example))
+tmp=Codelink2CodelinkSet(codelink.example)
+tmp
+@
+
 \subsection{Flags and weights}
 Traditionally the codelink package has used flag information to assign NAs to values. This behavior has been changed since the version released with Bioconductor 2.13 (October, 2013). To reproduce the old behavior call \texttt{readCodelinkSet()} with argument \texttt{old=TRUE}.
 
