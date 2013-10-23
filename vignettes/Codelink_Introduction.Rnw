@@ -1,5 +1,5 @@
 %\VignetteEngine{knitr}
-%\VignetteIndexEntry{codelink}
+%\VignetteIndexEntry{Codelink Intruction}
 %\VignetteKeywords{Preprocessing, Codelink}
 %\VignetteDepends{codelink}
 %\VignetteDepends{knitr}
