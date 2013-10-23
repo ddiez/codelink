@@ -11,8 +11,8 @@
 }
 \arguments{
 	\item{object}{an object of class "Codelink" or "CodelinkSet".}
-	\item{type.weights}{type weights used.}
-	\item{flag.weights}{flag weights used.}
+	\item{type.weights}{named character vector of type weights used.}
+	\item{flag.weights}{named character vector of flag weights used.}
 }
 \author{Diego Diez}
 \examples{
