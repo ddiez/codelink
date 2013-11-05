@@ -17,6 +17,7 @@
 \alias{getFlag,CodelinkSet-method}
 \alias{getWeight,CodelinkSet-method}
 \alias{exprs,CodelinkSet-method}
+\alias{Codelink2CodelinkSet}
 
 
 \alias{probeNames}
@@ -35,6 +36,7 @@
 \section{Description}{
 	CodelinkSet objects are derived from ExpressionSet and therefore inherits all their methods. Additional methods are defined to extract information:
 
+	Old Codelink-class objects can be converted into CodelinkSet instances using the function Codelink2CodelinkSet.
 }
 
 \section{Extends}{
