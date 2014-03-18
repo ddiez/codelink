@@ -1,13 +1,19 @@
 Package: codelink
 ====================
 
+Version 1.32.0
+
+o Minor fixes to documentation.
+
+o Dropped the old term "Bioarray" (originally used for the first Codelink platform) from the DESCRIPTION file.
+
 Version 1.30.0
 
-o The most visible change is that the CodelinkSet interface has been adopted as the official supported system. Documentation of these topic has been improved, and a new vignette describing the CodelinkSet system is available (Codelink_Introduction). Documentation to the old Codelink class has moved to the Codelink_Legacy vignette.
+o The CodelinkSet class has been adopted as the official supported class for storing Codelink data. Documentation about this topic has been improved, and a new vignette describing the CodelinkSet interface is available (Codelink_Introduction). Documentation for the old Codelink class has been moved to the Codelink_Legacy vignette.
 
-o Before, readCodelink() would assign NA values to spots flagged as M (MSR spot), I (Irregular) and C (Contaminated). This could cause in large datasets that many spots would have at least one sample with NA at random, reducing drastically the number of de facto spots/probes used during normalization. Many thanks to Emmanuelle Dantony for spotting this problem and subsequent feedback.
- 
- Because of this and other problems implementing and appropriate method to deal with this, automatic assigment of NA values is not performed anymore. The only exception are M flagged spots, which have intensity values of -9999, and hence do not represent any measure of intensity. Also, background and normalization methods are applied calling the appropriate functions in the limma package. Support for type- and flag-based weights has been included, and weights are automatically created by readCodelinkSet(). Weights can be used to modulate the contribution of some probes to normalization and during linear modeling more efficiently. Examples on how to use these approaches are documented in the vignette Codelink_Introduction.
+o Before, readCodelink() assigned NA values to spots flagged as 'M' (MSR spot), 'I' (Irregular) and 'C' (Contaminated). This could cause some problems in large datasets during normalization. Because any row containing NAs is removed during normalization, when the number of samples increases the number of removed rowa increases as well, reducing drastically the number of de facto spots/probes used during normalization. Now, assigment of NA values is not performed anymore, the only exception being 'M' flagged spots, which have intensity values of -9999, and hence do not represent any measure of intensity. Many thanks to Emmanuelle Dantony for spotting this problem and subsequent feedback.
+
+o Background and normalization methods are applied calling the appropriate functions in the limma package. Support for type- and flag-based weights has been included, and weights are automatically created by readCodelinkSet(). Weights can be used to modulate the contribution of some probes to normalization and during linear modeling more efficiently. Examples on how to use these utilities are documented in the vignette Codelink_Introduction.
 
 o Added generic method normalize() for Codelink and CodelinkSet classes.
 
