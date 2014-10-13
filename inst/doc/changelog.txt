@@ -1,0 +1,711 @@
+0.0.1
+  - New R package created.
+
+0.0.2
+  - FIX legend position in plotCorrelation.
+
+0.0.3
+  - Make read.codelink(raw=TRUE) default. Added changelog file.
+
+0.0.4
+  - Added require(genefilter) inside filter functions.
+  - Split source file codelink.R into file.R, plot.R, filter.R, data.R and 
+  class.R.
+
+0.0.5
+  - Added require(annotate) inside codelink.report().
+  - FIX: Move codelink.report from plot.R to file.R.
+
+0.0.6
+  - read.codelink() now parses first file with scan(flush=TRUE,na.strings="") 
+  to faster and detect valid number of genes in malformed txt exported files.  
+  That allows the function to work now with different bioarray plattforms.
+  - Changed format of changelog file.
+
+0.0.7
+  - Removed debug code from read.codelink().
+
+0.0.8
+  - read.codelink() set negative values to NA not 0.1 (as in limma).
+
+0.0.9
+  - renamed codelink.merge() to merge.codelink().
+  - renamed codelink.report() to report.codelink().
+  - Added documentation for merge.codelink() and report.codelink().
+
+0.1.0
+  - FIX enable of NA in plotMA() and plotDensities().
+  - Added wrapper normalize.codelink() to normalize.loess() and 
+  normalize.quantiles() from affy package.
+  - read.codelink() set negative values to 0.01 This is for compatibility with 
+  normalization functions from affy package, until new ones are build.
+  - Added method write.codelink() to export data.
+  - read.codelink() now can set decimal point (dec="." option).
+
+0.1.1
+  - Partially restored plotCorrelation() function, lost somewhere when source 
+  files where splitted.
+  - Added normalize.codelink.loess() a modified version of normalize.loess() 
+  from affy package that allows NA values.
+  - Added support for NA values in plotDensities() and plotMA().
+  - Added neg.val option in read.codelink() to allow set negative values.  
+  Default to NA.
+  - Added method loess.affy in normalize.codelink() to allow normalization 
+  using de default affy function.
+  - Added method quantiles.affy in normalize.codelink() to allow normalization 
+  using the default affy fucntion.
+  - Modified method quantiles in normalize.codelink() to use 
+  normalizeQuantiles() from package limma that can do quantiles normalization 
+  with NA values.
+  - Renamed plotDensities() to plotDensities.Codelink(), plotMA() to 
+  plotMA.Codelink() and plotCorrelation() to plotCorrelation.Codelink() to 
+  allow loading of packages like limma that have similar named functions to 
+  other object types.
+  - Renamed normalize.R to norm.R.
+  - Changed some methods names in normalize.codelink().
+  - Renamed normalize.codelink() to normalize.Codelink().
+  - Make read.codelink() default neg.val=0.01.
+  - Renamed read.codelink() to read.Codelink(), write.codelink() to 
+  write.Codelink(), report.codelink() to report.Codelink() and merge.codelink() 
+  to merge.Codelink().
+  - Added "ALL" to type option in normalize.Codelink() to allow use all points 
+  in normalization. Make it the default value.
+
+0.2.0
+  - Mayor changes to all functions. Change Codelink class description to 
+  acomodate fields found in Codelink exported text data. Slots are named as the 
+  corresponding fields. Some slots store information about different data 
+  process. All functions changed have been named equal as the old ones plus 2 
+  added. This is a transitional version. If all works those functions would be 
+  renamed as the defaults in next version. A list of functions changed is:
+  - Codelink class definition and other redefinitions: dim, as.matrix, [, etc.
+  - read.Codelink2() new slots assignment. Reads Spot_mean and Bkgd_median.
+  - merge.Codelink2() support to new Codelink class. Some improvements.
+  - bkgdCorrect.Codelink() bakground correction based in limma ones. Supported 
+  methods: none, subtract, half, edwards and normexp (not working always).
+  - normalize.Codelink() adapted to new Codelink class.
+  - plotMA.Codelink2() adapted to Codelink class. Detects automatically slots.
+  - plotDensities.Codelink2() as above.
+  - plotCorrelation.Codelink() finished implementation. As above.
+  - write.Codelink() support to new Codelink class. FIX for header information, 
+  in progress.
+  - report.Codelink2() initial support to new Codelink class.
+  - Removed assignment of cv slot from merge.Codelink(). Not sure yet how to 
+  make it.
+
+0.2.1
+  - Support for autodetecting decimal point type.
+  - FIXED write.Codelink() header and allow to specify decimal type.
+
+0.2.2
+  - Improved as.matrix() method.
+  - Support for reading Raw_intensity and Normalized_intensity with 
+  read.Codelink2()
+
+0.2.3
+  - Renamed all new functions to the default ones: read.Codelink2() to 
+  read.Codelink() etc.
+  - Removed all old functions except report.Codelink() not yet updated.
+
+0.2.4
+  - FIXED report.Codelink2() and moved to report.Codelink(). All function 
+  deleted.
+  - normalize.Codelink() allow return of log2 values. Info stored in 
+  'Log_transformed' slot in Codelink object.
+  - changed plot functions to detect 'Log_transformed' slot.
+  - make 'quantiles' default normalization method for normalize.Codelink().
+
+0.2.5
+  - Added support to cv calculation in merge.Codelink() to later filter of 
+  genes.
+  - FIXED class.R to add support for 'Normalized_intensity' and 
+  'Normalized_intensity_cv' slots in '[' method.
+  - merge.Codelink() stop if 'names' argument is NULL.
+  - merge.Codelink() allow for log2 the 'Normalized_intensity' slot. That is 
+  because merging is not the same on log or not log data (Arithmetic mean vs 
+  Geometric mean).
+  - normalize.Codelink() code clean up.
+
+0.2.6
+  - Header information in exported file with export.Codelink() added.
+  - Default values for 'BkgdCorrection_method', 'Normalization_method' and 
+  'Merge_method' slots changed from 'NA' to 'NONE'.
+
+0.3.0
+  - Automatic Sample name detection from header (restored).
+  - Minor modifications to header information in write.Codelink().
+  - Some code clean up in all files.
+  - Moved to colorRampPalette() in plots.
+
+0.3.1
+  - log2.Codelink() function to apply log2 to a Codelink object.
+  - Support for highlighted points in plotMA.Codelink().
+  - Clean up console output from read.Codelink() plus summary info added.
+  - read.Codelink() read 'Bkgd_stdev' slot when available and if 'Spot_mean' is 
+  read.
+  - snr.Codelink() calculate Codelink SNR as described.
+  - SNR() calculates SNR in read.Codelink()
+  - plotMA.Codelink() support labeling by 'SNR' slot.
+  - FIX: NAs handle in plotMA.Codelink() (Now labels are correctly displayed 
+  using 'Spot_mean')
+  - Support for 'Bkgd_stdev' and 'SNR' slots in class definitions.
+  - Support for 'SNR' in merge.Codelink().
+  - FIX: Some weird things in merge.Codelink()
+  - fc.Codelink() method added to select genes based in fold change.
+
+0.3.2
+  - FIX: plotMA.Codelink() correct position of legend in "Probe_type" labeling.
+  - plotMA.Codelink() support 'plot.theme' option to better visualization on 
+  screens (i.e. 'black theme')
+  - report.Codelink() accepts a list of genes (character vector) again.
+  - Added support to merge.Codelink() for use of 'Raw_intensity' slot from 
+  unnormalized data.
+  - Renamed 'Normalized_intensity_cv' slot to 'Intensity_cv' as 
+  merge.Codelink() can be applied to unnormalized data.
+
+0.3.3
+  - Detection of product type from file. An error message is produced of 
+  different arrays are loaded together.
+  - FIX some information log in read.Codelink() and merge.Codelink().
+
+0.4.0
+  - Modified plotDensities.Codelink() to better visualization.
+  - Remove Bkgd_stdev slot after computing SNR in read.Codelink().
+  - Added SNR label in plotCorrelation.Codelink()
+  - FIX: SNR label in plotMA.Codelink() and plotCorrelation().
+  - FIX: Some fixes in plotCorrelation.Codelink().
+
+0.4.1
+  - Added Batch_name slot prompt in read.Codelink() to use as Batch Name for 
+  analysis.
+  - Added support for Batch_name slot in plotMA.Codelink(), 
+  plotDensities.Codelink() and plotCorrelation.Codelink().
+  - Initial support for Codelink Flags on file loading: MSR and I flagged spots 
+  are set to NA.
+  - Change in normalize.Codelink() from normalize.quantiles in package affy to 
+  normalizeQuantiles from package limma that allows for NA.
+  - Minor FIX in Normalize_method slot identifier (Only method not package 
+  used).
+  - Removed high.list support in plotMA.Codelink() as it is not working as 
+  expected. To be fixed later...
+  - Removed filter.R file with filter function for genefilter package (Not 
+  used).
+
+0.4.2
+  - Added support for all Quality_flag counts. 'M', 'I' and 'X' spot are set to 
+  NA.
+  - printHead() in class.R renamed to printHead.Codelink() to compatibility 
+  with limma.
+  - Automatic detection of Report name in Codelink files, assigned to 
+  'Batch_name' slot.
+  - Smart positioning of legend in plotting functions. Also remove some 
+  unnecessary code.
+  - Restoring highlighted genes support in plotMA.Codelink(), high.list is a 
+  logic vector indicating which genes of the object passed to highlight.
+
+0.4.3
+  - Added option legend.x on plotMA.Codelink() to allow change position of 
+  legend.
+  - Added plotCV.Codelink() for density plot of C.V. of merged objects.
+  - Added cutCV.Codelink() to calculate cutoff for C.V. of merged objects.
+  - Use normalize.loess.Codelink() with method 'loess' in normalize.Codelink() 
+  to allow for NAs.
+  - Allow change title in plotMA.Codelink(), plotCorrelation.Codelink() and 
+  plotDensities.Codelink(). Default tells measurement used (Spot_mean, 
+  Raw_intensity or Normalized_intensity).
+  - Read Product, Project and Experiment information from data files into data 
+  object as Product_name, Project_name and Experiment_name.
+  - Change Experiment_name as default information title in plot functions.
+  - 'C' flagged spots (Background contaminated) are no set bye default to NA.
+  - Allow custom intensity set based on flags. read.Codelink() accepts option 
+  flag that is a list with default (M=NA,I=NA,C=NA,X=NA).
+
+0.4.4
+  - Added subset support in plotCV.Codelink().
+  - Added cex for legend in density plotting functions.
+  - FIX some bugs in report.Codelink() to handle multiple Genbank accession 
+  numbers.
+  - Some minor FIXES in plotMA.Codelink().
+
+0.4.5
+  - high.list in plotMA.Codelink() need to be numerical vector indicating index of Codelink object to be plotted.
+  - better handling of SNR calculation in read.Codelink().
+
+0.4.6
+  - FIX warnings about documentation in R CMD check. Renamed merge.Codelink() 
+  to mergeCodelink().
+  - Removed main option from plotDensities.Codelink().
+  - Moved doc directory to inst directory as in other packages. Now doc will
+    contain the vignette of the package.
+  - Changed license to GPL.
+
+0.4.7
+  - Added other, other.names and ordered arguments to report.Codelink() to add
+	extra column with names (thinking on fold changes) and to be ordered on 
+	that column.
+  - FIX genes.type error in report.Codelink().
+  - na2false() function set NAs to FALSE in logical vectors. Used in
+    fc.Codelink().
+  - Added na2false() before return in fc.Codelink().
+  - Added selCV.Codelink() to select genes based on CV cutoff.
+  - Renamed mergeCodelink() to mergeArray.Codelink() (maybe not the last
+    time :) ).
+
+0.4.8
+  - Added arbitrary column addition to report.Codelink() passed as list. The
+    argument 'ordered' is renamed to 'other.ord' and accept the slot name or
+    the slot number of the list to order genes by. The argument other.names is
+    removed as names are obtained from the list.
+
+0.4.9
+  - Minor FIXES to plotting functions.
+  - Added codelink.example to data directory. Contain an example object for
+    Codelink class.
+  - Added first version of a vignette.
+  - Removed methods not actually used in bkgdCorrect.Codelink() until they
+    become well implemented.
+  - Intensity_cv slot renamed to CV.
+  - FIX File_name and Sample_name slots subsetting in '[' method.
+
+0.5.0
+  - FIX arguments passed to htmlpage() in report.Codelink().
+  - Some changes to plotting functions.
+
+0.5.1
+  - Project_name and Experiment_name are not stored now (as they could be very
+    variable) but yet parsed by read.Codelink().
+  - Removed dependence on Experiment_name and Project_name on plotting
+    functions.
+  - Rewrite of plotDensities.Codelink() as in plotCV.Codelink(), array
+    argument changed to subset.
+  - Improved codelink.example.
+  - Improved vignette.
+
+0.5.2
+  - Support missing Sample Name in Codelink files. If no sample name supplied
+    it is used the file name. Yet not support arbitrary long headers.
+
+0.6.0
+  - Mayor rework of read.Codelink(). Now allow different header files but of
+    the same product type and chip size. New functions readHeader.Codelink(),
+    dec.Codelink() and chipSize.Codelink().
+  - FIXED some bugs in flag dependent assignment (missing flags).
+
+0.7.0
+  - Version pump to enter BioC devel repository.
+  - Added biocViews slot to DESCRIPTION file.
+  - Some output polish of read.Codelink().
+  - FIX bug in determining if Bkgd_stdev column exists.
+  - Added 'preserve' argument to read.Codelink() that preserve Bkgd_stdev
+    slot.
+  - Added 'verbose' argument to read.Codelink() to set the level of
+    informative output.
+  - FIX use of argument 'dec' on read.Codelink().
+  - Some changes in class definitions: LargeDataObject-class removed as used only in
+    Codelink-class. Method 'show' is now a Codelink-class method. Added some
+    basic documentation of Codelink-class.
+
+0.7.1
+  - Added NAMESPACE to the package.
+  - Mayor API change: Almost all functions have lost the '.Codelink' tail.
+    Some functions have been totally renamed. See vignette for detailed
+    information about the new functions. Remain with '.Codelink' real S3
+    methods dim.Codelink() and as.matrix.Codelink().
+  - Changed Depends: R (>= 2.2), limma, annotate in DESCRIPTION file.
+
+0.7.2
+  - Added createWeights() function to create weights based on Probe_type.
+  - Remove unused argument 'type' from normalize() function.
+  - Updated vignette.
+  - Renamed group argument in mergeArrays to class.
+  - Added some more functions to NAMESPACE (logCodelink, na2false,
+    createWeights).
+
+0.7.3
+  - Mayor API change: Simplified slot names for Codelink object. See vignette
+    for a detailed description of new names and correspondence with old names.
+  - Added preserve argument to bkgdCorrect() and normalize() to allow
+    preservation of Smean, Bmedian and Ri slots.
+  - readCodelink() don't set spots flagged 'X' as NA by default.
+  - Updated vignette.
+
+0.7.4
+  - Changed 'file' argument in readCodelink() to
+    'file=list.files(pattern="TXT")' which is the most common used as Codelink
+    files have extension TXT.
+  - Better handling of 'Product' detection. If missing, product slot is set
+    to unknown and a warning is shown. If two product description disagree and
+    error is shown and the reading of files stopped.
+
+0.7.5
+  - Support for multiple flags in the same probe. The minor value or NA if
+    found is used.
+
+0.7.6
+  - FIX normalize() to warn about not background corrected data (it didn't
+    normalize but also it didn't say nothing about it).
+  - Improved snr label in plotMA(); now three levels are shown.
+  - merge.snr option to allow not to mean SNR in mergeArray(). Default: TRUE.
+  - Removed fc() in favour of fc2Cond() a more intuitive interface for fold
+    change computation.
+
+0.7.7
+  - Added snr.cutoff option for cutoff definition (default=1) used in
+    plotMA() to label spots by SNR.
+
+0.7.8
+  - Changed lowess line parameters in plotMA() for better visualization.
+  - FIX lowess line computation.
+
+0.7.9
+  - Added argument 'subset' to plotMA() allowing plotting only a subset of 
+  spots,  based in 'type' slot.
+  - Added argument 'pch' to plotMA() to control pch used to general points.  
+  May be useful when plotting subsets of spots.
+
+0.7.10
+  - Check for files detected in readCodelink().
+  - Check for correct header file in readHeader().
+  - Speed up of readHeader().
+
+0.7.11
+  - Added imageCodelink() function to plot arrays yet experimental.
+  - FIX flag based assignment in readCodelink().
+  - FIX check for log intensities in normalize().
+  - FIX log Ri in normalize().
+
+0.7.12
+  - Rewrite of writeCodelink().
+  - FIX htmlpage link in man pages.
+
+0.7.13
+  - FIX a bug in writeCodelink().
+  - Rename temporally plotMA() to plotMA2() as mask plotMA() from limma
+  package. The plotting of MArrayLM object is lost.
+  - This version is not committed to svn repository.
+
+0.99.0
+  - Renamed again plotMA2() to plotMA().
+  - Added support for "MArrayLM" object from limma package in plotMA().
+  - Version set to 0.99.0 to be (hopefully) part of BioC 1.8.
+  - Some FIXES in package vignette.
+
+1.0.0
+  - Version changed to BioC 1.8 release.
+
+## BioC 1.9
+
+1.1.0
+  - Version changed for BioC 1.9 devel.
+
+1.1.1
+  - Added support for normexp background adjustment from limma package.
+  - Added offset argument to bkgdCorrect() with default=0.
+  - Updated maintainer information.
+
+1.1.2
+  - Improvements to imageCodelink().
+  - New function arrayNew() creates calls x11() device to set suitable
+  dimensions to be used with imageCodelink().
+
+1.1.3
+  - Change order of parameters in arrayNew().
+  - Fix setting of slot method$background when using normexp method.
+
+1.1.4
+  - Small FIX in documentation.
+  - FIX Codelink-class.Rd as yet had some affy packages information...
+  - Added method "median" to normalize().
+
+1.1.5
+  - Added experimental support for XLS exported files with readHeaderXLS() function.
+  - Set parameters fill=TRUE and blank.lines.skip=TRUE in decDetect() to make it more robust.
+  - Added methods to dependences in DESCRIPTION file. Added a check for methods load in .onLoad() function.
+
+1.1.6
+  - FIXED a bug introduced in readCodelink() that prevented reading of files.
+
+1.2.0
+  - Version number increased for BioC-1.9 release.
+
+1.2.1
+  -  FIX read of files without "Logical_row" and "Logical_col" fields.
+
+## BioC 2.0
+
+1.3.0
+  - Version number increased for BioC-2.0 development.
+
+1.3.1
+  - Some code cleanup in readCodelink().
+  - Remove row.names=1 from readCodelink() to allow files without "Idx" field to be read.
+  - FIX read of files without "Logical_row" and "Logical_col" fields.
+  - Small change in changelog.txt to reflect BioC releases.
+
+1.3.2
+  - Experimental: Added generic function for Codelink objects to 
+  plotDensities().
+  - Changed example data 'codelink.example' to resolve issues with the show 
+  method, creating a vignette of several hundreds of pages.
+  - Removed unnecessary line 'Packaged' from DESCRIPTION as it is automatically 
+  generated by the build system and remains from my initial steps with R 
+  packages...
+  - Removed also dependency on R version as I really don't know which minimum 
+  version is needed. As I always use the current R version, this is the 
+  recommended one.
+
+1.3.3
+  - FIX as.matrix.Codelink for R-2.5.x.
+  - Reorganization of some code in class.R
+  - class.R renamed to Codelink-class.R
+
+1.3.4
+  - Added argument 'check' (default=TRUE) to readCodelink() that allows 
+  checking for column order consistency. Some versions of the Codelink software 
+  change the probes order in the exported file. You get weird results if that 
+  is the case, but may not notice the cause.
+  - Added argument 'fix' (default=FALSE) to readCodelink() to allow a fix of 
+  the probe order consistency problem. Probes are ordered based on Feature_id 
+  if present, which is an unique identifier based on probe position.  If not a 
+  dirty fix is tried using Probe_name, which may end messing a little bit some
+  duplicated probes, like control and fiducial as well as a few discovery 
+  probes spotted in duplicate.
+  - Improvements done to the vignette including new entry for imageCodelink() 
+  and for the new readCodelink() arguments.
+  - Added CITATION file into inst directory.
+
+1.3.5
+  - Added Collate field to DESCRIPTION to control the order .R files are read.  
+  Added import(method) to NAMESPACE.
+
+1.3.6
+  - Changed use of LOCUSID to ENTREZID in reportCodelink().
+
+1.3.7
+  - Updated example data codelink.example to new S4 representation in R-2.5.
+  - Added SaveImage: yes in the DESCRIPTION file.
+
+#Released BioC-2.0: 2007-04-26
+
+1.4.0
+  - Version number increased for BioC release.
+
+1.5.0
+  - Version number increased for next development version.
+
+1.5.1
+  - Removed SaveImage in DESCRIPTION file as it is Deprecated in favor of 
+  LazyLoad: yes in R-devel.
+
+1.5.2
+  - FIXED codelink.example.Rd (unmatched braces) and small improvements in 
+  documentation, following 'Writing R Extensions' guidelines.
+  - FIXED changelog.txt file and improvements.
+
+1.5.3
+  - Some minor fine tunning of plotMA(). Probably this needs major re-work.
+  - Changed default pch value for high.list to 21 with col="gray" and 
+  bg="orange" in plotMA().
+  - Updated CITATION file.
+  - Re-write of plotMA, clean up code and more smart arguments. Improved 
+  documentation.
+
+1.5.4
+  - FIXED: no info stored when using normalize() with method = 'median'.
+  - FIXED: header was not writen to exported file in writeCodelink().
+  - Added SNR to output of writeCodelink(). Improved header information.
+
+1.5.5
+  - plotMA() now plot mean SNR values when label = "snr" instead of individual 
+  pairs. In addition, it can use SNRmean if present in a MArrayLM object (which 
+  has to be added before by hand) or it can be passed to the snr argument. This 
+  allows showing the SNR information with fitted objects.
+  - Added weights support for method CyclicLoess ('loess' method) in 
+  normalize() through the corresponding argument.
+  - Added verbose option to normalize(), default to FALSE. Set same option in 
+  bkgdCorrect() to FALSE too.
+
+1.5.6
+  - Some improvements on the vignette as well as adding information about the 
+  new methods and options.
+  - Code cleanup in file.R. Now readCodelink() try to read the Feature_id field 
+  if present. This will allow in the future the transition from Codelink-class 
+  to CodelinkSet-class based object (class derived from eSet). The Feature_id 
+  is stored in the 'id' slot.
+  - Added initial files CodelinkSet-class.R CodelinkSet-methods.R and 
+  CodelinkSet-tools.R with definition of CodelinkSet, a class based on eSet.  
+  The function readCodelink2() readsdata into the old class and converts it to 
+  a CodelinkSet-object using the function Codelink2eSet(). Some methods are 
+  available but most the functionality is not working. This is a very first 
+  step for moving to eSet-based objects. The package now depends on Biobase.
+
+1.5.7
+  - Modified getInfo() to retrieve all preprocessing info from experimentData 
+  if no argument what is suplied.
+  - Added codPlot() an experimental general interface for all plotting 
+  functions. Implemented codPlotMA() function.
+  - Added column meanSNR to phenoData object. This way, it don't have to be 
+  computed every time we want to plot SNR in a codPlotMA. Added method 
+  meanSNR() to extract this information.
+  - Implemented normalization interface codNormalize(). Implemented 
+  pre-processing interface codPreprocess() that includes codCorrect() and 
+  codNormalize().
+  - Added functions normalize.median() and bgcorrect.normexp() to manage common 
+  computing.
+  - Implemented codPlotMA() for CodelinkSet and MArrayLM objects. Implemented 
+  codPlotDensities() for CodelinkSet objects. Added basic function plotma() for 
+  plotting common stuff in codPlotMA().
+
+1.5.8
+  - FIXED: codPlotMA() for MArrayLM-class. Added method for codPlot().
+  - When trying to correct or normalized data already corrected or normalized 
+  the functions show a warning and return the original data object.
+  - FIXED: plotma() in managing presence of type/snr information.
+  - ADDED: support for highlight spots in codPlotMA().
+
+1.5.9
+  - Added left features to codPlotMA() method.
+  - Added partial argument support to 'what' argument in codPlot() by using 
+  match.arg() function.
+  - Implemented codPlotImage() function. Added support function 
+  getChipDimensions() to get the grid/subgrid values for the knwon chips.
+  - Modified arrayNew() to use getChipDimensions(). Added function chipDevice() 
+  that creates an X11 device with the correct dimensions, calling arrayNew().
+
+1.5.10
+  - FIXED: islog is only assigned for Codelink-objects in plotMA().
+  - CHANGED: default colors for highlighted probes in plotMA() and codPlotMA() 
+  are set to cyan for background and blue for borders.
+
+1.5.11
+  - Imported especific variables from packages in Depends. In particular,   
+  normalizeQuantiles (as normalize.quantiles) from package limma and lookUp and 
+  htmlpage from package annotate.
+  - ADDED: If non log2 intensities are passed to codPlotDensity() then the 
+  transformation is done. Now, ... is passed to lines() and lwd is a parameter 
+  with default 2.
+  - ADDED: Interface to codPlot() for old Codelink-objects. It will be 
+  accessible until Codelink-class is deprecated.
+
+1.5.12
+  - FIXED: correct subsetting of logical$row and logical$col in Codelink 
+  objects.
+  - ADDED: functions to filter based on SNR, filtersnr is a function for use 
+  with the genefilter package. filterSNR() are wrapper functions for Codelink 
+  and CodelinkSet objects.
+  - ADDED: codUniverse() creates a universe of the especified annotation ids to 
+  be used with GOstats. Currently supported and tested ENTREZID. Works on 
+  Codelink and CodelinkSet objects.
+
+1.5.13
+  - ADDED: functions writeCluster() to output intensity values suitable for use 
+  with Cluster/TreeView. Currently methods are for Codelink, CodelinkSet and 
+  MArrayLM objects. The name is likely to change in favor of the new API 
+  convention, probably as an all-purpose exporting function.
+
+1.5.14
+  - FIXED reportCodelink() when NAs appeared in HTML, changed to blank.
+  - MODIFIED writeCluster() format of annotation and fixed NA in some 
+  annotations.
+
+1.5.15
+  - FIXED createUniverse() using always rwgcodGO as GO environment. Now it uses 
+  the one determined by the chip.
+  - FIXED documentation of as.matrix() and dim() where it was using the full 
+  names of the S3 methods as.matrix.Codelink() and as.dim.Codelink().
+  - FIXED encoding issue with arraySize.Rd. Small improvements.
+  - ADDED \dontrun{} to the pertinent \examples{} section in the documentation 
+  as is the proper method to display not run commands. Some minor improvements 
+  in the documentation.
+
+1.5.16
+  - FIXED weird return in codCorrect().
+  - ADDED experimental C code in src/ to fast reading of Codelink files. The 
+  function readCodelinkFiles() works pretty much the same as readCodelink() but 
+  is much faster. Currectly it reads data as a Codelink object. In addition, it 
+  reads also the feature_id field, that can be used for creating suitable 
+  CodelinkSet objects.
+  - ADDED this comments for the first time to the svn log.
+  - ADDED summary method for Codelink objects. Actually it outputs a summary of 
+  the flags.
+
+1.5.17
+  - FIXED improper use of '&' instead of '&&' inside 'if' statements (suggested 
+  by Seth Falcon).
+  - REMOVED C code for fast reading of codelink files. The function strsep() is 
+  not portable to windows hence the inclusion of this code must wait until a 
+  different approach is found.
+
+1.5.18
+  - FIXED flag application in readCodelink() so that it doesn't reset all 
+  values when setting one. Simplified flag based filter.
+  - ADDED summaryFlag() method for Codelink objects. Included in the vignette.
+  - FIXED some improper use of '|' instead of '||' too (forgot last time).
+
+1.6.0
+  - Bioconductor 2.1 release.
+
+1.7.0
+  - Development branch created.
+
+1.7.1
+1.7.2
+  - Added method annotation() to extract that information when available.  The 
+  annotation information is now guessed for new objects and stored in 
+  $method$annotation.- Changed output format for writeCluster(), it is now use 
+  the gene symbol for annotation.
+  - FIXED typo in codelink vignette: mergeArray() doesn't have a 'group' 
+  argument, changed to class.
+  - FIXED warning about functions lacking description field in documentation.
+  - From now on the changelog will be appended to the svn commit message.
+
+1.7.3
+  - Experimental class CodelinkSet is now derived from ExpressionSet rather 
+  than eSet, allowing some nice integration with other pakcages (like limma).
+
+1.7.4
+  - Added method for ExpressionSet to writeCluster().
+  - Revert previous change from exprSet to ExpressionSet in the vignette and
+  mention current work in an ExpressionSet derived class.
+  - FIXED direct access to slots in codCorrect(), now it uses ancestor
+  methods (i.e. robust to API changes).
+
+1.7.5
+  - added new function c2e to better convert Codelink-objects to CodelinkSet.
+  - c2e accepts a phenoData object (like those read by
+  read.AnnotatedDataFrame().
+1.7.6
+  - added phenodata and feature data arguments to readCodelink2().
+
+1.8.0
+  - version for bioc-2.2.
+
+1.9.0
+  - version number for bioc-devel.
+
+1.9.1
+  - import 'annotation' and 'exprs' from Biobase to avoid warnings in R-2.8
+  (devel).
+
+1.9.2
+  - added vignette describing the CodelinkSet class.
+  - fixed notes about removing empty entries in .Rd files.
+
+1.9.3
+  - fixed high intensity probes turned NA by loess normalization.
+  - code clean up in writeCluster().
+
+1.9.4
+  - small fixes to vignette.
+  - added small section for exporting data to vignette.
+  - writeCodelink() now outputs ACCESSION and ENTREZID values.
+  - added method writeCodelink() to CodelinkSet.
+
+1.9.5
+  - added writeCodelink() example to vignette.
+  - new wrapper function readCodelinkSet().
+  - fixed writecluster symbol retrieval problem (now using lookUp from
+  annotate package).
+
+1.13.4
+  - Move changes to NEWS file.
