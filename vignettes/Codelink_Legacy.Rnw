@@ -1,0 +1,356 @@
+%\VignetteEngine{knitr}
+%\VignetteIndexEntry{Codelink Legacy}
+%\VignetteKeywords{Preprocessing, Codelink}
+%\VignetteDepends{codelink}
+%\VignetteDepends{knitr}
+%\VignettePackage{codelink}
+
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{geometry}
+\geometry{verbose,tmargin=3cm,bmargin=3cm,lmargin=3cm,rmargin=3cm}
+
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\texttt{#1}}}
+
+\begin{document}
+
+
+<<include=FALSE,cache=FALSE>>=
+library(codelink)
+library(knitr)
+opts_chunk$set(fig.align = 'center', concordance=TRUE)
+@
+
+\title{Codelink Legacy: the old Codelink class}
+\author{Diego Diez}
+\maketitle
+
+\section{Introduction}
+
+Codelink is a platform  for the analysis of gene expression on biological 
+samples property of Applied Microarrays, Inc. (previously was GE Healthcare and 
+Amersham). The hybridization reagents are still supplied by GE Healthcare.
+
+The system uses 30 base long oligonucleotide probes for expression testing.  
+There is a proprietary software for reading scanned images, doing spot 
+intensity quantization and some diagnostics. The software assigns quality flags 
+(see Table~\ref{tab:Flag}) to each spot on the basis of a signal to noise ratio 
+(SNR) computation (Eq: \ref{eq:SNR}) and other morphological characteristics as 
+irregular shape of the spots, saturation of the signal or manufacturer spots 
+removed. By default, the software performs background correction (subtract) 
+followed by median normalization. The results can be exported in several 
+formats as XML, Excel, plain text, etc. This library allows to read Codelink 
+plain text exported data into R \cite{r} for the analysis of gene expression 
+with any of the available tools in R+Bioconductor\cite{BIOC}.
+
+For storing the available data, a new class \Robject{Codelink} was designed.
+The now defunt \Robject{exprsSet} in the \Rpackage{Biobase} package was not a 
+convenient store class for Codelink data, because it didn't allow probes with 
+duplicated names, as those names are stored as rownames in the expression 
+matrix.
+
+Currently there is experimental support for a \Robject{ExpressionSet} derived 
+class that can accomodate duplicated probe names in an 
+\Robject{AnnotatedDataFrame} whereas the feature ids would be used for row 
+names when available.
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|c|l|}
+\hline \em Flag & \em Description \\
+\hline
+G & Good signal (SNR >= 1)\\
+L & Limit signal (SNR < 1)\\
+I & Irregular shape \\
+S & Saturated signal \\
+M & MSR spot \\
+C & Background contaminated\\
+X & User excluded spots\\
+\hline
+\end{tabular}
+\caption{Quality Flag description. SNR: Signal to Noise Ratio.}
+\label{tab:Flag}
+\end{center}
+\end{table}
+
+\begin{equation}
+SNR=\frac{Smean}{(Bmedian + 1.5 * Bstdev)}
+\label{eq:SNR}
+\end{equation}
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|r|l|}
+\hline \em Probe type & \em Description \\
+\hline
+DISCOVERY & Gene expression testing probes \\
+POSITIVE & Positive control probes \\
+NEGATIVE & Negative control probes \\
+FIDUCIAL & Grid alignment probes \\
+OTHER & Other controls and housekeeping gene probes \\
+\hline
+\end{tabular}
+\caption{Probe types for Codelink arrays.}
+\label{tab:Type}
+\end{center}
+\end{table}
+
+\section{Reading data}
+
+Currently only data exported as plain text from Codelink software is supported.  
+Unfortunately the Codelink exported text format can have arbitrary columns and 
+header fields so depending of what you have exported you can read it or not.  
+The suggestion is that you put on the files everything you can, including  
+Spot\_mean and Bkgd\_median values so you can do background correction and 
+normalization in R. In addition, Bkgd\_stdev is needed to compute the SNR. If 
+you put Raw\_intensity or Normalized\_intensity columns then you can also read 
+it directly and avoid background correction and/or normalization but this is 
+not recommended. To read some Codelink files you do:
+
+<<input, eval=FALSE>>=
+# NOT RUN #
+library(codelink)
+foo <- readCodelink()
+summaryFlag(foo) # will show a summary of flag values.
+# NOT RUN #
+@
+
+This suppose that your files have the extension ``TXT'' (uppercase)
+and that they are in your working directory. If this is not the case you can 
+specify the files to be read with the 'file' argument. The function 
+\Rfunction{readCodelink} returns and object of \Robject{Codelink} similar to 
+that:
+
+<<data, comment=NA>>=
+data(codelink.example)
+
+codelink.example
+@
+
+\begin{table}[ht]
+\begin{center}
+\begin{tabular}{|r|l|}
+\hline \em Slot & \em Description \\
+\hline
+product & Chip name description \\
+sample & Sample names vector \\
+file & File names vector \\
+name & Probe names vector \\
+type & Probe types vector \\
+method & Methods applied to data \\
+method\$background & Background correction method used \\
+method\$normalization & Normalization method used \\
+method\$merge & Merge method used \\
+method\$log & Logical: If data is in log scale \\
+flag & Quality flag matrix \\
+Smean & Mean signal intensity matrix \\
+Bmedian & Median background intensity matrix \\
+Ri & Raw intensity matrix \\
+Ni & Normalized intensity matrix \\
+snr & Signal to Noise Ratio matrix \\
+cv & Coefficient of Variation matrix \\
+\hline
+\end{tabular}
+\caption{Description of Codelink object slots.}
+\label{tab:Slots}
+\end{center}
+\end{table}
+
+The \Robject{Codelink-class} is basically a list that stores information in 
+several slots (see Table~\ref{tab:Slots}). The chip type (product slot) is read 
+from the PRODUCT field if found in the header of Codelink files. If it is not 
+found then a warning message is shown and product slot is set to "Unknown". If 
+the product is not the same in all the files the reading is canceled with an 
+error message.
+
+By default, all spots flagged with M, I, and S flags are set to NA. This can be
+controlled with the flag argument of \Rfunction{readCodelink}. The flag 
+argument is a list that can contain a valid flag identifier and a value for 
+that flag.  For example, if you want to set all M flagged spots to 0.01 and let 
+other spot untouched you do:
+
+
+<<input-flag, eval=FALSE>>=
+foo <- readCodelink(flag = list(M = 0.01) )
+@
+
+It is possible to find probes wit more that one flag assigned, i.e. CL for a 
+probe labeled as C and L, CLI for a probe labeled as C, L and I, and so on. A a 
+regular expression is used to find flag types in an attempt to to manage all 
+the possible situations. When two user modified flags fall in the same probe 
+the more restricting (NA being the most) is assigned.
+
+\section{Background correction}
+
+If you have Spot\_mean values Bkgd\_median values the you can apply one of the 
+several background correction methos interfaced. This is done by the function 
+\Rfunction{bkgdCorrect}. To see the different options look at ?bkgdCorrect. For 
+instance, if you want to apply \emph{half} method you do:
+
+
+<<bkgcorrect, eval=FALSE>>=
+foo <- bkgdCorrect(foo, method = "half")
+@
+
+The default method used is \emph{half} and is based in the same method applied 
+in the \Rpackage{limma} \cite{limma} package to two channel microarrays. In 
+this method, the median background intensity (Bmedian) is subtracted from mean 
+spot intensity (Smean) and any value smaller that 0.5 is shift to 0.5 to ensure 
+no negative numbers are obtained that would prevent to transform the data into 
+log scale. Other available methods are \emph{none} that let the spot 
+intensities untouched, \emph{subtract} that is analog to the default method 
+used in the Codelink software and \emph{normexp} and interface to the method 
+available in the \Rpackage{limma} package.
+
+\section{Normalization}
+
+Normalization of the background corrected intensities is done by the wrapper 
+function \Rfunction{normalize}. The default method is \emph{quantile} 
+normalization that in fact call \Rfunction{normalizeQuantiles()} from 
+\Rpackage{limma} package (allowing for NAs). There is also the possibility to 
+use a modified version of CyclicLoess from \Rpackage{affy} \cite{affy} package 
+that allow using weights and missing values. Finally, the \emph{median} 
+normalization allows to normalize using a method analog to the default method 
+in the Codelink software. To normalize you usually do:
+
+<<normalize, eval=FALSE>>=
+foo <- normalize(foo, method = "quantiles")
+@
+
+By default, \Rfunction{normalize} return log2 intensity values.  This could be
+controlled setting the parameter log.it to FALSE.
+
+\section{Plotting}
+
+There are some diagnostic plots available for the \Robject{Codelink} object.  
+These are functions for producing MA plots (\Rfunction{plotMA}), scatterplots 
+(\Rfunction{plotCorrelation}) and density plots (\Rfunction{plotDensities}).  
+All functions use the available intensity value (i.e.  Smean, Ri or Ni) to make 
+the plot.
+
+The functions \Rfunction{plotMA} and \Rfunction{plotCorrelation} can highlight 
+points based on the Spot Type, which is the default behavior or using the SNR 
+values.  The mode is controlled with argument \emph{label}.  
+\Rfunction{plotCorrelation} requires arguments \emph{array1} and \emph{array2} 
+to be set in order to select which arrays are going to be plotted. For 
+\Rfunction{plotMA} if only \emph{array1} is specified, the values are plotted 
+againts a pseudoarray constructed with the mean of the probe intensities along 
+all available arrays. M and A values are computed following equations 
+\ref{eq:M} and \ref{eq:A}.
+
+
+\begin{equation}
+M=Array2-Array1
+\label{eq:M}
+\end{equation}
+
+\begin{equation}
+A=\frac{Array2+Array1}{2}
+\label{eq:A}
+\end{equation}
+
+<<plotMA>>=
+plotMA(codelink.example)
+@
+
+The function \Rfunction{plotDensities} plot the density of intensity values of
+all arrays. It can plot only a subset of arrays if the \emph{subset} argument 
+is supplied.
+
+<<plotDensity>>=
+plotDensities(codelink.example)
+@
+
+When Logical\_row and Logical\_col columns are exported into they are stored 
+into the \emph{logical} slot. This information stores the physical location of 
+each probe in the array, and can be used to plot pseudo images of the array 
+intensities. To plot a pseudo image you should use:
+
+<<image, eval=FALSE>>=
+imageCodelink(foo)
+imageCodelink(foo, what = "snr")
+@
+
+It is possible to plot the background intensities (default), the spot mean, 
+raw and normalized intensities and the SNR values. This images are useful to 
+identify spatial artifact that may be affecting the analysis.
+
+\section{Miscellaneous}
+
+There are also some miscellaneous functions used in some analysis that could be
+useful for someone.
+
+\subsection{Export to file}
+
+The function \Rfunction{writeCodelink} exports a \Robject{Codelink} object to a file. The file will contain probe intensities and, if specified flag = TRUE, probe quality flags.
+
+
+\subsection{Merging arrays}
+
+In case you want to merge array intensities the \Rfunction{mergeArray} function 
+help on this task. It computes the mean of Ni values on arrays of the same 
+class.  The grouping is done by means of the \emph{class} argument (numerical 
+vector of classes). New sample names should be assigned to the sample slot 
+using the \emph{names} argument. The function also returns the coefficient of 
+variation in the \emph{cv} slot. The distribution of coefficients of variations 
+can be checked with the function \Rfunction{plotCV}.
+
+<<merge, eval=FALSE>>=
+foo <- mergeArray(foo, class = c(1, 1, 2, 2), names = c("A", "B"))
+plotCV(foo)
+@
+
+\section{Problems reading data}
+Some updated version of the Codelink software changed the order in which probes 
+are printed in the exported text files. That makes files from these different 
+software version impossible to be analyzed together. The function 
+\Rfunction{readCodelink} have a new argument \emph{check} TRUE by default, that 
+check the Probe\_name columns to see if they have the same order in all the 
+arrays at the cost is a little extra loading time. This behaviour can be turn 
+off by setting \emph{check} to FALSE. If an ordering problem is found, a 
+warning message is print but the reading of data is not stopped, allowing the 
+visual examination of the data. In this case, the best option is to export the 
+old files again using the updated version of the software. If this is 
+impossible for whatever reason, the codelink package can try to fix the order 
+of the files.
+
+To the aim, a new argument \emph{fix = TRUE} can be passed to 
+\Rfunction{readCodelink}. The method will try to order the probes using the 
+Feature\_id column, which is a combination of Logical\_row and Logical\_col and 
+for this, a unique identifier of each probe. This is the optimal fix, and the 
+new data should be perfectly ordered. If that column is missing, the it will 
+try to order the data using the Probe\_name column. This is a sub-optimal 
+solution because as the fiducial, control and some discovery probes have 
+duplicated Probe\_name, they may be end messed up. In this case, the best 
+solution again, is to try to export again the data with the updated version of 
+the software.
+
+
+<<read-fix, eval=FALSE>>=
+foo <- readCodelink(fix = TRUE)
+@
+
+\section{Future improvements}
+As the new classes in the Biobase package (\Robject{eSet} and 
+\Robject{ExpressionSet}) allow more flexible data structures, a 
+reimplementation of the \Robject{Codelink-class} based on 
+\Robject{ExpressionSet-class} will be the next major feature added to this 
+package. This will allow a better integration with other tools available 
+through the Bioconductor project.
+
+Right now, there is some experimental implementation of the new codebase. You 
+need to use the wrapper function \Rfunction{readCodelinkSet}.
+
+<<read-codelinkSet, eval=FALSE>>=
+foo <- readCodelinkSet()
+@
+
+
+\bibliographystyle{plain}
+\bibliography{codelink}
+
+
+\end{document}
