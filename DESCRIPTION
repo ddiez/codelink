@@ -17,3 +17,5 @@ Collate: Codelink-class.R file.R data.R norm.R plot.R CodelinkSet-class.R Codeli
 biocViews: Microarray, OneChannel, DataImport, Preprocessing
 ByteCompile: yes
 VignetteBuilder: knitr
+URL: https://github.com/ddiez/codelink
+BugReports: https://github.com/ddiez/codelink/issues 
