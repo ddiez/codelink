@@ -1,12 +1,22 @@
-#useDynLib(codelink)
 import(methods)
 
-importFrom(BiocGenerics, annotation, "annotation<-", "normalize")
-importFrom(annotate, lookUp, htmlpage)
-importFrom(Biobase, exprs)
-importFrom(limma,backgroundCorrect.matrix,normalizeCyclicLoess,normalizeMedianValues,normalizeQuantiles)
+importFrom(BiocGenerics, "annotation", "annotation<-", "normalize")
+importFrom(annotate, "lookUp", "htmlpage")
+importFrom(Biobase, 
+		   "phenoData", "phenoData<-",
+		   "featureData", "featureData<-",
+		   "featureNames", "featureNames<-",
+		   "experimentData", "experimentData<-",
+		   "sampleNames", "sampleNames<-",
+		   "assayDataElement", "assayDataElement<-",
+		   "pData", "varMetadata", "exprs")
+importFrom(limma,
+		   "backgroundCorrect.matrix",
+		   "normalizeCyclicLoess",
+		   "normalizeMedianValues",
+		   "normalizeQuantiles")
 
-importClassesFrom(Biobase, eSet, ExpressionSet, VersionedBiobase, Versioned)
+importClassesFrom(Biobase, "eSet", "ExpressionSet", "VersionedBiobase", "Versioned")
 
 exportClasses(CodelinkSet, CodelinkSetUnique)
 exportMethods(codCorrect, codNormalize, codPreprocess, probeNames, probeTypes,
