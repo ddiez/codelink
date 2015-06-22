@@ -1,7 +1,7 @@
 Package: codelink
 Version: 1.37.2
 Date: 2015-06-22
-Title: Manipulation of Codelink microarray data.
+Title: Manipulation of Codelink microarray data
 Author: Diego Diez
 Maintainer: Diego Diez <diego10ruiz@gmail.com>
 Depends: R (>= 2.10), BiocGenerics (>= 0.3.2), methods, Biobase (>= 2.17.8), limma
