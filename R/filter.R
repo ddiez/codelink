@@ -22,7 +22,7 @@ function(x, cutoff = 1)
 setMethod("filterSNR", "matrix",
 function(x, cutoff = 1)
 {
-	requireNamespace(genefilter)
+	requireNamespace("genefilter")
 	f <- filtersnr(A = cutoff)
 	!genefilter::genefilter(x, genefilter::filterfun(f))
 })
