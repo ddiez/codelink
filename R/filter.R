@@ -22,10 +22,9 @@ function(x, cutoff = 1)
 setMethod("filterSNR", "matrix",
 function(x, cutoff = 1)
 {
-	if(!require(genefilter))
-		stop("package genefilter is needed and not installed")
+	requireNamespace(genefilter)
 	f <- filtersnr(A = cutoff)
-	!genefilter(x, filterfun(f))
+	!genefilter::genefilter(x, genefilter::filterfun(f))
 })
 
 # codUniverse()
