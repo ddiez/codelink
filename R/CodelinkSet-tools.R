@@ -27,8 +27,9 @@
 # 	c2e(tmp, phenodata = pdata, featuredata = NULL)
 # }
 
-readCodelinkSet <- function(filename, columns = list(Signal = "Spot_mean", Background = "Bkgd_median"), phenoData=NULL, ...) {
+readCodelinkSet <- function(filename, path, columns = list(Signal = "Spot_mean", Background = "Bkgd_median"), phenoData=NULL, ...) {
 	if(missing(filename)) stop("argument 'filename' must be specified.")
+	if (!missing(path)) filename <- file.path(path, filename)
 	#tmp <- readCodelink(files = filename, ...)
 	tmp = .readCodelinkRaw(files = filename, ...)
 	Codelink2CodelinkSet(tmp, phenodata = phenoData)

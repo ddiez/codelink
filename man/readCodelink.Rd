@@ -12,7 +12,7 @@ readCodelink(files = list.files(pattern = "TXT"), sample.name =
                  type = "Spot", preserve = FALSE, verbose = 2,
                  file.type = "Codelink", check = TRUE, fix = FALSE, old
                  = FALSE)
-readCodelinkSet(filename, columns = list(Signal = "Spot_mean", Background = "Bkgd_median"), phenoData = NULL, \dots)
+readCodelinkSet(filename, path, columns = list(Signal = "Spot_mean", Background = "Bkgd_median"), phenoData = NULL, \dots)
 }
 \arguments{
   \item{files}{list of files to read.}
@@ -30,6 +30,7 @@ readCodelinkSet(filename, columns = list(Signal = "Spot_mean", Background = "Bkg
   \item{old}{logical, whether NA is assigned to intensities based on flags.}
   
   \item{filename}{list of files.}
+  \item{path}{path to the files.}
   \item{columns}{what columns to use for signal and background intensities.}
   \item{phenoData}{phenoData object with sample information.}
   \item{\dots}{further arguments to be passed.}
