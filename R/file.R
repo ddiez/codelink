@@ -75,6 +75,12 @@ checkColumns <- function(x, y)
 		if(x[n] != y[n]) return(FALSE)
 	return(TRUE)
 }
+
+# .checkType()
+# checks valid type with current file.
+.checkType <- function(h, type, types) {
+	any(h$columns %in% types[type])
+}
 # readCodelink()
 # read of codelink data.
 readCodelink = function(files=list.files(pattern = "TXT"), sample.name=NULL, flag, flag.weights, type.weights, dec=NULL, type="Spot", preserve=FALSE,	verbose=2, file.type="Codelink", check=TRUE, fix=FALSE, old=FALSE) {
@@ -92,6 +98,9 @@ readCodelink = function(files=list.files(pattern = "TXT"), sample.name=NULL, fla
 	nslides <- length(files)
 
 	type <- match.arg(type,c("Spot", "Raw", "Norm"))
+	types <- c("Spot" = "Spot_mean",
+			   "Raw" = "Raw_intensity",
+			   "Norm" = "Normalized_intensity")
 	file.type <- match.arg(file.type, c("Codelink", "XLS"))
 
 	if(file.type=="XLS") readHeader <- readHeaderXLS
@@ -156,6 +165,9 @@ readCodelink = function(files=list.files(pattern = "TXT"), sample.name=NULL, fla
 			nslides, ":", files[n], "\n"))
 		if(is.null(dec)) head <- readHeader(files[n], dec = TRUE)
 		else head <- readHeader(files[n])
+		
+		if (!.checkType(head, type, types))
+			stop(paste("File", files[n], "does not contain column", types[type], "(choose other type instead)"))
 
 		if(n==1) {
 			product <- head$product
