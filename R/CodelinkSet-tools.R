@@ -27,26 +27,36 @@
 # 	c2e(tmp, phenodata = pdata, featuredata = NULL)
 # }
 
-readCodelinkSet <- function(filename, path, columns = list(Signal = "Spot_mean", Background = "Bkgd_median"), phenoData=NULL, ...) {
+readCodelinkSet <- function(filename, path, phenoData=NULL, ...) {
 	if(missing(filename)) stop("argument 'filename' must be specified.")
 	if (!missing(path)) filename <- file.path(path, filename)
 	#tmp <- readCodelink(files = filename, ...)
 	tmp = .readCodelinkRaw(files = filename, ...)
-	Codelink2CodelinkSet(tmp, phenodata = phenoData)
+	Codelink2CodelinkSet(tmp, phenodata = phenoData, ...)
 }
 
 
-Codelink2CodelinkSet <- function (object, annotation = NULL, phenodata = NULL, featuredata = NULL, intensity = "Smean") 
+Codelink2CodelinkSet <- function (object, annotation = NULL, phenodata = NULL, featuredata = NULL, type = "Spot") 
 {
     if (class(object) != "Codelink") 
         stop("Codelink-object needed.")
 
-    switch(intensity, 
-    	"Smean" = int <- object$Smean,
-		"Ri" = int <- object$Ri,
-    	"Ni" = int <- object$Ni,
-    )    
-    bkg <- object$Bmedian
+	if (type == "Spot" && is.null(object$Smean))
+		stop("Smean is missing. Choose type Raw or Norm")
+	if (type == "Raw" && is.null(object$Ri))
+		stop("Ri is missing. Choose type Spot or Norm")
+	if (type == "Norm" && is.null(object$Ni))
+		stop("Ni is missing. Choose intensity Spot or Raw")
+    switch(type, 
+    	"Spot" = int <- object$Smean,
+		"Raw" = int <- object$Ri,
+    	"Norm" = int <- object$Ni
+    )
+	if(is.null(object$Bmedian)) {
+		bkg <- matrix(NA, ncol = ncol(int), nrow = nrow(int))
+	}
+	else
+		bkg <- object$Bmedian
 
     if (is.null(phenodata)) {
 	    phenodata <- data.frame(sample = object$sample)
