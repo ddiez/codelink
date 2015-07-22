@@ -329,7 +329,7 @@ readCodelink = function(files=list.files(pattern = "TXT"), sample.name=NULL, fla
 					codelink$Ri[, n] <- data[, "Raw_intensity"]
 				else
 					codelink$Ri[, n] <- data[, "Raw_Intensity"]
-				codelink$method$backgrund <- "Codelink Subtract"
+				codelink$method$background <- "Codelink Subtract"
 				# Set values based on Flags.
 				#if(!is.null(flag$M)) {
 					#codelink$Ri[flag.m, n] <- flag$M
