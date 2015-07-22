@@ -400,22 +400,42 @@ readCodelink = function(files=list.files(pattern = "TXT"), sample.name=NULL, fla
 	}
 	
 	codelink=new("Codelink", codelink)
-	
+
 	# fix flags.
 	if(old) {
 		cat("** applying flags ...")
 		for(k in names(flag.cc)) {
 			sel <- grep(k, codelink$flag)
-			codelink$Smean[sel] <- flag.cc[[k]]
-			codelink$Bmedian[sel] <- flag.cc[[k]]
+			switch(type,
+				   "Spot" = {
+				   	codelink$Smean[sel] <- flag.cc[[k]]
+				   	codelink$Bmedian[sel] <- flag.cc[[k]]
+				   },
+				   "Raw" = {
+				   	codelink$Ri[sel] <- flag.cc[[k]]
+				   },
+				   "Norm" = {
+				   	codelink$Ni[sel] <- flag.cc[[k]]
+				   }
+				   )
 		}
 		cat("OK\n")
 	} else {
 		cat("** applying flags to MSR spots ...")
 		for(k in names(flag.cc.new)) {
 			sel <- grep(k, codelink$flag)
-			codelink$Smean[sel] <- flag.cc.new[[k]]
-			codelink$Bmedian[sel] <- flag.cc.new[[k]]
+			switch(type,
+				   "Spot" = {
+				   	codelink$Smean[sel] <- flag.cc.new[[k]]
+				   	codelink$Bmedian[sel] <- flag.cc.new[[k]]
+				   },
+				   "Raw" = {
+				   	codelink$Ri[sel] <- flag.cc.new[[k]]
+				   },
+				   "Norm" = {
+				   	codelink$Ni[sel] <- flag.cc.new[[k]]
+				   }
+				   )
 		}
 		cat("OK\n")
 	}
