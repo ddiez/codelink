@@ -312,7 +312,7 @@ function(x, array = 1, label = "type", cutoff = c(-1, 1),
 	
 	title <- colnames(x$coef)[array]
 	
-	plotma(A, M, label = label,	cutoff = cutoff, snr.cutoff = snr.cutoff,
+	plotxy(A, M, label = label,	cutoff = cutoff, snr.cutoff = snr.cutoff,
 		legend.x = legend.x, pch = pch, type = type, snr = snr, title = title, 
 		xlab = "A", ylab = "M", ...)
 })
