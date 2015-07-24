@@ -1,7 +1,7 @@
 citHeader("To cite codelink in publications use:")
 
 citEntry(entry="Article",
-	title = "codelink: an R package for analysis of GE Healthcare Gene 
+	title = "codelink: an R package for analysis of GE Healthcare Gene
 	Expression Bioarrays",
 	author = c(person("Diego Diez"), person("Rebeca Alvarez"), person("Ana Dopazo")),
 	year = "2007",
