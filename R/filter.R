@@ -52,7 +52,7 @@ function(x, chip)
 		chip <- annotation(x)
 	if(nchar(chip) < 1)
 		stop("chip type missing.")
-	
+
 	# filter not expressed probes.
 	filtersnr <- filterSNR(x)
 	x <- x[filtersnr,]
@@ -73,7 +73,7 @@ createUniverse <- function(chip, probesname, mediansnr) {
 	# probes with EG.
 	envirEG <- get(paste(chip, "ENTREZID", sep = ""))
 	eg <- mget(probesname, envir = envirEG)
-	
+
 	haveEG <- sapply(eg, function(x) !is.na(x))
 	haveEG <- unique(names(which(haveEG)))
 
@@ -85,7 +85,7 @@ createUniverse <- function(chip, probesname, mediansnr) {
 	haveGO <- unique(names(which(haveGO)))
 
 	allProbes <- intersect(haveEG, haveGO)
-	
+
 	egSubset <- eg[allProbes]
 	egSubsetUnique <- unique(unlist(egSubset))
 	allProbesUnique <- sapply(egSubsetUnique, function(x) {
@@ -94,7 +94,7 @@ createUniverse <- function(chip, probesname, mediansnr) {
 		if(length(probesName) == 1) probesName
 		else {
 			tmp <- mediansnr[mediansnr[, "probeName"] %in% probesName, ]
-			if(all(is.na(tmp[, 2]))) probesName[1] 
+			if(all(is.na(tmp[, 2]))) probesName[1]
 			else {
 				sel <- tmp[ ,"medianSNR"] == max(tmp[, "medianSNR"], na.rm = TRUE)
 				sel <- na2false(sel)
