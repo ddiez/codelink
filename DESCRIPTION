@@ -10,11 +10,11 @@ Suggests: genefilter, parallel, knitr
 LazyLoad: yes
 Description: This package facilitates reading, preprocessing and manipulating
  Codelink microarray data. The raw data must be exported as text file using the
- Codelink software. 
+ Codelink software.
 License: GPL-2
 Collate: Codelink-class.R file.R data.R norm.R plot.R CodelinkSet-class.R CodelinkSet-methods.R CodelinkSet-tools.R CodelinkSetUnique-class.R CodelinkSetUnique-methods.R filter.R cluster.R
 biocViews: Microarray, OneChannel, DataImport, Preprocessing
 ByteCompile: yes
 VignetteBuilder: knitr
 URL: https://github.com/ddiez/codelink
-BugReports: https://github.com/ddiez/codelink/issues 
+BugReports: https://github.com/ddiez/codelink/issues
