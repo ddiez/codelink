@@ -1,6 +1,6 @@
 Package: codelink
-Version: 1.37.5
-Date: 2015-07-22
+Version: 1.37.6
+Date: 2015-07-24
 Title: Manipulation of Codelink microarray data
 Author: Diego Diez
 Maintainer: Diego Diez <diego10ruiz@gmail.com>
@@ -12,7 +12,7 @@ Description: This package facilitates reading, preprocessing and manipulating
  Codelink microarray data. The raw data must be exported as text file using the
  Codelink software. 
 License: GPL-2
-Collate: Codelink-class.R file.R data.R norm.R plot.R CodelinkSet-class.R CodelinkSet-methods.R CodelinkSet-tools.R CodelinkSetUnique-class.R CodelinkSetUnique-methods.R filter.R cluster.R
+Collate: Codelink-class.R CodelinkSet-class.R file.R data.R norm.R plot.R CodelinkSet-methods.R CodelinkSet-tools.R CodelinkSetUnique-class.R CodelinkSetUnique-methods.R filter.R cluster.R
 biocViews: Microarray, OneChannel, DataImport, Preprocessing
 ByteCompile: yes
 VignetteBuilder: knitr
