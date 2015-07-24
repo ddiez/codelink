@@ -21,11 +21,12 @@
 #         }
 #     }
 #     if (is.null(filename)) stop("invalid filenames.")
-# 	
+#
 # 	tmp <- readCodelink(files = filename, ...)
-# 	
+#
 # 	c2e(tmp, phenodata = pdata, featuredata = NULL)
 # }
+
 
 readCodelinkSet <- function(filename, path, phenoData=NULL, ...) {
 	if(missing(filename)) stop("argument 'filename' must be specified.")
@@ -36,9 +37,9 @@ readCodelinkSet <- function(filename, path, phenoData=NULL, ...) {
 }
 
 
-Codelink2CodelinkSet <- function (object, annotation = NULL, phenodata = NULL, featuredata = NULL, type = "Spot") 
+Codelink2CodelinkSet <- function (object, annotation = NULL, phenodata = NULL, featuredata = NULL, type = "Spot")
 {
-    if (class(object) != "Codelink") 
+    if (class(object) != "Codelink")
         stop("Codelink-object needed.")
 
 	if (type == "Spot" && is.null(object$Smean))
@@ -47,7 +48,7 @@ Codelink2CodelinkSet <- function (object, annotation = NULL, phenodata = NULL, f
 		stop("Ri is missing. Choose type Spot or Norm")
 	if (type == "Norm" && is.null(object$Ni))
 		stop("Ni is missing. Choose intensity Spot or Raw")
-    switch(type, 
+    switch(type,
     	"Spot" = int <- object$Smean,
 		"Raw" = int <- object$Ri,
     	"Norm" = int <- object$Ni
@@ -63,21 +64,21 @@ Codelink2CodelinkSet <- function (object, annotation = NULL, phenodata = NULL, f
     	phenodata.varMet <- data.frame(labelDescription = "sample names", row.names = "sample")
     	phenodata <- new("AnnotatedDataFrame", data = phenodata, varMetadata = phenodata.varMet)
     }
-    
+
     if (is.null(featuredata)) {
     	featuredata <- data.frame(probeName = object$name, probeType = object$type, logicalRow = object$logical[, "row"], logicalCol = object$logical[, "col"], meanSNR = rowMeans(object$snr, na.rm = TRUE))
     	featuredata.feMet <- data.frame(labelDescription = c("probe names", "probe types", "probe row position", "probe column position", "mean snr"), row.names = c("probeName", "probeType", "logicalRow",      "logicalCol", "meanSNR"))
 		featuredata <- new("AnnotatedDataFrame", data = featuredata, varMetadata = featuredata.feMet)
 
     }
-    
+
     if (is.null(annotation))
     	chip <- annotation(object)
-    
+
     if(is.null(object$weight))
     	object$weight=createWeights(object)
-    
-	tmp <- new("CodelinkSet", exprs = int, background = bkg, 
+
+	tmp <- new("CodelinkSet", exprs = int, background = bkg,
         flag = object$flag, weight=object$weight, snr = object$snr, annotation = chip)
     phenoData(tmp) <- phenodata
     featureData(tmp) <- featuredata
@@ -117,10 +118,10 @@ Codelink2eSet <- function(object, annotation = NULL) {
 	tmp <- new("CodelinkSet", phenoData = pD,  exprs = int,
 		background = bkg, flag = object$flag, snr = object$snr,
 		annotation = chip, featureData = Rep)
-	
+
 	featureNames(tmp) <- object$id
 	sampleNames(tmp) <- object$sample
-	
+
 	experimentData(tmp)@preprocessing <- object$method
 	experimentData(tmp)@other <- list("product" = object$product)
 
@@ -160,6 +161,6 @@ function(object)
 	if(org != "" && chip != "")
 		ann <- paste(org, chip, base, ".db", sep="")
 	else ann <- ""
-	
+
 	ann
 })

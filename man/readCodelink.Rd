@@ -28,7 +28,7 @@ readCodelinkSet(filename, path, phenoData = NULL, \dots)
   \item{check}{logical, check for probe order consistency.}
   \item{fix}{logical, try to fix probe order consistency.}
   \item{old}{logical, whether NA is assigned to intensities based on flags.}
-  
+
   \item{filename}{list of files.}
   \item{path}{path to the files.}
   \item{phenoData}{phenoData object with sample information.}
@@ -46,7 +46,7 @@ readCodelinkSet(filename, path, phenoData = NULL, \dots)
     # including sample names, file names and sample groups.
     pdata = read.AnnotationDataFrame("targets.txt")
     codset = readCodelinkSet(pdata$FileNames, phenoData=pdata)
-    
+
     data(codset)
 }
 }
