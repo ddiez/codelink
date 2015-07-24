@@ -3,7 +3,6 @@
 \alias{class:Codelink}
 \alias{Codelink}
 \alias{Codelink-class}
-\alias{[,Codelink-method}
 \alias{[,Codelink,ANY,ANY-method}
 \alias{show,Codelink-method}
 

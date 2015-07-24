@@ -79,7 +79,7 @@ function(object) {
 })
 
 # [ method.
-setMethod("[", "Codelink",
+setMethod("[", c("Codelink", "ANY", "ANY"),
 function(x, i, j, ..., drop=FALSE) {
 	if(!missing(i)) {
 		x$Smean <- x$Smean[i,, drop = FALSE]
