@@ -48,7 +48,11 @@ Codelink2CodelinkSet <- function (object, annotation = NULL, phenodata = NULL, f
 		stop("Ri is missing. Choose type Spot or Norm")
 	if (type == "Norm" && is.null(object$Ni))
 		stop("Ni is missing. Choose intensity Spot or Raw")
+<<<<<<< HEAD
     switch(type,
+=======
+    switch(type,
+>>>>>>> - fixed handling of type in readCodelinkSet()
     	"Spot" = int <- object$Smean,
 		"Raw" = int <- object$Ri,
     	"Norm" = int <- object$Ni
