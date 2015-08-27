@@ -1,6 +1,6 @@
 Package: codelink
-Version: 1.37.6
-Date: 2015-07-24
+Version: 1.37.7
+Date: 2015-08-27
 Title: Manipulation of Codelink microarray data
 Author: Diego Diez
 Maintainer: Diego Diez <diego10ruiz@gmail.com>
