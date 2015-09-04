@@ -208,6 +208,10 @@ plotxy <- function(x, y, label = "type", cutoff = c(-1, 1),
 	high.list, title, loess = TRUE, xyline = FALSE, xlab = "x", ylab = "y", ...)
 {
 
+	# fix for data comming directly from Codelink suite.
+	x <- x[is.finite(x)]
+	y <- y[is.finite(y)]
+	
 	label <- match.arg(label, c("type", "snr", "none"))
 	
 	# basic plot.

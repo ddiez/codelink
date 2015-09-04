@@ -259,25 +259,21 @@ function(x, array = 1, array2, label = "type", cutoff = c(-1, 1),
 	# compute MA values.
 	X <- getInt(x)
 	islog <- getInfo(x, "log")
-
+	
+	if (!islog) X <- log2(X)
+	
 	X1 <- X[, array]
-	if(missing(array2)) {
-		# compute mean in non-log scale and restore it if needed.
-		X2 <- rowMeans(if(!islog) X else 2^X, na.rm = TRUE)
-		if(islog) X2 <- log2(X2)
-	} else
+	if (missing(array2))
+		X2 <- rowMeans(X[, -array, drop = FALSE], na.rm = TRUE)
+	else
 		X2 <- X[, array2]
 
-	if(!islog) {
-		X1 <- log2(X1)
-		X2 <- log2(X2)
-	}
-	
 	M <- X2 - X1
 	A <- (X1 + X2) / 2
 
+	# get title.
 	samples <- sampleNames(x)
-	if(missing(array2)) {
+	if (missing(array2)) {
 		title <- paste("Median vs", samples[array])
 	} else {
 		title <- paste(samples[array2], "vs", samples[array])
