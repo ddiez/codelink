@@ -1,6 +1,12 @@
 Package: codelink
 ====================
 
+Version 1.38.0
+
+o Fixed error reading Codelink files with option type="Raw" or type="Norm".
+
+o Now readCodelinkSet() accepts "path=" as argument to enable reading files from a target directory.
+
 Version 1.32.0
 
 o Minor fixes to documentation.
